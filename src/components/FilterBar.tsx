@@ -8,9 +8,9 @@ interface FilterBarProps {
 
 const FilterBar: React.FC<FilterBarProps> = ({ tags, selectedTag, onTagSelect }) => {
     return (
-        <div className="flex gap-2 mb-4">
+        <div className="flex flex-wrap gap-2 mb-4">
             <button
-                className={`btn ${!selectedTag ? "btn-primary" : ""}`}
+                className={`btn btn-sm ${!selectedTag ? "btn-primary" : "btn-outline"}`}
                 onClick={() => onTagSelect(null)}
             >
                 All
@@ -18,7 +18,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ tags, selectedTag, onTagSelect })
             {tags.map((tag) => (
                 <button
                     key={tag}
-                    className={`btn ${selectedTag === tag ? "btn-primary" : ""}`}
+                    className={`btn btn-sm ${selectedTag === tag ? "btn-primary" : "btn-outline"}`}
                     onClick={() => onTagSelect(tag)}
                 >
                     {tag}
