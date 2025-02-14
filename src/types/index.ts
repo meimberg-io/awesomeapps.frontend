@@ -1,38 +1,18 @@
-
-
-// Typ für Tag
+// Tag-Typ für Filterung
 export interface Tag {
-    id: number;
-    documentId: string;
+    id: string;
     name: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
 }
 
-// Typ für Service
+export interface Image {
+    url: string;
+}
+
+// Service-Typ mit Relation zu Tags
 export interface Service {
-    id: number;
-    documentId: string;
+    id: string;
     name: string;
     description: string | null;
-    wutz: string | null;
-    url: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
+    thumbnail: Image;
     tags: Tag[];
-}
-
-// Typ für die gesamte API-Antwort
-export interface StrapiResponse<T> {
-    data: T[];
-    meta: {
-        pagination: {
-            page: number;
-            pageSize: number;
-            pageCount: number;
-            total: number;
-        };
-    };
 }

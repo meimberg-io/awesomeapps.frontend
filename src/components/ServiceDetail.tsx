@@ -1,26 +1,21 @@
 import React from "react";
-import { Service } from "../data/services";
+import { Service } from "../types";
 
-interface ServiceDetailProps {
+interface Props {
     service: Service;
-    onBack: () => void;
 }
 
-const ServiceDetail: React.FC<ServiceDetailProps> = ({ service, onBack }) => {
+const ServiceDetail: React.FC<Props> = ({ service }) => {
     return (
-        <div className="p-4">
-            <button className="btn btn-secondary mb-4" onClick={onBack}>
-                Zurück
-            </button>
-            <h1 className="text-3xl font-bold">{service.name}</h1>
-            <p className="mt-2">{service.description}</p>
-            <div className="flex gap-2 mt-4">
-                {service.tags.map((tag) => (
-                    <div key={tag} className="badge badge-secondary">
-                        {tag}
-                    </div>
+        <div>
+            <h1>{service.name}</h1>
+            <p>{service.description}</p>
+            <h3>Tags</h3>
+            <ul>
+                {service.tags.map(tag => (
+                    <li key={tag.id}>{tag.name}</li>
                 ))}
-            </div>
+            </ul>
         </div>
     );
 };
