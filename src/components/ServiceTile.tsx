@@ -10,7 +10,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({ service, onClick }) => {
     return (
         <div className="card w-60 bg-base-100 shadow-xl cursor-pointer" onClick={onClick}>
             <figure>
-                <img src={service.thumbnail.url} alt={service.name} />
+                <img src={'http://localhost:1337' + service.thumbnail.url} alt={service.name} />
             </figure>
             <div className="card-body">
                 <h2 className="card-title">{service.name}</h2>
