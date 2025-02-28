@@ -3,7 +3,6 @@ import { fetchServices } from "../api/services";
 import ServiceList from "../components/ServiceList";
 import FilterBar from "../components/FilterBar";
 import {Service} from "../types";
-import ThemeSwitcher from "../components/ThemeSwitcher.tsx";
 import Header from "../components/Header.tsx";
 
 const ServicesPage: React.FC = () => {
@@ -17,6 +16,11 @@ const ServicesPage: React.FC = () => {
     return (
         <div>
             <Header />
+
+
+
+
+
             <FilterBar tags={["AI", "Cloud", "Automation"]} selectedTag={selectedTag} onSelectTag={setSelectedTag} />
             <ServiceList services={services} />
         </div>

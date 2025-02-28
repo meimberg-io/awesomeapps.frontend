@@ -6,8 +6,8 @@ export const client = new ApolloClient({
 });
 
 export const GET_SERVICES = gql`
-    query GetServices($tag: String) {
-        services(filters: { tags: { name: { eq: $tag } } }) {
+    query GetServices($tags: [ID]!) {
+        services(tags: $tags) {
             documentId
             name
             description
@@ -23,6 +23,15 @@ export const GET_SERVICES = gql`
     }
 `;
 
+export const GET_TAGS = gql`
+    query GetTags($additionalTags: [ID]!) {
+        tags {
+            documentId
+            name
+            count(additionalTags: $additionalTags)
+        }
+    }
+`;
 export const GET_SERVICE_DETAIL = gql`
     query GetServiceDetail($id: ID!) {
         service(id: $id) {

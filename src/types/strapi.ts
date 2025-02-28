@@ -1,7 +1,8 @@
 // Tag-Typ für Filterung
 export interface StrapiTag {
-    id: string;
+    documentId: string;
     name: string;
+    count: number;
 }
 
 export interface StrapiImage {

@@ -7,10 +7,11 @@ interface ServiceTileProps {
 }
 
 const ServiceTile: React.FC<ServiceTileProps> = ({ service, onClick }) => {
+    const BASE_URL = (typeof process !== 'undefined' && process.env.REACT_APP_API_URL) ? process.env.REACT_APP_API_URL : 'http://localhost:1337';
     return (
         <div className="card w-60 bg-base-100 shadow-xl cursor-pointer" onClick={onClick}>
             <figure>
-                <img src={'http://localhost:1337' + service.thumbnail.url} alt={service.name} />
+                <img src={service.thumbnail ? BASE_URL + service.thumbnail.url : ''} alt={service.name} />
             </figure>
             <div className="card-body">
                 <h2 className="card-title">{service.name}</h2>

@@ -1,11 +1,14 @@
-import { client, GET_SERVICES, GET_SERVICE_DETAIL } from "./graphql";
+import { client, GET_SERVICES, GET_TAGS, GET_SERVICE_DETAIL } from "./graphql";
 import {Service, Tag} from "../types";
-import {StrapiService} from "../types/strapi.ts";
+import {StrapiService, StrapiTag} from "../types/strapi.ts";
 
-export const fetchServices = async (tag?: string): Promise<Service[]> => {
+export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
+    const tagIds = tags?.map(tag => tag.id) || [];
+
+
     const { data } = await client.query({
         query: GET_SERVICES,
-        variables: { tag },
+        variables: { tags: tagIds },
     });
 
     return data.services.map((item: StrapiService) => ({
@@ -13,11 +16,26 @@ export const fetchServices = async (tag?: string): Promise<Service[]> => {
         name: item.name,
         description: item.description,
         thumbnail: item.thumbnail[0],
-        tags: item.tags.map((tag: Tag) => ({
-            id: tag.id,
+        tags: item.tags.map((tag: StrapiTag) => ({
+            id: tag.documentId,
             name: tag.name,
         }))
 
+    }));
+};
+
+export const fetchTags = async (tags?: Tag[]): Promise<Tag[]> => {
+    const tagIds = tags?.map(tag => tag.id) || [];
+    const { data } = await client.query({
+        query: GET_TAGS,
+        variables: { additionalTags: tagIds },
+        fetchPolicy: "no-cache"
+    });
+
+    return data.tags.map((tag: StrapiTag) => ({
+        id: tag.documentId,
+        name: tag.name,
+        count: tag.count,
     }));
 };
 
@@ -32,9 +50,11 @@ export const fetchServiceDetail = async (id: string): Promise<Service> => {
         id: item.documentId,
         name: item.name,
         description: item.description,
-        tags: item.tags.map((tag: Tag) => ({
-            id: tag.id,
+        tags: item.tags.map((tag: StrapiTag) => ({
+            id: tag.documentId,
             name: tag.name,
+            count: tag.count,
+            selected: false
         })),
         thumbnail: item.thumbnail[0]
     };
