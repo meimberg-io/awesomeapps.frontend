@@ -15,7 +15,7 @@ export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
         id: item.documentId,
         name: item.name,
         description: item.description,
-        thumbnail: item.thumbnail[0],
+        thumbnail: item.thumbnail,
         tags: item.tags.map((tag: StrapiTag) => ({
             id: tag.documentId,
             name: tag.name,
@@ -36,6 +36,8 @@ export const fetchTags = async (tags?: Tag[]): Promise<Tag[]> => {
         id: tag.documentId,
         name: tag.name,
         count: tag.count,
+        selected: false
+
     }));
 };
 
