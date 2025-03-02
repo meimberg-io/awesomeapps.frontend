@@ -12,9 +12,8 @@ import Link from "next/link";
 
 const navigation = [
     {name: 'Home', href: '#'},
-    {name: 'Invoices', href: '#'},
-    {name: 'Clients', href: '#'},
-    {name: 'Expenses', href: '#'},
+    {name: 'About', href: '#'},
+
 ]
 
 
