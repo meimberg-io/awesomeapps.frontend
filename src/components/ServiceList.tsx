@@ -1,6 +1,6 @@
 import React from "react";
 import {Service, TagWithCount} from "../types";
-import ServiceTile from "./ServiceTile.tsx";
+import ServiceTile from "./ServiceTile";
 
 interface Props {
     services: Service[];
