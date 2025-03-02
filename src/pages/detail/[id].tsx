@@ -1,9 +1,9 @@
 import React from "react";
 
 import {Service} from "../../types";
-import RichText from "../../components/RichText.tsx";
+import RichText from "../../components/RichText";
 import {ArrowRightCircleIcon} from "@heroicons/react/20/solid";
-import Header from "../../components/Header.tsx";
+import Header from "../../components/Header";
 
 import {GetServerSideProps} from "next";
 import {fetchServiceDetail} from "../../api/services";
