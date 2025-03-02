@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
+
 import {RootNode} from "@strapi/blocks-react-renderer/dist/BlocksRenderer";
 
 export interface Tag {
