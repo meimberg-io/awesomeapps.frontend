@@ -46,7 +46,13 @@ pm2 startup
 ```
 
 
+## Deploy
 
+```bash
+ git pull && rm -rf .next && npm run build && pm2 restart serviceatlas
+
+
+```
 
 
 
