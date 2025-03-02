@@ -1,8 +1,8 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
-import {STRAPI_API} from "../pages/_app";
+import {STRAPI_BASEURL} from "../pages/_app";
 
 export const client = new ApolloClient({
-    uri: STRAPI_API,
+    uri: STRAPI_BASEURL + "/graphql",
     cache: new InMemoryCache(),
 });
 

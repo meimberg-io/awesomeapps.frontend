@@ -7,7 +7,7 @@ import Header from "../../components/Header";
 
 import {GetServerSideProps} from "next";
 import {fetchServiceDetail} from "../../api/services";
-import {BASE_URL} from "../_app";
+import {STRAPI_BASEURL} from "../_app";
 
 interface DetailPageProps {
     service: Service | null;
@@ -52,7 +52,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ service }) => {
                                     <p className="mt-3">{service.description}</p>
                                 </div>
                                 <figure className="w-20 h-20 rounded-full bg-white flex items-center justify-center ">
-                                    <img src={service.logo ? BASE_URL + service.logo.url : ''} alt={service.name} className="max-h-10 max-w-10 "/>
+                                    <img src={service.logo ? STRAPI_BASEURL + service.logo.url : ''} alt={service.name} className="max-h-10 max-w-10 "/>
                                 </figure>
                             </div>
                         </header>
