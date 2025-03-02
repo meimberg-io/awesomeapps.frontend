@@ -23,6 +23,6 @@ jobs:
             cd /srv/www/serviceatlas
             git pull 
             npm install
-            npm run build
             rm -rf /srv/www/serviceatlas/.next
+            npm run build
             pm2 restart serviceatlas --update-env
