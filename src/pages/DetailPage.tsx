@@ -1,15 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
-import {fetchServiceDetail} from "../api/services";
-import {Service} from "../types";
-import Header from "../components/Header.tsx";
-
-import {BASE_URL} from "../App.tsx";
-import RichText from "../components/RichText.tsx";
-import {ArrowRightCircleIcon} from "@heroicons/react/20/solid";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchServiceDetail } from "../api/services";
+import ServiceDetail from "../components/ServiceDetail";
+import { Service } from "../types";
 
 const DetailPage: React.FC = () => {
-    const {id} = useParams<{ id: string }>(); // ID aus der URL holen
+    const { id } = useParams<{ id: string }>(); // ID aus der URL holen
     const [service, setService] = useState<Service | null>(null);
     const [error, setError] = useState<string | null>(null);
 
