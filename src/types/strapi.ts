@@ -1,4 +1,7 @@
-// Tag-Typ für Filterung
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+import {RootNode} from "@strapi/blocks-react-renderer/dist/BlocksRenderer";
+
 export interface StrapiTag {
     documentId: string;
     name: string;
@@ -13,7 +16,10 @@ export interface StrapiImage {
 export interface StrapiService {
     documentId: string;
     name: string;
+    url: string;
     description: string | null;
-    thumbnail: StrapiImage[];
+    longdesc: RootNode[];
+    thumbnail: StrapiImage;
+    logo: StrapiImage;
     tags: StrapiTag[];
 }
