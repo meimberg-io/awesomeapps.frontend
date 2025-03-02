@@ -1,6 +1,6 @@
 import {client, GET_SERVICES, GET_TAGS, GET_SERVICE_DETAIL} from "./graphql";
 import {Service, Tag, TagWithCount} from "../types";
-import {StrapiService, StrapiTag} from "../types/strapi.ts";
+import {StrapiService, StrapiTag} from "../types/strapi";
 
 export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
     const tagIds = tags?.map(tag => tag.id) || [];
