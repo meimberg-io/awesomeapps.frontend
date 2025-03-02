@@ -1,14 +1,14 @@
-import { client, GET_SERVICES, GET_TAGS, GET_SERVICE_DETAIL } from "./graphql";
-import {Service, Tag} from "../types";
+import {client, GET_SERVICES, GET_TAGS, GET_SERVICE_DETAIL} from "./graphql";
+import {Service, Tag, TagWithCount} from "../types";
 import {StrapiService, StrapiTag} from "../types/strapi.ts";
 
 export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
     const tagIds = tags?.map(tag => tag.id) || [];
 
 
-    const { data } = await client.query({
+    const {data} = await client.query({
         query: GET_SERVICES,
-        variables: { tags: tagIds },
+        variables: {tags: tagIds},
     });
 
     return data.services.map((item: StrapiService) => ({
@@ -25,31 +25,32 @@ export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
     }));
 };
 
-export const fetchTags = async (tags?: Tag[]): Promise<Tag[]> => {
+export const fetchTags = async (tags?: TagWithCount[]): Promise<TagWithCount[]> => {
     const tagIds = tags?.map(tag => tag.id) || [];
-    const { data } = await client.query({
+    const {data} = await client.query({
         query: GET_TAGS,
-        variables: { additionalTags: tagIds },
+        variables: {additionalTags: tagIds},
         fetchPolicy: "no-cache"
     });
 
-    return data.tags.map((tag: StrapiTag) => ({
+    const tagsResult: TagWithCount[] = data.tags.map((tag: StrapiTag): TagWithCount => ({
         id: tag.documentId,
         name: tag.name,
         count: tag.count,
         selected: false
-
     }));
+
+    return tagsResult.filter(tag => tag.count > 0);
 };
 
 export const fetchServiceDetail = async (id: string): Promise<Service> => {
-    const { data } = await client.query({
+    const {data} = await client.query({
         query: GET_SERVICE_DETAIL,
-        variables: { id },
+        variables: {id},
     });
-    console.log("1 ", id);
-    const item : StrapiService = data.service;
-    console.log("21 ", item);
+
+    const item: StrapiService = data.service;
+
     return {
         id: item.documentId,
         name: item.name,
@@ -60,9 +61,7 @@ export const fetchServiceDetail = async (id: string): Promise<Service> => {
         logo: item.logo,
         tags: item.tags.map((tag: StrapiTag) => ({
             id: tag.documentId,
-            name: tag.name,
-            count: tag.count,
-            selected: false
+            name: tag.name
         })),
 
     };

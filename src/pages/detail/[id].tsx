@@ -1,23 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchServiceDetail } from "../api/services";
-import ServiceDetail from "../components/ServiceDetail";
-import { Service } from "../types";
+import React from "react";
 
-const DetailPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>(); // ID aus der URL holen
-    const [service, setService] = useState<Service | null>(null);
-    const [error, setError] = useState<string | null>(null);
+import {Service} from "../../types";
+import RichText from "../../components/RichText.tsx";
+import {ArrowRightCircleIcon} from "@heroicons/react/20/solid";
+import Header from "../../components/Header.tsx";
 
-    useEffect(() => {
-        if (!id) return;
-        fetchServiceDetail(id)
-            .then(setService)
-            .catch(() => setError("Service konnte nicht geladen werden"));
-    }, [id]);
+import {GetServerSideProps} from "next";
+import {fetchServiceDetail} from "../../api/services";
+import {BASE_URL} from "../_app";
 
-    if (error) return <p>{error}</p>;
-    if (!service) return <p>Laden...</p>;
+interface DetailPageProps {
+    service: Service | null;
+}
+
+const DetailPage: React.FC<DetailPageProps> = ({ service }) => {
+    if (!service) {
+        return <p>Service nicht gefunden</p>; // Fehlerhandling für ungültige IDs
+    }
+    //
+    // const router = useRouter();
+    // const {id} = router.query;
+    // const serviceId = Array.isArray(id) ? id[0] : id;
+    //
+    // // const { id } = useParams<{ id: string }>(); // ID aus der URL holen
+    // const [service, setService] = useState<Service | null>(null);
+    // const [error, setError] = useState<string | null>(null);
+    //
+    // useEffect(() => {
+    //     if (!serviceId) return;
+    //     fetchServiceDetail(id)
+    //         .then(setService)
+    //         .catch(() => setError("Service konnte nicht geladen werden"));
+    // }, [serviceId]);
+    //
+    // if (error) return <p>{error}</p>;
+    // if (!service) return <p>Laden...</p>;
 
     return (
 
@@ -61,4 +78,14 @@ const DetailPage: React.FC = () => {
     );
 };
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { id } = context.params as { id: string };
+    try {
+        const service  = await fetchServiceDetail(id);
+        return { props: { service } };
+    } catch (error) {
+        console.error(error);
+        return { props: { service: null } };
+    }
+};
 export default DetailPage;

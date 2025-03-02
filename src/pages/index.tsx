@@ -1,0 +1,68 @@
+import React, {useEffect, useState} from "react";
+import { GetServerSideProps } from "next";
+import {Service, TagWithCount} from "../types";
+import { fetchServices, fetchTags } from "../api/services";
+import ServiceList from "../components/ServiceList";
+import Header from "../components/Header";
+import TagsSelected from "../components/TagsSelected";
+import TagsAvailable from "../components/TagsAvailable";
+
+interface MainPageProps {
+    initialServices: Service[];
+    initialTags: TagWithCount[];
+}
+
+const ServicesListPage: React.FC<MainPageProps> = ({ initialServices, initialTags }) => {
+
+    const [services, setServices] = useState<Service[]>(initialServices);
+    const [tags, setTags] = useState<TagWithCount[]>(initialTags);
+    const [selectedTags, setSelectedTags] = useState<TagWithCount[]>([]);
+
+    const toggleTag = (tagID: string) => {
+
+        const tag : TagWithCount | undefined = tags.find(t => t.id === tagID)
+
+        if (!tag) return;
+
+        setSelectedTags(prevTags =>
+            prevTags.some(t => t.id === tagID)
+                ? prevTags.filter(t => t.id !== tagID)
+                : [...prevTags, tag]
+        );
+    };
+
+    useEffect(() => {
+        fetchServices(selectedTags).then(setServices).catch(console.error);
+        fetchTags(selectedTags).then(setTags).catch(console.error);
+    }, [selectedTags]); // Läuft neu, wenn sich `selectedTags` ändert
+
+
+    return (
+        <div>
+            <Header />
+            <main>
+                <div className="relative isolate overflow-hidden pt-16">
+                    <div className="shadow-lg">
+                        <TagsAvailable tags={tags} selectedTags={selectedTags} toggleTag={toggleTag} />
+                        {selectedTags.length > 0 && <TagsSelected selectedTags={selectedTags} toggleTag={toggleTag} />}
+                    </div>
+                    <ServiceList services={services} selectedTags={selectedTags} toggleTag={toggleTag} />
+                </div>
+            </main>
+        </div>
+    );
+};
+
+// **SSR für Server-Side Rendering**
+export const getServerSideProps: GetServerSideProps = async () => {
+    try {
+        const initialServices  = await fetchServices([]);
+        const initialTags  = await fetchTags([]);
+        return { props: { initialServices, initialTags } };
+    } catch (error) {
+        console.error("Fehler beim Laden der Services:", error);
+        return { props: { initialServices: [], initialTags : [] } }; // Fehlerhandling: leere Arrays zurückgeben
+    }
+};
+
+export default ServicesListPage;
