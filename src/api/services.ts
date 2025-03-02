@@ -16,6 +16,7 @@ export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
         name: item.name,
         description: item.description,
         thumbnail: item.thumbnail,
+        logo: item.logo,
         tags: item.tags.map((tag: StrapiTag) => ({
             id: tag.documentId,
             name: tag.name,
@@ -46,18 +47,23 @@ export const fetchServiceDetail = async (id: string): Promise<Service> => {
         query: GET_SERVICE_DETAIL,
         variables: { id },
     });
-
-    const item : StrapiService = data.service.data;
+    console.log("1 ", id);
+    const item : StrapiService = data.service;
+    console.log("21 ", item);
     return {
         id: item.documentId,
         name: item.name,
         description: item.description,
+        longdesc: item.longdesc,
+        url: item.url,
+        thumbnail: item.thumbnail,
+        logo: item.logo,
         tags: item.tags.map((tag: StrapiTag) => ({
             id: tag.documentId,
             name: tag.name,
             count: tag.count,
             selected: false
         })),
-        thumbnail: item.thumbnail[0]
+
     };
 };

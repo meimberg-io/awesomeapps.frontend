@@ -18,6 +18,9 @@ export const GET_SERVICES = gql`
             thumbnail {
                 url
             }
+            logo {
+                url
+            }
         }
         
     }
@@ -34,10 +37,12 @@ export const GET_TAGS = gql`
 `;
 export const GET_SERVICE_DETAIL = gql`
     query GetServiceDetail($id: ID!) {
-        service(id: $id) {
+        service(documentId: $id) {
             documentId
             name
             description
+            longdesc
+            url
             tags {
                 documentId
                 name                
@@ -45,8 +50,10 @@ export const GET_SERVICE_DETAIL = gql`
             thumbnail {
                 url
             }
-             
-            
+
+            logo {
+                url
+            }
          
         }
     }
