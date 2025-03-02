@@ -8,6 +8,7 @@ import {
 
 } from '@heroicons/react/20/solid'
 import {BellIcon, XMarkIcon} from '@heroicons/react/24/outline'
+import Link from "next/link";
 
 const navigation = [
     {name: 'Home', href: '#'},
@@ -34,11 +35,12 @@ export default function Header() {
                         <span className="sr-only">Open main menu</span>
                         <Bars3Icon aria-hidden="true" className="size-5 text-gray-900"/>
                     </button>
+                    <Link href={`/`} passHref className="">
                     <img
                         alt="Your Company"
                         src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
                         className="h-8 w-auto"
-                    />
+                    /></Link>
                 </div>
                 <nav className="hidden md:flex md:gap-x-11 md:text-sm/6 md:font-semibold md:text-gray-700">
                     {navigation.map((item, itemIdx) => (

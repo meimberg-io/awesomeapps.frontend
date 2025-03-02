@@ -1,11 +1,11 @@
 'use client'
 
-import {Tag} from "../types";
+import {TagWithCount} from "../types";
 import React from "react";
 
 export interface TagsSelectedProps {
-    selectedTags: Tag[],
-    toggleTag: (tag: Tag) => void,
+    selectedTags: TagWithCount[],
+    toggleTag: (tag: string) => void,
 
 }
 
@@ -20,8 +20,8 @@ const TagsSelected: React.FC<TagsSelectedProps> = ({selectedTags, toggleTag}) =>
             <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8">
 
             <h1 className="text-base/7 font-semibold text-blue-950">Selected Categories</h1>
-                {selectedTags.map((tag: Tag) => (
-                    <button key={tag.id} className="btn btn-sm text-blue-50 bg-blue-800 border-0 hover:bg-red-700 hover:text-red-50" onClick={() => toggleTag(tag)}>
+                {selectedTags.map((tag: TagWithCount) => (
+                    <button key={tag.id} className="btn btn-sm text-blue-50 bg-blue-800 border-0 hover:bg-red-700 hover:text-red-50" onClick={() => toggleTag(tag.id)}>
                         {tag.name}
                     </button>
                 ))}

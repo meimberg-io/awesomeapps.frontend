@@ -5,6 +5,11 @@ import {RootNode} from "@strapi/blocks-react-renderer/dist/BlocksRenderer";
 export interface Tag {
     id: string;
     name: string;
+}
+
+export interface TagWithCount {
+    id: string;
+    name: string;
     selected: boolean;
     count: number;
 }

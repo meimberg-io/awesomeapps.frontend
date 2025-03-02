@@ -28,13 +28,14 @@ export const GET_SERVICES = gql`
 
 export const GET_TAGS = gql`
     query GetTags($additionalTags: [ID]!) {
-        tags {
+        tags(sort: "name:asc") {
             documentId
             name
             count(additionalTags: $additionalTags)
         }
     }
 `;
+
 export const GET_SERVICE_DETAIL = gql`
     query GetServiceDetail($id: ID!) {
         service(documentId: $id) {
