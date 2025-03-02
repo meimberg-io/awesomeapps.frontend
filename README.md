@@ -39,6 +39,7 @@ npm run build
 
 pm2 start npm --name "serviceatlas" -- start
 pm2 save
+pm2 startup
 
 
 
