@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {Service, Tag} from "../types";
 import {fetchServices, fetchTags} from "../api/services.ts";
 import ServiceList from "../components/ServiceList.tsx";
@@ -8,11 +8,17 @@ import Header from "../components/Header.tsx";
 import TagsSelected from "../components/TagsSelected.tsx";
 import TagsAvailable from "../components/TagsAvailable.tsx";
 
-const MainPage: React.FC = () => {
+interface MainPageProps {
+    services: Service[];
+    setServices: React.Dispatch<React.SetStateAction<Service[]>>;
+    tags: Tag[];
+    setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+    selectedTags: Tag[];
+    setSelectedTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+}
 
-    const [services, setServices] = useState<Service[]>([]);
-    const [tags, setTags] = useState<Tag[]>([]);
-    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+const MainPage: React.FC<MainPageProps> = ({services, setServices, tags, setTags, selectedTags, setSelectedTags }: MainPageProps) => {
+
 
     const toggleTag = (tag: Tag) => {
         console.log("SEL1", tag.selected);
@@ -36,9 +42,11 @@ const MainPage: React.FC = () => {
             <Header/>
             <main>
                 <div className="relative isolate overflow-hidden pt-16">
-                    <TagsAvailable tags={tags} selectedTags={selectedTags} toggleTag={toggleTag}/>
-                    {selectedTags.length > 0 && <TagsSelected selectedTags={selectedTags} toggleTag={toggleTag}/>
-                    }
+                    <div className="shadow-lg">
+                        <TagsAvailable tags={tags} selectedTags={selectedTags} toggleTag={toggleTag}/>
+                        {selectedTags.length > 0 && <TagsSelected selectedTags={selectedTags} toggleTag={toggleTag}/>
+                        }
+                    </div>
                     <ServiceList services={services} selectedTags={selectedTags} toggleTag={toggleTag}/>
                 </div>
             </main>
