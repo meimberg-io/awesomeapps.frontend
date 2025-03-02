@@ -1,4 +1,4 @@
-
+// @ts-ignore
 import {RootNode} from "@strapi/blocks-react-renderer/dist/BlocksRenderer";
 
 export interface Tag {
