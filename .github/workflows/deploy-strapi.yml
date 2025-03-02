@@ -1,6 +1,7 @@
 name: Deploy Next.js to Server
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main  # Falls du einen anderen Branch nutzt, hier anpassen
