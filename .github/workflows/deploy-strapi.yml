@@ -1,0 +1,27 @@
+name: Deploy Next.js to Server
+
+on:
+  push:
+    branches:
+      - main  # Falls du einen anderen Branch nutzt, hier anpassen
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ vars.DEPLOY_HOSTNAME }}
+          username: ${{ vars.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          script: |
+            cd /srv/www/serviceatlas
+            git pull 
+            npm install
+            npm run build
+            rm -rf /srv/www/serviceatlas/.next
+            pm2 restart serviceatlas --update-env
