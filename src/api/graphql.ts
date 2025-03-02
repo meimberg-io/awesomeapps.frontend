@@ -22,7 +22,7 @@ export const GET_SERVICES = gql`
                 url
             }
         }
-        
+
     }
 `;
 
@@ -46,7 +46,7 @@ export const GET_SERVICE_DETAIL = gql`
             url
             tags {
                 documentId
-                name                
+                name
             }
             thumbnail {
                 url
@@ -55,7 +55,7 @@ export const GET_SERVICE_DETAIL = gql`
             logo {
                 url
             }
-         
+
         }
     }
 `;
