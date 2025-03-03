@@ -1,32 +1,32 @@
 import React, {useEffect, useState} from "react";
 import { GetServerSideProps } from "next";
-import {Service, TagWithCount} from "../types";
 import { fetchServices, fetchTags } from "../api/services";
 import ServiceList from "../components/ServiceList";
 import Header from "../components/Header";
 import TagsSelected from "../components/TagsSelected";
 import TagsAvailable from "../components/TagsAvailable";
+import {Service, Tag} from "../types/strapi";
 
 interface MainPageProps {
     initialServices: Service[];
-    initialTags: TagWithCount[];
+    initialTags: Tag[];
 }
 
 const ServicesListPage: React.FC<MainPageProps> = ({ initialServices, initialTags }) => {
 
     const [services, setServices] = useState<Service[]>(initialServices);
-    const [tags, setTags] = useState<TagWithCount[]>(initialTags);
-    const [selectedTags, setSelectedTags] = useState<TagWithCount[]>([]);
+    const [tags, setTags] = useState<Tag[]>(initialTags);
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
     const toggleTag = (tagID: string) => {
 
-        const tag : TagWithCount | undefined = tags.find(t => t.id === tagID)
+        const tag : Tag | undefined = tags.find(t => t.documentId === tagID)
 
         if (!tag) return;
 
         setSelectedTags(prevTags =>
-            prevTags.some(t => t.id === tagID)
-                ? prevTags.filter(t => t.id !== tagID)
+            prevTags.some(t => t.documentId === tagID)
+                ? prevTags.filter(t => t.documentId !== tagID)
                 : [...prevTags, tag]
         );
     };

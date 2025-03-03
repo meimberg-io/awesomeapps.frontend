@@ -44,7 +44,38 @@ export const GET_SERVICE_DETAIL = gql`
             name
             description
             longdesc
-            
+            longdescription {
+                __component
+                ... on ComponentSharedRichText {
+                    props {
+                        body
+                    }
+                }
+                ... on ComponentSharedMedia {
+                    props {
+                        file {
+                            url
+                            alternativeText
+                            mime
+                        }
+                    }
+                }
+                ... on ComponentSharedQuote {
+                    props {
+                        title
+                        body
+                    }
+                }
+                ... on ComponentSharedSlider {
+                    props {
+                        files {
+                            url
+                            alternativeText
+                        }
+                    }
+                }
+            }
+
             url
             tags {
                 documentId
