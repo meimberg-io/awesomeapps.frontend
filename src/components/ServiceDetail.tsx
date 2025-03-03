@@ -1,5 +1,5 @@
 import React from "react";
-import { Service } from "../types";
+import {Service} from "../types/strapi";
 
 interface Props {
     service: Service;
@@ -13,7 +13,7 @@ const ServiceDetail: React.FC<Props> = ({ service }) => {
             <h3>Tags</h3>
             <ul>
                 {service.tags.map(tag => (
-                    <li key={tag.id}>{tag.name}</li>
+                    <li key={tag.documentId}>{tag.name}</li>
                 ))}
             </ul>
         </div>

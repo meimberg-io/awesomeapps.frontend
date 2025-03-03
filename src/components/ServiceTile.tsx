@@ -1,11 +1,11 @@
 import React from "react";
-import {Service, TagWithCount} from "../types/index";
 import Link from "next/link";
 import {STRAPI_BASEURL} from "../pages/_app";
+import {Service, Tag} from "../types/strapi";
 
 interface ServiceTileProps {
     service: Service,
-    selectedTags: TagWithCount[],
+    selectedTags: Tag[],
     toggleTag: (tag: string) => void;
 
 }
@@ -14,21 +14,21 @@ interface ServiceTileProps {
 const ServiceTile: React.FC<ServiceTileProps> = ({service, selectedTags, toggleTag}) => {
 
     return (
-        <div key={service.id} className="card w-60 bg-base-100 shadow-xl overflow-hidden">
-            <Link href={`/detail/${service.id}`} passHref className="cursor-pointer ">
+        <div key={service.documentId} className="card w-60 bg-base-100 shadow-xl overflow-hidden">
+            <Link href={`/detail/${service.documentId}`} passHref className="cursor-pointer ">
                 <figure className="bg-gray-100 px-7 h-16">
                     <img src={service.logo ? STRAPI_BASEURL + service.logo.url : ''} alt={service.name} className="max-h-10 w-auto my-4 mx-5"/>
                 </figure>
             </Link>
-            <Link href={`/detail/${service.id}`} passHref className="cursor-pointer card-body">
+            <Link href={`/detail/${service.documentId}`} passHref className="cursor-pointer card-body">
 
                 <h2 className="card-title">{service.name}</h2>
                 <p className="text-sm mt-1 text-gray-500">{service.description}</p>
             </Link>
             <div className="card-actions bg-blue-200 p-5">
                 {service.tags.map((tag) => (
-                    <div onClick={() => toggleTag(tag.id)} key={tag.id} className={`cursor-pointer badge badge-md border-0 
-                        ${selectedTags.some(selectedTag => selectedTag.id === tag.id) ?
+                    <div onClick={() => toggleTag(tag.documentId)} key={tag.documentId} className={`cursor-pointer badge badge-md border-0 
+                        ${selectedTags.some(selectedTag => selectedTag.documentId === tag.documentId) ?
                         'bg-blue-800 text-blue-50 hover:bg-red-700 hover:text-red-100' :
                         'bg-blue-50 text-blue-800 hover:bg-green-700 hover:text-green-100'
                     }`}>
