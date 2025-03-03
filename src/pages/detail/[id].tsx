@@ -1,6 +1,5 @@
 import React from "react";
 
-import {Service} from "../../types";
 import RichText from "../../components/RichText";
 import {ArrowRightCircleIcon} from "@heroicons/react/20/solid";
 import Header from "../../components/Header";
@@ -9,6 +8,7 @@ import {GetServerSideProps} from "next";
 import {fetchServiceDetail} from "../../api/services";
 import {STRAPI_BASEURL} from "../_app";
 import DynamicZone from "../../components/dynamiczone/DynamicZone";
+import {Service} from "../../types/strapi";
 
 interface DetailPageProps {
     service: Service | null;
@@ -18,24 +18,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ service }) => {
     if (!service) {
         return <p>Service nicht gefunden</p>; // Fehlerhandling für ungültige IDs
     }
-    //
-    // const router = useRouter();
-    // const {id} = router.query;
-    // const serviceId = Array.isArray(id) ? id[0] : id;
-    //
-    // // const { id } = useParams<{ id: string }>(); // ID aus der URL holen
-    // const [service, setService] = useState<Service | null>(null);
-    // const [error, setError] = useState<string | null>(null);
-    //
-    // useEffect(() => {
-    //     if (!serviceId) return;
-    //     fetchServiceDetail(id)
-    //         .then(setService)
-    //         .catch(() => setError("Service konnte nicht geladen werden"));
-    // }, [serviceId]);
-    //
-    // if (error) return <p>{error}</p>;
-    // if (!service) return <p>Laden...</p>;
 
     return (
 
