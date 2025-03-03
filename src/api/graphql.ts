@@ -44,6 +44,7 @@ export const GET_SERVICE_DETAIL = gql`
             name
             description
             longdesc
+            
             url
             tags {
                 documentId

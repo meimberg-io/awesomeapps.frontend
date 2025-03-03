@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main  # Falls du einen anderen Branch nutzt, hier anpassen
+      - master  # Falls du einen anderen Branch nutzt, hier anpassen
 
 jobs:
   deploy:

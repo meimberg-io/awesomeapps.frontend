@@ -1,10 +1,10 @@
 import React from "react";
-import {Service, TagWithCount} from "../types";
 import ServiceTile from "./ServiceTile";
+import {Service, Tag} from "../types/strapi";
 
 interface Props {
     services: Service[];
-    selectedTags: TagWithCount[];
+    selectedTags: Tag[];
     toggleTag: (tag: string) => void;
 }
 
@@ -18,7 +18,7 @@ const ServiceList: React.FC<Props> = ({services, selectedTags, toggleTag}) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {services.map((service) => (
                         <ServiceTile
-                            key={service.id}
+                            key={service.documentId}
                             service={service}
                             selectedTags={selectedTags}
                             toggleTag={toggleTag}
