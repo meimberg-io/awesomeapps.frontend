@@ -6,23 +6,18 @@ import QuoteComponent from "./QuoteComponent";
 import SliderComponent from "./SliderComponent";
 import {Block, BlockProps, ComponentTypes, MediaBlock, QuoteBlock, RichTextBlock, SliderBlock} from "../../types/block";
 
-
 interface DynamicZoneProps {
     blocks: Block[];
 }
 
-
-// Union-Typ für die möglichen Block-Typen, basierend auf den Props der jeweiligen Komponenten
-
-
 const DynamicZoneComponent: React.FC<DynamicZoneProps> = ({blocks}) => {
+    console.log("DynamicZoneComponent", blocks);
+
     return (
-        <div className="dynamic-zone">ccc
+        <div className="dynamic-zone">
             {blocks.map((block, index) => {
                 switch (block.__typename) {
                     case ComponentTypes.RichText:
-                        console.log("DynamicZoneComponent", block);
-                        // Übergebe den gesamten block, nicht nur block.props
                         return <RichTextComponent key={index} data={block as BlockProps<RichTextBlock>}/>;
                     case ComponentTypes.Media:
                         return <MediaComponent key={index} data={block as BlockProps<MediaBlock>}/>;

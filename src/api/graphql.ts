@@ -65,7 +65,7 @@ export const GET_SERVICE_DETAIL = gql`
                         url
                         alternativeText
                     }
-                    
+
                 }
             }
 
@@ -81,6 +81,48 @@ export const GET_SERVICE_DETAIL = gql`
             logo {
                 url
             }
+
+        }
+    }
+`;
+
+
+export const GET_PAGES_BY_SLUG = gql`
+    query GetPages($slug: String!) {
+
+        pages(filters: { slug: { eq: $slug } }) {
+            documentId
+            title
+            subtitle 
+            keyvisual {
+                url
+                mime
+            }
+            content {
+                __typename
+                ... on ComponentSharedRichText {
+                    body
+                }
+                ... on ComponentSharedMedia {
+                    file {
+                        url
+                        alternativeText
+                        mime
+                    }
+                }
+                ... on ComponentSharedQuote {
+                    title
+                    body
+                }
+                ... on ComponentSharedSlider {
+                    files {
+                        url
+                        alternativeText
+                    }
+
+                }
+            }
+
 
         }
     }
