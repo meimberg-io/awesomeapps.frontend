@@ -8,7 +8,7 @@ import {GetServerSideProps} from "next";
 import {fetchServiceDetail} from "../../api/services";
 import {STRAPI_BASEURL} from "../_app";
 import DynamicZoneComponent from "../../components/dynamiczone/DynamicZoneComponent";
-import {Service} from "../../types/strapi";
+import {Service} from "../../types/service";
 
 interface DetailPageProps {
     service: Service | null;

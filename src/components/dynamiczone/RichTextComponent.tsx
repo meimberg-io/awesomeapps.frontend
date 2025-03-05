@@ -1,4 +1,5 @@
-import {RichTextBlock} from "../../types/strapi";
+import {RichTextBlock} from "../../types/block";
+import MarkdownRenderer from "../util/MarkdownRenderer";
 
 interface RichTextBlockProps {
     data: RichTextBlock;
@@ -6,7 +7,9 @@ interface RichTextBlockProps {
 const RichTextComponent: React.FC<RichTextBlockProps> = ({ data }) => {
     console.log("Inside RichText",data);
     return (
-        <div className="rich-text"  >{data.body}</div>
+       <MarkdownRenderer
+           content={data.body}
+       />
     );
 };
 

@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import {STRAPI_BASEURL} from "../pages/_app";
-import {Service, Tag} from "../types/strapi";
+import {Tag} from "../types/tag";
+import {Service} from "../types/service";
 
 interface ServiceTileProps {
     service: Service,

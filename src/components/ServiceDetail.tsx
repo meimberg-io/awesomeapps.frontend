@@ -1,6 +1,5 @@
 import React from "react";
-import {Service} from "../types/strapi";
-
+import {Service} from "../types/service";
 interface Props {
     service: Service;
 }
