@@ -24,11 +24,21 @@ export interface Service {
     tags: Tag[];
 }
 
+export const ComponentTypes = {
+    RichText: 'ComponentSharedRichText',
+    Media: 'ComponentSharedMedia',
+    Quote: 'ComponentSharedQuote',
+    Slider: 'ComponentSharedSlider',
+} as const;
+
 export type Block =
-    | { __component: 'shared.rich-text'; props: RichTextBlock }
-    | { __component: 'shared.media'; props: MediaBlock }
-    | { __component: 'shared.quote'; props: QuoteBlock }
-    | { __component: 'shared.slider'; props: SliderBlock };
+    | { __typename: typeof ComponentTypes.RichText}
+    | { __typename: typeof ComponentTypes.Media }
+    | { __typename: typeof ComponentTypes.Quote }
+    | { __typename: typeof ComponentTypes.Slider };
+
+export type BlockProps<T> = T extends { props: infer P } ? P : never;
+
 
 export interface MediaBlock {
     file: {
@@ -46,6 +56,7 @@ export interface QuoteBlock {
 export interface RichTextBlock {
     body: string;
 }
+
 
 export interface SliderBlock {
     files: Array<{ url: string; alternativeText: string }>;

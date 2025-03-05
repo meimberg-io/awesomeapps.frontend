@@ -45,34 +45,27 @@ export const GET_SERVICE_DETAIL = gql`
             description
             longdesc
             longdescription {
-                __component
+                __typename
                 ... on ComponentSharedRichText {
-                    props {
-                        body
-                    }
+                    body
                 }
                 ... on ComponentSharedMedia {
-                    props {
-                        file {
-                            url
-                            alternativeText
-                            mime
-                        }
+                    file {
+                        url
+                        alternativeText
+                        mime
                     }
                 }
                 ... on ComponentSharedQuote {
-                    props {
-                        title
-                        body
-                    }
+                    title
+                    body
                 }
                 ... on ComponentSharedSlider {
-                    props {
-                        files {
-                            url
-                            alternativeText
-                        }
+                    files {
+                        url
+                        alternativeText
                     }
+                    
                 }
             }
 
