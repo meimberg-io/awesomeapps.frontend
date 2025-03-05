@@ -11,11 +11,10 @@ import {BellIcon, XMarkIcon} from '@heroicons/react/24/outline'
 import Link from "next/link";
 
 const navigation = [
-    {name: 'Home', href: '#'},
-    {name: 'About', href: '#'},
+    {name: 'Home', href: '/'},
+    {name: 'About', href: '/page/about'},
 
 ]
-
 
 export function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
