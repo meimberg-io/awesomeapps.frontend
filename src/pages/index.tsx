@@ -5,7 +5,8 @@ import ServiceList from "../components/ServiceList";
 import Header from "../components/Header";
 import TagsSelected from "../components/TagsSelected";
 import TagsAvailable from "../components/TagsAvailable";
-import {Service, Tag} from "../types/strapi";
+import {Service} from "../types/service";
+import {Tag} from "../types/tag";
 
 interface MainPageProps {
     initialServices: Service[];

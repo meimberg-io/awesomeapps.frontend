@@ -1,5 +1,6 @@
 import {client, GET_SERVICES, GET_TAGS, GET_SERVICE_DETAIL} from "./graphql";
-import {Service, Tag} from "../types/strapi";
+import {Tag} from "../types/tag";
+import {Service} from "../types/service";
 
 export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
     const tagIds = tags?.map(tag => tag.documentId) || [];
