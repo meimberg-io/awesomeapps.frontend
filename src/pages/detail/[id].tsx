@@ -7,7 +7,7 @@ import Header from "../../components/Header";
 import {GetServerSideProps} from "next";
 import {fetchServiceDetail} from "../../api/services";
 import {STRAPI_BASEURL} from "../_app";
-import DynamicZone from "../../components/dynamiczone/DynamicZone";
+import DynamicZoneComponent from "../../components/dynamiczone/DynamicZoneComponent";
 import {Service} from "../../types/strapi";
 
 interface DetailPageProps {
@@ -44,7 +44,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ service }) => {
                         <div className="pt-6 pb-4 sm:pb-6 max-w-7xl gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8  mx-auto">
                             <RichText content={service.longdesc}/>
 
-                            {service.longdesc && <DynamicZone blocks={service.longdesc} />}
+                            {service.longdesc && <DynamicZoneComponent blocks={service.longdescription} />}
 
                             <div role="alert" className="alert my-6 bg-green-100 border-0 text-green-800 font-bold shadow-sm">
                                 <ArrowRightCircleIcon aria-hidden="true" className="size-6 text-green-800"/>
