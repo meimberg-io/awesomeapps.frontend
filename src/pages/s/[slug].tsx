@@ -5,7 +5,7 @@ import {ArrowRightCircleIcon} from "@heroicons/react/20/solid";
 import Header from "../../components/Header";
 
 import {GetServerSideProps} from "next";
-import {fetchServiceDetail} from "../../api/services";
+import { fetchServiceDetailBySlug} from "../../api/services";
 import {STRAPI_BASEURL} from "../_app";
 import DynamicZoneComponent from "../../components/dynamiczone/DynamicZoneComponent";
 import {Service} from "../../types/service";
@@ -62,13 +62,24 @@ const DetailPage: React.FC<DetailPageProps> = ({ service }) => {
     );
 };
 
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { id } = context.params as { id: string };
+    const { slug } = context.params as { slug: string };
+
+    console.log("sluggywutz",slug);
+
     try {
-        const service  = await fetchServiceDetail(id);
+
+
+
+        console.log("aaa1");
+
+        const service  = await fetchServiceDetailBySlug(slug)
+
+        console.log("aaa2",service);
         return { props: { service } };
     } catch (error) {
-        console.error(error);
+        console.log("aaa3",error);
         return { props: { service: null } };
     }
 };

@@ -8,9 +8,10 @@ export const client = new ApolloClient({
 
 export const GET_SERVICES = gql`
     query GetServices($tags: [ID]!) {
-        services(tags: $tags) {
+        servicesbytags(tags: $tags) {
             documentId
             name
+            slug
             description
             tags {
                 documentId
@@ -44,6 +45,57 @@ export const GET_SERVICE_DETAIL = gql`
             name
             description
             longdesc
+            longdescription {
+                __typename
+                ... on ComponentSharedRichText {
+                    body
+                }
+                ... on ComponentSharedMedia {
+                    file {
+                        url
+                        alternativeText
+                        mime
+                    }
+                }
+                ... on ComponentSharedQuote {
+                    title
+                    body
+                }
+                ... on ComponentSharedSlider {
+                    files {
+                        url
+                        alternativeText
+                    }
+
+                }
+            }
+
+            url
+            tags {
+                documentId
+                name
+            }
+            thumbnail {
+                url
+            }
+
+            logo {
+                url
+            }
+
+        }
+    }
+`;
+
+
+export const GET_SERVICE_DETAIL_BY_SLUG = gql`    
+    query GetServiceDetailBySlug($slug: String!) {
+        services(filters: { slug: { eq: $slug } }) {
+            documentId
+            name
+            description
+            longdesc
+            slug
             longdescription {
                 __typename
                 ... on ComponentSharedRichText {

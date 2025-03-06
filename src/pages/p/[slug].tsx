@@ -55,6 +55,7 @@ const DetailPage: React.FC<PageProps> = ({ slug, page }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const { slug } = context.params as { slug: string };
+
     try {
         const page : Page = await fetchPage(slug);
         return { props: { slug, page } };

@@ -16,12 +16,12 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, selectedTags, toggleT
 
     return (
         <div key={service.documentId} className="card w-60 bg-base-100 shadow-xl overflow-hidden">
-            <Link href={`/detail/${service.documentId}`} passHref className="cursor-pointer ">
+            <Link href={`/s/${service.slug}`} passHref className="cursor-pointer ">
                 <figure className="bg-gray-100 px-7 h-16">
                     <img src={service.logo ? STRAPI_BASEURL + service.logo.url : ''} alt={service.name} className="max-h-10 w-auto my-4 mx-5"/>
                 </figure>
             </Link>
-            <Link href={`/detail/${service.documentId}`} passHref className="cursor-pointer card-body">
+            <Link href={`/s/${service.slug}`} passHref className="cursor-pointer card-body">
 
                 <h2 className="card-title">{service.name}</h2>
                 <p className="text-sm mt-1 text-gray-500">{service.description}</p>
