@@ -8,6 +8,7 @@ import {Tag} from "./tag";
 export interface Service {
     documentId: string;
     name: string;
+    slug: string;
     url: string;
     description: string | null;
     longdesc: RootNode[];
