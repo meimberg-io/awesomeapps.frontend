@@ -15,8 +15,8 @@ const ServiceList: React.FC<Props> = ({services, selectedTags, toggleTag}) => {
 
     return (
         <main className="py-10 px-4 sm:px-6 lg:px-8  ">
-            <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
                     {services.map((service) => (
                         <ServiceTile
                             key={service.documentId}
