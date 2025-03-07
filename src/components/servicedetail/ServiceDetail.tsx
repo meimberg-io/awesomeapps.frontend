@@ -20,17 +20,25 @@ const ServiceDetail: React.FC<Props> = ({service}) => {
                 <div className="mb-16">
                     <h2 className="text-3xl font-semibold mb-8 mt-5">Pricing</h2>
                     <MarkdownRenderer content={service.pricing}/>
-                    <p className="mt-2 text-sm text-right italic text-gray-400 ">Die Preise können je nach Region variieren. Wir übernehmen keine Gewähr auf die Korrektheit der
-                        Preise. Für aktuelle Informationen siehe: <a href={service.url}>{service.url}</a> </p>
+
                 </div>
             )}
-
-            {service.longdescription && <DynamicZoneComponent blocks={service.articlecontent}/>}
-
-            <div role="alert" className="alert my-6 bg-green-100 border-0 text-green-800 font-bold shadow-sm">
-                <ArrowRightCircleIcon aria-hidden="true" className="size-6 text-green-800"/>
-                <a href={service.url} target="_blank">{service.url}</a>
+            <div className="mb-16">
+                {service.longdescription && <DynamicZoneComponent blocks={service.articlecontent}/>}
             </div>
+            <div className="mb-16">
+                <div role="alert" className="alert my-6 bg-green-100 border-0 text-green-800 font-bold shadow-sm">
+                    <ArrowRightCircleIcon aria-hidden="true" className="size-6 text-green-800"/>
+                    <a href={service.url} target="_blank">{service.url}</a>
+                </div>
+            </div>
+            {service.pricing && (
+                <div className="mb-16">
+
+                    <p className="mt-2 text-sm text-right italic text-gray-400 ">Die Preise können je nach Region variieren. Wir übernehmen keine Gewähr auf die Korrektheit der
+                        Preise. Für aktuelle Informationen siehe: <a href={service.url}>{service.url}</a></p>
+                </div>
+            )}
 
         </div>
     );
