@@ -79,6 +79,9 @@ export const GET_SERVICE_DETAIL = gql`
             thumbnail {
                 url
             }
+            screenshots {
+                url
+            }
 
             logo {
                 url
@@ -131,7 +134,15 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
             thumbnail {
                 url
             }
-
+            screenshots {
+                url
+                caption
+                documentId
+                ext
+                mime
+                width
+                height
+            }
             logo {
                 url
             }

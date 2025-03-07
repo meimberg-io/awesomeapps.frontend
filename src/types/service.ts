@@ -15,6 +15,7 @@ export interface Service {
     longdescription: RootNode[];
     articlecontent: Block[];
     thumbnail: Image;
+    screenshots: Image[];
     logo: Image;
     tags: Tag[];
 }
