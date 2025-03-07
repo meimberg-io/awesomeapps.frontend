@@ -27,6 +27,8 @@ const ServiceDetail: React.FC<Props> = ({service}) => {
                 {service.longdescription && <DynamicZoneComponent blocks={service.articlecontent}/>}
             </div>
             <div className="mb-16">
+                <h2 className="text-3xl font-semibold mb-8 mt-5">URL</h2>
+
                 <div role="alert" className="alert my-6 bg-green-100 border-0 text-green-800 font-bold shadow-sm">
                     <ArrowRightCircleIcon aria-hidden="true" className="size-6 text-green-800"/>
                     <a href={service.url} target="_blank">{service.url}</a>
