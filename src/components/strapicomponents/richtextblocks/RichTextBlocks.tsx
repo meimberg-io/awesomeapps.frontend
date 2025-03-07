@@ -9,7 +9,7 @@ type RichTextProps = {
     content: RootNode[];
 };
 
-const RichText: React.FC<RichTextProps> = ({ content }) => {
+const RichTextBlocks: React.FC<RichTextProps> = ({ content }) => {
     if (!content || !Array.isArray(content)) {
         return null;
     }
@@ -50,4 +50,4 @@ const RichText: React.FC<RichTextProps> = ({ content }) => {
     );
 };
 
-export default RichText;
+export default RichTextBlocks;

@@ -1,4 +1,4 @@
-import {QuoteBlock} from "../../types/block";
+import {QuoteBlock} from "../../../types/block";
 
 interface QuoteBlockProps {
     data: QuoteBlock;

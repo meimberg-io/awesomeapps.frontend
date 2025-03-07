@@ -1,7 +1,7 @@
 import React from "react";
-import ServiceTile from "./ServiceTile";
-import {Tag} from "../types/tag";
-import {Service} from "../types/service";
+import ServiceTile from "../ServiceTile";
+import {Tag} from "../../types/tag";
+import {Service} from "../../types/service";
 
 interface Props {
     services: Service[];

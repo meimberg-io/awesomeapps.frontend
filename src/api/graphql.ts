@@ -12,7 +12,7 @@ export const GET_SERVICES = gql`
             documentId
             name
             slug
-            description
+            shortdescription
             tags {
                 documentId
                 name
@@ -43,9 +43,9 @@ export const GET_SERVICE_DETAIL = gql`
         service(documentId: $id) {
             documentId
             name
-            description
-            longdesc
-            longdescription {
+            shortdescription
+            longdescription
+            articlecontent {
                 __typename
                 ... on ComponentSharedRichText {
                     body
@@ -88,15 +88,15 @@ export const GET_SERVICE_DETAIL = gql`
 `;
 
 
-export const GET_SERVICE_DETAIL_BY_SLUG = gql`    
+export const GET_SERVICE_DETAIL_BY_SLUG = gql`
     query GetServiceDetailBySlug($slug: String!) {
         services(filters: { slug: { eq: $slug } }) {
             documentId
             name
-            description
-            longdesc
             slug
-            longdescription {
+            shortdescription
+            longdescription
+            articlecontent {
                 __typename
                 ... on ComponentSharedRichText {
                     body

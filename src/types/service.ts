@@ -10,9 +10,9 @@ export interface Service {
     name: string;
     slug: string;
     url: string;
-    description: string | null;
-    longdesc: RootNode[];
-    longdescription: Block[];
+    shortdescription: string | null;
+    longdescription: RootNode[];
+    articlecontent: Block[];
     thumbnail: Image;
     logo: Image;
     tags: Tag[];

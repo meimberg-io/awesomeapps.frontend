@@ -24,7 +24,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, selectedTags, toggleT
             <Link href={`/s/${service.slug}`} passHref className="cursor-pointer card-body">
 
                 <h2 className="card-title">{service.name}</h2>
-                <p className="text-sm mt-1 text-gray-500">{service.description}</p>
+                <p className="text-sm mt-1 text-gray-500">{service.shortdescription}</p>
             </Link>
             <div className="card-actions bg-blue-200 p-5">
                 {service.tags.map((tag) => (
