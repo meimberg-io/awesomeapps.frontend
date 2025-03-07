@@ -44,29 +44,18 @@ const DetailPage: React.FC<DetailPageProps> = ({service}) => {
                 </div>
             </main>
         </div>
-
-
     );
 };
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const {slug} = context.params as { slug: string };
-
-    console.log("sluggywutz", slug);
-
     try {
-
-
-        console.log("aaa1");
-
         const service = await fetchServiceDetailBySlug(slug)
-
-        console.log("aaa2", service);
         return {props: {service}};
     } catch (error) {
-        console.log("aaa3", error);
         return {props: {service: null}};
     }
 };
+
 export default DetailPage;
