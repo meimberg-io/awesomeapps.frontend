@@ -45,6 +45,7 @@ export const GET_SERVICE_DETAIL = gql`
             name
             shortdescription
             longdescription
+            pricing
             articlecontent {
                 __typename
                 ... on ComponentSharedRichText {
@@ -96,6 +97,7 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
             slug
             shortdescription
             longdescription
+            pricing
             articlecontent {
                 __typename
                 ... on ComponentSharedRichText {
