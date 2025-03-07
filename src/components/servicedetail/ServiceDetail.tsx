@@ -13,9 +13,16 @@ const ServiceDetail: React.FC<Props> = ({service}) => {
     return (
 
         <div className="pt-6 pb-4 sm:pb-6 max-w-7xl gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8 mx-auto">
+
+            {/* longdescription */}
+
             <div className="mb-16">
                 <RichTextBlocks content={service.longdescription}/>
             </div>
+
+            {/* longdescription */}
+
+
             {service.pricing && (
                 <div className="mb-16">
                     <h2 className="text-3xl font-semibold mb-8 mt-5">Pricing</h2>
@@ -23,9 +30,16 @@ const ServiceDetail: React.FC<Props> = ({service}) => {
 
                 </div>
             )}
+
+            {/* articlecontent */}
+
+
             <div className="mb-16">
-                {service.longdescription && <DynamicZoneComponent blocks={service.articlecontent}/>}
+                {service.articlecontent && <DynamicZoneComponent blocks={service.articlecontent}/>}
             </div>
+
+            {/* url */}
+
             <div className="mb-16">
                 <h2 className="text-3xl font-semibold mb-8 mt-5">URL</h2>
 
@@ -34,6 +48,9 @@ const ServiceDetail: React.FC<Props> = ({service}) => {
                     <a href={service.url} target="_blank">{service.url}</a>
                 </div>
             </div>
+
+            {/* disclaimer */}
+
             {service.pricing && (
                 <div className="mb-16">
 
