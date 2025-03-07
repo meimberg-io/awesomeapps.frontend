@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import { GetServerSideProps } from "next";
 import { fetchServices, fetchTags } from "../api/services";
-import ServiceList from "../components/ServiceList";
+import ServiceList from "../components/servicelist/ServiceList";
 import Header from "../components/Header";
-import TagsSelected from "../components/TagsSelected";
-import TagsAvailable from "../components/TagsAvailable";
+import TagsSelected from "../components/servicelist/TagsSelected";
+import TagsAvailable from "../components/servicelist/TagsAvailable";
 import {Service} from "../types/service";
 import {Tag} from "../types/tag";
 

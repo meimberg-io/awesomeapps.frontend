@@ -1,12 +1,9 @@
 import React from "react";
-
 import Header from "../../components/Header";
-
 import {GetServerSideProps} from "next";
 import {fetchPage} from "../../api/services";
-
 import {Page} from "../../types/page";
-import DynamicZoneComponent from "../../components/dynamiczone/DynamicZoneComponent";
+import DynamicZoneComponent from "../../components/strapicomponents/dynamiczone/DynamicZoneComponent";
 
 interface PageProps {
     slug: string;
@@ -31,7 +28,7 @@ const DetailPage: React.FC<PageProps> = ({ slug, page }) => {
                 <div className="relative isolate overflow-hidden pt-16">
                     <div className="shadow-lg">
 
-                        <header className="pt-6 pb-4 sm:pb-6 bg-blue-50 ">
+                        <header className="pt-6 pb-4 sm:pb-6 bg-red-50 ">
                             <div className="mx-auto flex max-w-7xl flex-row items-stretch gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8 justify-between">
                                 <div className="a1">
                                     <h1 className="text-xl font-semibold text-blue-950">{page.title}</h1>

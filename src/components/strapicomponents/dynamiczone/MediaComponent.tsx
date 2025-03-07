@@ -1,5 +1,5 @@
-import {STRAPI_BASEURL} from "../../pages/_app";
-import {MediaBlock} from "../../types/block";
+import {STRAPI_BASEURL} from "../../../pages/_app";
+import {MediaBlock} from "../../../types/block";
 
 
 interface MediaBlockProps {

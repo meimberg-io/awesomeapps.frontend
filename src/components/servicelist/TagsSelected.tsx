@@ -1,7 +1,7 @@
 'use client'
 
 import React from "react";
-import {Tag} from "../types/tag";
+import {Tag} from "../../types/tag";
 
 export interface TagsSelectedProps {
     selectedTags: Tag[],
