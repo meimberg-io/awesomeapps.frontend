@@ -9,7 +9,7 @@ export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
         query: GET_SERVICES,
         variables: {tags: tagIds},
     });
-    console.log("data.services",data)
+    console.log("data.services", data)
     return data.servicesbytags;
 };
 
@@ -32,17 +32,15 @@ export const fetchServiceDetail = async (id: string): Promise<Service> => {
     const item: Service = data.service;
     return item;
 };
+
 export const fetchServiceDetailBySlug = async (slug: string): Promise<Service> => {
     const {data} = await client.query({
         query: GET_SERVICE_DETAIL_BY_SLUG,
         variables: {slug},
+        fetchPolicy: "no-cache",
     });
-
-
     return data["services"] && data["services"].length > 0 ? data["services"][0] : undefined;
-
 };
-
 
 export const fetchPage = async (slug: string): Promise<Page> => {
     const {data} = await client.query({
