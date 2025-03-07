@@ -2,3 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+h1 {
+    @apply text-4xl font-bold mb-8 mt-6;
+}
+
+h2 {
+    @apply text-3xl font-medium mb-6 mt-5;
+}
+
+h3 {
+    @apply text-xl font-medium mb-4 mt-8;
+}
+
+h4 {
+    @apply text-lg font-medium mb-2 mt-2;
+}
+
+h5 {
+    @apply text-2xl font-semibold mb-3 mt-3;
+}
+
+h6 {
+    @apply text-2xl font-semibold mb-3 mt-3;
+}
+
+p {
+    @apply text-base leading-relaxed mb-4;
+}
+
+ul {
+    @apply: list-disc list-inside space-y-2;
+}
+
+ol {
+    @apply: list-decimal list-inside space-y-2
+}
+
+li {
+    @apply ml-4;
+}
+
+pre {
+    @apply bg-gray-900 text-white p-4 rounded-lg overflow-x-auto;
+}
+
+a {
+    @apply: ext-blue-500 font-semibold hover:underline;
+}
+
+strong {
+    @apply: font-bold text-black;
+}
+
+em {
+    @apply italic text-gray-700;
+}
+blockquote {
+    @apply border-l-4 border-gray-300 pl-4 italic text-gray-600;
+}
+hr {
+    @apply border-t-2 border-gray-300 my-6;
+}
+
+table {
+    @apply table-auto border-collapse border border-gray-300 w-full text-left;
+}
+
+thead {
+    @apply bg-gray-100 font-semibold;
+}
+
+tbody {
+    @apply divide-y divide-gray-200;
+}
+
+tr {
+    @apply border-b;
+}
+
+th {
+    @apply px-4 py-2 border border-gray-300 text-gray-700;
+}
+
+td {
+    @apply px-4 py-2 border border-gray-300;
+}
