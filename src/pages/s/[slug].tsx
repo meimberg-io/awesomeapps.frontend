@@ -23,7 +23,7 @@ const DetailPage: React.FC<DetailPageProps> = ({service}) => {
             <main>
                 <div className="relative isolate overflow-hidden pt-16">
                     <div className="shadow-lg">
-                        <PageHeader title={service.name} subtitle={service.shortdescription} icon={service.logo.url} style={PageHeaderStyle.SERVICE}/>
+                        <PageHeader title={service.name} subtitle={service.shortdescription} icon={service.logo} style={PageHeaderStyle.SERVICE}/>
                         <ServiceDetail service={service}/>
                     </div>
                 </div>

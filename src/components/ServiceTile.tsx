@@ -13,12 +13,13 @@ interface ServiceTileProps {
 
 
 const ServiceTile: React.FC<ServiceTileProps> = ({service, selectedTags, toggleTag}) => {
+    const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
 
     return (
         <div key={service.documentId} className="card bg-base-100 shadow-xl overflow-hidden">
             <Link href={`/s/${service.slug}`} passHref className="cursor-pointer ">
                 <figure className="bg-gray-100 px-7 h-16">
-                    <img src={service.logo ? STRAPI_BASEURL + service.logo.url : ''} alt={service.name} className="max-h-10 w-auto my-4 mx-5"/>
+                    <img src={iconurl} alt={service.name} className="max-h-10 w-auto my-4 mx-5"/>
                 </figure>
             </Link>
             <Link href={`/s/${service.slug}`} passHref className="cursor-pointer card-body">
