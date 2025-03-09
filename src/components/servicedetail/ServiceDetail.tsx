@@ -78,7 +78,7 @@ const ServiceDetail: React.FC<Props> = ({service}) => {
 
                 </div>
             ) : (
-                <p>Keine Screenshots vorhanden.</p>
+               <></>
             )}
 
             {/* pricing */}
