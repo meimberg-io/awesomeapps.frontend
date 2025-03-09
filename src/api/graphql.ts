@@ -8,7 +8,7 @@ export const client = new ApolloClient({
 
 export const GET_SERVICES = gql`
     query GetServices($tags: [ID]!) {
-        servicesbytags(tags: $tags) {
+        servicesbytags(sort: "slug:asc", tags: $tags) {
             documentId
             name
             slug
