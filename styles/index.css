@@ -35,11 +35,11 @@ p {
 }
 
 ul {
-    @apply: list-disc list-inside space-y-2;
+    @apply marker:text-blue-900  list-disc list-inside space-y-2;
 }
 
 ol {
-    @apply: list-decimal list-inside space-y-2
+    @apply list-decimal list-inside space-y-2 ;
 }
 
 li {
@@ -51,11 +51,11 @@ pre {
 }
 
 a {
-    @apply: ext-blue-500 font-semibold hover:underline;
+    @apply text-blue-500 font-semibold hover:underline;
 }
 
 strong {
-    @apply: font-bold text-black;
+    @apply font-bold text-black;
 }
 
 em {
