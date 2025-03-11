@@ -12,7 +12,7 @@ export const GET_SERVICES = gql`
             documentId
             name
             slug
-            shortdescription
+            abstract
             tags {
                 documentId
                 name
@@ -43,8 +43,11 @@ export const GET_SERVICE_DETAIL = gql`
         service(documentId: $id) {
             documentId
             name
-            shortdescription
+            abstract
             longdescription
+            description
+            functionality
+            shortfacts
             pricing
             articlecontent {
                 __typename
@@ -98,8 +101,11 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
             documentId
             name
             slug
-            shortdescription
+            abstract
             longdescription
+            description
+            functionality
+            shortfacts
             pricing
             articlecontent {
                 __typename

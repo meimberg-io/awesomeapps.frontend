@@ -1,8 +1,6 @@
 import React from "react";
 import {Service} from "../../types/service";
-import RichTextBlocks from "../strapicomponents/richtextblocks/RichTextBlocks";
 import DynamicZoneComponent from "../strapicomponents/dynamiczone/DynamicZoneComponent";
-import {ArrowRightCircleIcon} from "@heroicons/react/20/solid";
 import MarkdownRenderer from "../util/MarkdownRenderer";
 import {EffectCoverflow, Navigation, Pagination, Autoplay} from 'swiper/modules';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -20,14 +18,24 @@ interface Props {
 const ServiceDetail: React.FC<Props> = ({service}) => {
     return (
 
-        <div className="pt-6 pb-4 sm:pb-6 max-w-7xl gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8 mx-auto">
+        <div className="pt-0 pb-4 sm:pb-6 max-w-7xl gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8 mx-auto">
 
-            {/* longdescription */}
+            {/* description */}
 
-            <div className="mb-16">
-                <RichTextBlocks content={service.longdescription}/>
-            </div>
+            {service.description && (
+                <div className="mb-16">
+                    <MarkdownRenderer content={service.description}/>
+                </div>
+            )}
 
+            {/* functionality */}
+
+            {service.functionality && (
+                <div className="mb-16">
+                    <h2>Funktionen und Einsatzmöglichkeiten</h2>
+                    <MarkdownRenderer content={service.functionality}/>
+                </div>
+            )}
 
             {/* screenshots */}
 
@@ -86,7 +94,7 @@ const ServiceDetail: React.FC<Props> = ({service}) => {
             {service.pricing && (
                 <div className="mb-16">
                     <h2 className="text-3xl font-semibold mb-8 mt-5">Pricing</h2>
-                    <MarkdownRenderer content={service.pricing}/>
+                    <MarkdownRenderer content={service.pricing} />
 
                 </div>
             )}
@@ -98,16 +106,6 @@ const ServiceDetail: React.FC<Props> = ({service}) => {
                 {service.articlecontent && <DynamicZoneComponent blocks={service.articlecontent}/>}
             </div>
 
-            {/* url */}
-
-            <div className="mb-16">
-                <h2 className="text-3xl font-semibold mb-8 mt-5">URL</h2>
-
-                <div role="alert" className="alert my-6 bg-green-100 border-0 text-green-800 font-bold shadow-sm">
-                    <ArrowRightCircleIcon aria-hidden="true" className="size-6 text-green-800"/>
-                    <a href={service.url} target="_blank">{service.url}</a>
-                </div>
-            </div>
 
             {/* disclaimer */}
 

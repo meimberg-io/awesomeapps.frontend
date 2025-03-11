@@ -6,6 +6,7 @@ import {fetchServiceDetailBySlug} from "../../api/services";
 import {Service} from "../../types/service";
 import ServiceDetail from "../../components/servicedetail/ServiceDetail";
 import PageHeader, {PageHeaderStyle} from "../../components/PageHeader";
+import {ArrowRightCircleIcon} from "@heroicons/react/20/solid";
 
 interface DetailPageProps {
     service: Service | null;
@@ -18,17 +19,48 @@ const DetailPage: React.FC<DetailPageProps> = ({service}) => {
 
     return (
 
-        <div>
+
+        <>
             <Header/>
-            <main>
-                <div className="relative isolate overflow-hidden pt-16">
-                    <div className="shadow-lg">
-                        <PageHeader title={service.name} subtitle={service.shortdescription} icon={service.logo} style={PageHeaderStyle.SERVICE}/>
-                        <ServiceDetail service={service}/>
+
+            <div className="relative isolate overflow-hidden pt-16 mb-16 mx-auto">
+                <div className="shadow-lg">
+                    <PageHeader title={service.name} subtitle={service.abstract} icon={service.logo} style={PageHeaderStyle.SERVICE}/>
+                </div>
+            </div>
+
+
+            <div className="grid grid-cols-3 gap-x-2 gap-y-16 lg:mx-auto max-w-7xl  lg:mx-0 lg:grid-cols-2 lg:items-start lg:gap-y-10  ">
+
+                <div className="col-span-2 lg:gap-x-2 lg:pr-8">
+
+                    {/* service detail */}
+
+                    <ServiceDetail service={service}/>
+
+                </div>
+
+                <div className="lg:sticky w-96 lg:top-14 lg:col-start-3  rotate-6 lg:overflow-hidden ">
+
+                    {/* meta card */}
+
+                    <div className="mb-16 px-4 pb-12 max-w-full">
+                        <div className="card bg-blue-50 shadow-xl overflow-hidden">
+                            <div className="card-body">
+                                <h3 className="mt-0 text-blue-900">{service.name}</h3>
+                                <p className="text-md mt-1 text-blue-700 mb-0">{service.shortfacts}</p>
+                            </div>
+                            <div className="card-actions bg-blue-200 p-5">
+                                <ArrowRightCircleIcon aria-hidden="true" className="size-6 text-blue-800"/>
+                                <a href={service.url} target="_blank">{service.url}</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </>
+
+
     );
 };
 
