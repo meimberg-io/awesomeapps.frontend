@@ -6,7 +6,6 @@ interface RichTextBlockProps {
 }
 
 const RichTextComponent: React.FC<RichTextBlockProps> = ({data}) => {
-    console.log("Inside RichTextBlocks", data);
     return (
         <MarkdownRenderer content={data.body}/>
     );

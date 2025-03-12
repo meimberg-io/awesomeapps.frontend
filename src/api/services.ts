@@ -10,7 +10,6 @@ export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
         variables: {tags: tagIds},
         fetchPolicy: "no-cache"
     });
-    console.log("data.services", data)
     return data.servicesbytags;
 };
 
