@@ -12,10 +12,7 @@ interface PageProps {
 }
 
 const DetailPage: React.FC<PageProps> = ({ slug, page }) => {
-    console.log("slug",slug);
 
-
-    console.log("Page",page);
     if (!page) {
         return <p>Page nicht gefunden</p>; // Fehlerhandling für ungültige IDs
     }
@@ -29,10 +26,7 @@ const DetailPage: React.FC<PageProps> = ({ slug, page }) => {
                 <div className="relative isolate overflow-hidden pt-16">
                     <div className="shadow-lg">
 
-
-
                         <PageHeader title={page.title} subtitle={page.subtitle} style={PageHeaderStyle.PAGE}/>
-
 
                         <div className="pt-6 pb-4 sm:pb-6 max-w-3xl gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8  mx-auto">
                             <DynamicZoneComponent blocks={page.content} />

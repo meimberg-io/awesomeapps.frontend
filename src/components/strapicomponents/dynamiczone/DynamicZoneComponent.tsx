@@ -11,7 +11,6 @@ interface DynamicZoneProps {
 }
 
 const DynamicZoneComponent: React.FC<DynamicZoneProps> = ({blocks}) => {
-    console.log("DynamicZoneComponent", blocks);
 
     return (
         <div className="dynamic-zone">
