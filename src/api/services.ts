@@ -8,6 +8,7 @@ export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
     const {data} = await client.query({
         query: GET_SERVICES,
         variables: {tags: tagIds},
+        fetchPolicy: "no-cache"
     });
     console.log("data.services", data)
     return data.servicesbytags;
