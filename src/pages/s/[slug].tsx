@@ -41,7 +41,7 @@ const DetailPage: React.FC<DetailPageProps> = ({service}) => {
 
                 </div>
 
-                <div className="lg:sticky w-96 lg:top-14 lg:col-start-3  rotate-3 lg:overflow-hidden ">
+                <div className="lg:sticky w-96 lg:top-12 pt-8 lg:col-start-3  rotate-3 lg:overflow-hidden ">
 
                     {/* meta card */}
 
