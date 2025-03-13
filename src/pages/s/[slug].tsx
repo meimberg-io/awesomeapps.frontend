@@ -7,6 +7,7 @@ import {Service} from "../../types/service";
 import ServiceDetail from "../../components/servicedetail/ServiceDetail";
 import PageHeader, {PageHeaderStyle} from "../../components/PageHeader";
 import {ArrowRightCircleIcon} from "@heroicons/react/20/solid";
+import Link from "next/link";
 
 interface DetailPageProps {
     service: Service | null;
@@ -40,20 +41,20 @@ const DetailPage: React.FC<DetailPageProps> = ({service}) => {
 
                 </div>
 
-                <div className="lg:sticky w-96 lg:top-14 lg:col-start-3  rotate-6 lg:overflow-hidden ">
+                <div className="lg:sticky w-96 lg:top-14 lg:col-start-3  rotate-3 lg:overflow-hidden ">
 
                     {/* meta card */}
 
                     <div className="mb-16 px-4 pb-12 max-w-full">
-                        <div className="card bg-blue-50 shadow-xl overflow-hidden">
+                        <div className="card bg-sasecondary-50 shadow-xl overflow-hidden">
                             <div className="card-body">
-                                <h3 className="mt-0 text-blue-900">{service.name}</h3>
+                                <h3 className="mt-0 text-sasecondary-600">{service.name}</h3>
                                 <p className="text-md mt-1 text-blue-700 mb-0">{service.shortfacts}</p>
                             </div>
-                            <div className="card-actions bg-blue-200 p-5">
-                                <ArrowRightCircleIcon aria-hidden="true" className="size-6 text-blue-800"/>
-                                <a href={service.url} target="_blank">{service.url}</a>
-                            </div>
+                            <Link className="card-actions bg-sasecondary-400 hover:bg-saprimary-500 p-5 hover:no-underline" href={service.url} target="_blank">
+                                <ArrowRightCircleIcon aria-hidden="true" className="size-6 text-sasecondary-50 hover:text-saprimary-50"/>
+                                <span className="text-white hover:text-saprimary-50">{service.url}</span>
+                            </Link>
                         </div>
                     </div>
                 </div>

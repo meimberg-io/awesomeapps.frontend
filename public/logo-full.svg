@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_2" data-name="Ebene 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 757.66 159.07">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #fc9d6b;
+      }
+
+      .cls-2 {
+        font-family: VoxRound-Semibold, 'Vox Round';
+        font-size: 96px;
+        font-weight: 600;
+      }
+    </style>
+  </defs>
+  <g id="Ebene_1-2" data-name="Ebene 1">
+    <g>
+      <path class="cls-1" d="M128.4,47.03H22.9c-12.65,0-22.9,10.25-22.9,22.9v58.07h151.3v-58.07c0-12.65-10.25-22.9-22.9-22.9ZM40.89,95.48c-7.79,0-14.11-6.32-14.11-14.11s6.32-14.11,14.11-14.11,14.11,6.32,14.11,14.11-6.32,14.11-14.11,14.11ZM110.41,95.48c-7.79,0-14.11-6.32-14.11-14.11s6.32-14.11,14.11-14.11,14.11,6.32,14.11,14.11-6.32,14.11-14.11,14.11Z"/>
+      <rect class="cls-1" x="24.13" y="133.31" width="103.05" height="10.22" rx="5.11" ry="5.11"/>
+      <rect class="cls-1" x="39.26" y="148.85" width="72.79" height="10.22" rx="5.11" ry="5.11"/>
+      <g>
+        <rect class="cls-1" x="70.54" y="9.41" width="10.22" height="31.9" rx="5.11" ry="5.11"/>
+        <circle class="cls-1" cx="75.65" cy="9.81" r="9.81"/>
+      </g>
+    </g>
+    <text class="cls-2" transform="translate(221.61 116.25)"><tspan x="0" y="0">serviceatlas</tspan></text>
+  </g>
+</svg>
