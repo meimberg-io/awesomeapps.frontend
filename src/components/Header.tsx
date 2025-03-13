@@ -35,14 +35,14 @@ export default function Header() {
                     </button>
                     <Link href={`/`} passHref className="">
                     <img
-                        alt="Your Company"
-                        src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+                        alt="serviceatlas.meimberg.io"
+                        src="/logo-full.svg"
                         className="h-8 w-auto"
                     /></Link>
                 </div>
                 <nav className="hidden md:flex md:gap-x-11 md:text-sm/6 md:font-semibold md:text-gray-700">
                     {navigation.map((item, itemIdx) => (
-                        <a key={itemIdx} href={item.href}>
+                        <a key={itemIdx} href={item.href} className="text-blue-50">
                             {item.name}
                         </a>
                     ))}
@@ -75,7 +75,7 @@ export default function Header() {
                                 <span className="sr-only">Your Company</span>
                                 <img
                                     alt=""
-                                    src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+                                    src="logo-full.svg"
                                     className="h-8 w-auto"
                                 />
                             </a>

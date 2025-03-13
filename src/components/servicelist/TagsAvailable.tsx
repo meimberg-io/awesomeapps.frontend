@@ -15,13 +15,17 @@ export function classNames(...classes: string[]): string {
 
 const TagsAvailable: React.FC<TagsAvailableProps> = ({tags, selectedTags, toggleTag}) => {
     return (
-        <header className="pt-6 pb-4 sm:pb-6 bg-blue-300">
+        <header className="pt-6 pb-4 sm:pb-6 bg-gray-600">
             <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-6 px-4 sm:px-6 lg:px-8">
                 {tags.filter(tag => !selectedTags.some(selectedTag => selectedTag.documentId === tag.documentId)).map((tag: Tag) => (
-                    <button key={tag.documentId} className="btn btn-sm text-blue-950 bg-blue-50 border-0 hover:bg-green-600 hover:text-green-50"
-                            onClick={() => toggleTag(tag.documentId)}>
+                    <button  key={tag.documentId}
+                             className="btn btn-sm bg-sasecondary-950 text-sasecondary-100 border-0 hover:bg-saprimary-200 hover:text-saprimary-950"
+                             onClick={() => toggleTag(tag.documentId)}>
                         {tag.name}
-                        <div className="badge badge-sm bg-white text-blue-300">{tag.count}</div>
+                        <div
+                            className="badge badge-sm bg-sasecondary-100 text-sasecondary-900 border-0 group-hover:bg-saprimary-50 group-hover:text-saprimary-950" >
+                            {tag.count}
+                        </div>
                     </button>
                 ))}
             </div>

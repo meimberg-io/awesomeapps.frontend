@@ -11,6 +11,7 @@ interface PageProps {
     page: Page | null;
 }
 
+// @ts-ignore
 const DetailPage: React.FC<PageProps> = ({ slug, page }) => {
 
     if (!page) {
@@ -28,7 +29,7 @@ const DetailPage: React.FC<PageProps> = ({ slug, page }) => {
 
                         <PageHeader title={page.title} subtitle={page.subtitle} style={PageHeaderStyle.PAGE}/>
 
-                        <div className="pt-6 pb-4 sm:pb-6 max-w-3xl gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8  mx-auto">
+                        <div className="pt-6 pb-4 sm:pb-6 max-w-3xl gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8  mx-auto contentsection">
                             <DynamicZoneComponent blocks={page.content} />
                         </div>
                     </div>
