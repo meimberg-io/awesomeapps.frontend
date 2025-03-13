@@ -8,4 +8,5 @@ export interface Page {
     slug: string
     subtitle: string
     title: string
+    updatedAt: string
 }

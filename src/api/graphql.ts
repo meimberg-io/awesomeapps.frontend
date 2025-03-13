@@ -13,6 +13,7 @@ export const GET_SERVICES = gql`
             name
             slug
             abstract
+            updatedAt
             tags {
                 documentId
                 name
@@ -164,7 +165,7 @@ export const GET_PAGES_BY_SLUG = gql`
         pages(filters: { slug: { eq: $slug } }) {
             documentId
             title
-            subtitle 
+            subtitle
             keyvisual {
                 url
                 mime
@@ -195,6 +196,18 @@ export const GET_PAGES_BY_SLUG = gql`
             }
 
 
+        }
+    }
+`;
+
+export const GET_PAGES = gql`
+    query GetPages {
+        pages{
+            documentId
+            slug
+            title
+            subtitle
+            updatedAt
         }
     }
 `;
