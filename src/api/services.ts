@@ -1,4 +1,4 @@
-import {client, GET_SERVICES, GET_TAGS, GET_SERVICE_DETAIL, GET_PAGES_BY_SLUG, GET_SERVICE_DETAIL_BY_SLUG} from "./graphql";
+import {client, GET_SERVICES, GET_TAGS, GET_SERVICE_DETAIL, GET_PAGES_BY_SLUG, GET_SERVICE_DETAIL_BY_SLUG, GET_PAGES} from "./graphql";
 import {Tag} from "../types/tag";
 import {Service} from "../types/service";
 import {Page} from "../types/page";
@@ -48,4 +48,12 @@ export const fetchPage = async (slug: string): Promise<Page> => {
         variables: {slug},
     });
     return data["pages"] && data["pages"].length > 0 ? data["pages"][0] : undefined;
+}
+
+export const fetchPages = async (): Promise<Page[]> => {
+    const {data} = await client.query({
+        query: GET_PAGES
+    });
+    console.log(data);
+    return data.pages;
 }

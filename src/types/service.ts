@@ -21,4 +21,5 @@ export interface Service {
     screenshots: Image[];
     logo: Image;
     tags: Tag[];
+    updatedAt: string;
 }
