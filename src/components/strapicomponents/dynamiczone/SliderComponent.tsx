@@ -1,5 +1,7 @@
-import {STRAPI_BASEURL} from "../../../pages/_app";
-import {SliderBlock} from "../../../types/block";
+
+import {SliderBlock} from "@/types/block";
+import {STRAPI_BASEURL} from "@/lib/constants";
+import React from "react";
 
 
 interface SliderBlockProps {

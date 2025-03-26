@@ -1,5 +1,6 @@
-import {STRAPI_BASEURL} from "../../../pages/_app";
-import {MediaBlock} from "../../../types/block";
+import {MediaBlock} from "@/types/block";
+import {STRAPI_BASEURL} from "@/lib/constants";
+import React from "react";
 
 
 interface MediaBlockProps {

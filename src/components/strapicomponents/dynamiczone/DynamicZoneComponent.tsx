@@ -1,10 +1,11 @@
+"use client"
 import React from 'react';
 
 import RichTextComponent from "./RichTextComponent";
 import MediaComponent from "./MediaComponent";
 import QuoteComponent from "./QuoteComponent";
 import SliderComponent from "./SliderComponent";
-import {Block, BlockProps, ComponentTypes, MediaBlock, QuoteBlock, RichTextBlock, SliderBlock} from "../../../types/block";
+import {Block, BlockProps, ComponentTypes, MediaBlock, QuoteBlock, RichTextBlock, SliderBlock} from "@/types/block";
 
 interface DynamicZoneProps {
     blocks: Block[];

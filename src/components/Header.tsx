@@ -52,14 +52,7 @@ export default function Header() {
                         <span className="sr-only">View notifications</span>
                         <BellIcon aria-hidden="true" className="size-6"/>
                     </button>
-                    <a href="#" className="-m-1.5 p-1.5">
-                        <span className="sr-only">Your profile</span>
-                        <img
-                            alt=""
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                            className="size-8 rounded-full bg-gray-800"
-                        />
-                    </a>
+
                 </div>
             </div>
             <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">

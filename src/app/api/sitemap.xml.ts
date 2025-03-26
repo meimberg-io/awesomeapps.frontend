@@ -1,8 +1,8 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import {fetchPages, fetchServices} from "../../api/services";
-import {APP_BASEURL} from "../_app";
-import {Service} from "../../types/service";
-import {Page} from "../../types/page";
+import {fetchPages, fetchServices} from "@/lib/services";
+import {Service} from "@/types/service";
+import {Page} from "@/types/page";
+import {APP_BASEURL} from "@/lib/constants";
 
 
 const generateSitemap = (services: Service[], pages: Page[]) => {
