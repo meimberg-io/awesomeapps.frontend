@@ -1,4 +1,5 @@
-import {QuoteBlock} from "../../../types/block";
+import {QuoteBlock} from "@/types/block";
+import React from "react";
 
 interface QuoteBlockProps {
     data: QuoteBlock;

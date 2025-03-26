@@ -1,5 +1,6 @@
-import {RichTextBlock} from "../../../types/block";
-import MarkdownRenderer from "../../util/MarkdownRenderer";
+import {RichTextBlock} from "@/types/block";
+import MarkdownRenderer from "@/components/util/MarkdownRenderer";
+import React from "react";
 
 interface RichTextBlockProps {
     data: RichTextBlock;

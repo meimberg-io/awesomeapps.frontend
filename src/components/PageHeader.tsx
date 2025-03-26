@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import {STRAPI_BASEURL} from "../pages/_app";
-import {Image} from "../types/image";
+import {Image} from "@/types/image";
+import {STRAPI_BASEURL} from "@/lib/constants";
 
 export enum PageHeaderStyle {
     SERVICE = 'service',
@@ -19,8 +19,8 @@ export interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({title, subtitle, icon, style}) => {
 
-    let style_color_bg: string = "";
-    let style_color_text: string = "";
+    let style_color_bg: string;
+    let style_color_text: string;
 
 
     switch (style) {
