@@ -1,5 +1,5 @@
 import Header from '@/components/Header'
-import { fetchServices, fetchTags } from '@/lib/services'
+import { fetchServices, fetchTags } from '@/lib/strapi'
 import InteractiveServiceList from '@/components/servicelist/InteractiveServiceList'
 
 export default async function HomePage() {

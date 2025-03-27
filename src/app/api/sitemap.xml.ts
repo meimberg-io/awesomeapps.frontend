@@ -1,5 +1,5 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import {fetchPages, fetchServices} from "@/lib/services";
+import {fetchPages, fetchServices} from "@/lib/strapi";
 import {Service} from "@/types/service";
 import {Page} from "@/types/page";
 import {APP_BASEURL} from "@/lib/constants";

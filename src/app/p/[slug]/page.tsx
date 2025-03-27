@@ -1,6 +1,6 @@
 // src/app/p/[slug]/page.tsx
 
-import {fetchPage} from '@/lib/services'
+import {fetchPage} from '@/lib/strapi'
 import Header from '@/components/Header'
 import PageHeader, {PageHeaderStyle} from '@/components/PageHeader'
 import DynamicZoneComponent from '@/components/strapicomponents/dynamiczone/DynamicZoneComponent'
