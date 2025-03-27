@@ -6,7 +6,7 @@ import TagsAvailable from '@/components/servicelist/TagsAvailable'
 import TagsSelected from '@/components/servicelist/TagsSelected'
 import {Service} from '@/types/service'
 import {Tag} from '@/types/tag'
-import {fetchServices, fetchTags} from '@/lib/services'
+import {fetchServices, fetchTags} from '@/lib/strapi'
 
 interface Props {
     initialServices: Service[]

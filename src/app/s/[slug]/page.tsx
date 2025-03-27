@@ -1,6 +1,6 @@
 // src/app/s/[slug]/page.tsx
 
-import { fetchServiceDetailBySlug } from '@/lib/services'
+import { fetchServiceDetailBySlug } from '@/lib/strapi'
 import Header from '@/components/Header'
 import PageHeader, { PageHeaderStyle } from '@/components/PageHeader'
 import ServiceDetail from '@/components/servicedetail/ServiceDetail'
