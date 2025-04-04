@@ -6,6 +6,7 @@ import {STRAPI_BASEURL} from "@/lib/constants";
 import {GET_SERVICE_DETAIL, GET_SERVICE_DETAIL_BY_SLUG, GET_SERVICES} from "@/lib/graphql/service";
 import {GET_TAGS} from "@/lib/graphql/tag";
 import {GET_PAGES, GET_PAGES_BY_SLUG} from "@/lib/graphql/page";
+import * as console from "node:console";
 
 const client = new ApolloClient({
     uri: STRAPI_BASEURL + "/graphql",
@@ -20,6 +21,7 @@ export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
         variables: {tags: tagIds},
         fetchPolicy: "no-cache"
     });
+//    console.log("LEN " , data.servicesbytags.length);
     return data.servicesbytags;
 };
 
@@ -31,6 +33,8 @@ export const fetchTags = async (tags?: Tag[]): Promise<Tag[]> => {
         fetchPolicy: "no-cache"
     });
     const tagsResult: Tag[] = data.tags;
+//    console.log("LEN TAG " , tagsResult.length);
+
     return tagsResult.filter(tag => tag.count > 0);
 };
 
@@ -56,13 +60,15 @@ export const fetchPage = async (slug: string): Promise<Page | undefined> => {
     const {data} = await client.query({
         query: GET_PAGES_BY_SLUG,
         variables: {slug},
+        fetchPolicy: "no-cache",
     });
     return data["pages"] && data["pages"].length > 0 ? data["pages"][0] : undefined;
 }
 
 export const fetchPages = async (): Promise<Page[]> => {
     const {data} = await client.query({
-        query: GET_PAGES
+        query: GET_PAGES,
+        fetchPolicy: "no-cache",
     });
     return data.pages;
 }

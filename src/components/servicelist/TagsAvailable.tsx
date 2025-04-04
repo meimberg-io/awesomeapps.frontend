@@ -1,8 +1,9 @@
-'use client'
+
 
 import React from "react";
 import {Tag} from "@/types/tag";
-import {DynamicIcon} from "lucide-react/dynamic";
+// import {DynamicIcon} from "lucide-react/dynamic";
+import { Icon } from "@iconify/react";
 
 export interface TagsAvailableProps {
     tags: Tag[];
@@ -15,6 +16,7 @@ export function classNames(...classes: string[]): string {
 }
 
 const TagsAvailable: React.FC<TagsAvailableProps> = ({tags, selectedTags, toggleTag}) => {
+    console.log('Rendering TagsAvailable', typeof window === 'undefined' ? 'on server' : 'on client');
 
     return (
         <header className="pt-6 pb-4 sm:pb-6 bg-gray-600">
@@ -25,7 +27,13 @@ const TagsAvailable: React.FC<TagsAvailableProps> = ({tags, selectedTags, toggle
                              onClick={() => toggleTag(tag.documentId)}>
                         {
                             // @ts-ignore
-                            tag.icon && <DynamicIcon name={tag.icon} size={16} className="text-saprimary-200" />
+                            tag.icon &&     <Icon
+                                icon={"lucide-" + tag.icon}
+                                width={16}
+                                height={16}
+                                className="text-saprimary-200 mr-1"
+                            />
+                            // <DynamicIcon name={tag.icon} size={16} className="text-saprimary-200" />
                         }
                         <span className="text-base">
                         {tag.name}

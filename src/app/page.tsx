@@ -2,6 +2,8 @@ import Header from '@/components/Header'
 import { fetchServices, fetchTags } from '@/lib/strapi'
 import InteractiveServiceList from '@/components/servicelist/InteractiveServiceList'
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
     const initialServices = await fetchServices([])
     const initialTags = await fetchTags([])
