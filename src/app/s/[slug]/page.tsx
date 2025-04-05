@@ -5,7 +5,6 @@ import ServiceDetail from '@/components/servicedetail/ServiceDetail'
 import { ArrowRightCircleIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-export const dynamic = 'force-dynamic';
 
 
 export default async function Page({params}: {
