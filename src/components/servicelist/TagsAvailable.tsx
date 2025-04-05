@@ -18,10 +18,10 @@ export interface TagsAvailableProps {
 
 
 export function renderIcon(name: string, className?: string, size: number = 16) {
-    const node = (icons as unknown as IconNodeMap)[name];
+    let node = (icons as unknown as IconNodeMap)[name];
     if (!node) {
         console.warn(`⚠️ Icon "${name}" nicht gefunden`);
-        return null;
+        node = (icons as unknown as IconNodeMap)["tag"];
     }
 
     return (
@@ -31,7 +31,7 @@ export function renderIcon(name: string, className?: string, size: number = 16) 
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth={2}
+            strokeWidth={3}
             strokeLinecap="round"
             strokeLinejoin="round"
             className={className}
