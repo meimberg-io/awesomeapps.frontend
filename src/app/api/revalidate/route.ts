@@ -1,4 +1,4 @@
-import {revalidatePath, revalidateTag} from 'next/cache';
+import {revalidatePath} from 'next/cache';
 
 export async function POST(req: Request) {
     const token = req.headers.get('x-serviceatlas-token');
