@@ -1,13 +1,16 @@
-import {fetchServiceDetailBySlug} from '@/lib/strapi'
+import { fetchServiceDetailBySlug } from '@/lib/strapi'
 import Header from '@/components/Header'
-import PageHeader, {PageHeaderStyle} from '@/components/PageHeader'
+import PageHeader, { PageHeaderStyle } from '@/components/PageHeader'
 import ServiceDetail from '@/components/servicedetail/ServiceDetail'
-import {ArrowRightCircleIcon} from '@heroicons/react/20/solid'
+import { ArrowRightCircleIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-import {notFound} from 'next/navigation'
-import type {Metadata} from 'next'
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 
-export async function generateMetadata({params}: { params: { slug: string } }): Promise<Metadata> {
+// Dynamische Metadaten für SEO, SSR-kompatibel
+export async function generateMetadata(
+    { params }: { params: { slug: string } }
+): Promise<Metadata> {
     const service = await fetchServiceDetailBySlug(params.slug)
 
     if (!service) {
@@ -19,35 +22,32 @@ export async function generateMetadata({params}: { params: { slug: string } }): 
 
     return {
         title: service.name,
-        description: service.abstract,
+        description: service.abstract ?? undefined,
         openGraph: {
             title: service.name,
             description: service.abstract ?? undefined,
-            url: `https://deine-domain.de/service/${params.slug}`,
-            images: service.logo ? [{
+            url: `https://serviceatlas.meimberg.io/service/${params.slug}`,
+            images: service.logo?.url ? [{
                 url: service.logo.url,
-                width: Number(service.logo.width) || undefined,
-                height: Number(service.logo.height) || undefined,
+                width: service.logo.width ? Number(service.logo.width) : undefined,
+                height: service.logo.height ? Number(service.logo.height) : undefined,
                 alt: service.name,
             }] : [],
         },
     }
 }
 
-export default async function Page({params}: {
-    params: Promise<{ slug: string }>
-}) {
-
-    const service = await fetchServiceDetailBySlug((await params).slug)
-    console.log("DetailPage")
+// Hauptseite für Service-Detail
+export default async function Page({ params }: { params: { slug: string } }) {
+    const service = await fetchServiceDetailBySlug(params.slug)
 
     if (!service) {
-        notFound() // Wirft automatisch eine 404-Seite im App Router
+        notFound() // 404 Seite
     }
 
     return (
         <>
-            <Header/>
+            <Header />
 
             <div className="relative isolate overflow-hidden pt-16 mb-16 mx-auto">
                 <div className="shadow-lg">
@@ -62,7 +62,7 @@ export default async function Page({params}: {
 
             <div className="grid grid-cols-3 gap-x-2 gap-y-16 lg:mx-auto max-w-7xl lg:mx-0 lg:grid-cols-2 lg:items-start lg:gap-y-10">
                 <div className="col-span-2 lg:gap-x-2 lg:pr-8">
-                    <ServiceDetail service={service}/>
+                    <ServiceDetail service={service} />
                 </div>
 
                 <div className="lg:sticky w-96 lg:top-12 pt-8 lg:col-start-3 rotate-3 lg:overflow-hidden">
