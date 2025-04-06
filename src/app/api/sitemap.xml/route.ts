@@ -1,8 +1,8 @@
-import {NextApiRequest, NextApiResponse} from 'next';
 import {fetchPages, fetchServices} from "@/lib/strapi";
 import {Service} from "@/types/service";
 import {Page} from "@/types/page";
 import {APP_BASEURL} from "@/lib/constants";
+import {NextResponse} from "next/server";
 
 
 const generateSitemap = (services: Service[], pages: Page[]) => {
@@ -17,7 +17,6 @@ const generateSitemap = (services: Service[], pages: Page[]) => {
                 </url>`;
     }
 
-
     const urls_s = services.map(service => {
         return entry("/s/" + service.slug, service.updatedAt);
     }).join('');
@@ -25,7 +24,6 @@ const generateSitemap = (services: Service[], pages: Page[]) => {
     const urls_p = pages.map(x => {
         return entry("/p/" + x.slug, x.updatedAt);
     }).join('');
-
 
     return `<?xml version="1.0" encoding="UTF-8"?>
             <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -39,11 +37,14 @@ const generateSitemap = (services: Service[], pages: Page[]) => {
           </urlset>`;
 };
 
-// @ts-ignore
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function GET() {
     const services = await fetchServices(); // Holt die Dienste aus Strapi
     const pages = await fetchPages(); // Holt die Dienste aus Strapi
-    console.log("sitemap.xml",res);
-    res.setHeader('Content-Type', 'application/xml');
-    res.send(generateSitemap(services, pages));
+
+    return new NextResponse(generateSitemap(services, pages), {
+        status: 200,
+        headers: {
+            'Content-Type': 'application/xml',
+        },
+    })
 }
