@@ -1,6 +1,12 @@
 "use client"
 
-import { useEffect } from "react"
+import {useEffect} from "react"
+
+/*
+    Tracking deaktivieren und aktivieren:
+    javascript:localStorage.setItem("matomo-disable","true");alert("Tracking deaktiviert!");
+    javascript:localStorage.removeItem("matomo-disable");alert("Tracking wieder aktiv!");
+*/
 
 export function MatomoTracker() {
     const enabled = process.env.NEXT_PUBLIC_MATOMO_TRACKER === "true"
@@ -8,6 +14,8 @@ export function MatomoTracker() {
 
     useEffect(() => {
         if (!enabled) return
+        if (localStorage.getItem("matomo-disable") === "true") return
+
 
         // @ts-ignore
         const _paq = (window._paq = window._paq || [])
