@@ -5,8 +5,33 @@ import ServiceDetail from '@/components/servicedetail/ServiceDetail'
 import { ArrowRightCircleIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+    const service = await fetchServiceDetailBySlug(params.slug)
 
+    if (!service) {
+        return {
+            title: 'Nicht gefunden',
+            description: 'Der angeforderte Service konnte nicht gefunden werden.',
+        }
+    }
+
+    return {
+        title: service.name,
+        description: service.abstract,
+        openGraph: {
+            title: service.name,
+            description: service.abstract ?? undefined,
+            url: `https://deine-domain.de/service/${params.slug}`,
+            images: service.logo ? [{
+                url: service.logo.url,
+                width: Number(service.logo.width) || undefined,
+                height: Number(service.logo.height) || undefined,
+                alt:  service.name,
+            }] : [],        },
+    }
+}
 export default async function Page({params}: {
     params: Promise<{ slug: string }>
 }) {
