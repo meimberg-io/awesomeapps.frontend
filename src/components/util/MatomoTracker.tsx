@@ -12,6 +12,7 @@ export function MatomoTracker() {
         // @ts-ignore
         const _paq = (window._paq = window._paq || [])
         _paq.push(["trackPageView"])
+        _paq.push(["disableCookies"])
         _paq.push(["enableLinkTracking"])
         _paq.push(["setTrackerUrl", "https://matomo.meimberg.io/matomo.php"])
         _paq.push(["setSiteId", "1"]) // deine Site-ID
