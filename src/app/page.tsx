@@ -1,8 +1,15 @@
 import Header from '@/components/Header'
 import { fetchServices, fetchTags } from '@/lib/strapi'
 import InteractiveServiceList from '@/components/servicelist/InteractiveServiceList'
+import {Metadata} from "next";
 
 // export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+    title: 'Serviceatlas',
+    description: 'Der Serviceatlas ist eine Sammlung von Software-as-a-Service (SaaS) Lösungen.',
+}
+
 
 export default async function HomePage() {
     const initialServices = await fetchServices([])
