@@ -5,13 +5,17 @@ import ServiceDetail from '@/components/servicedetail/ServiceDetail'
 import { ArrowRightCircleIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import type { Metadata } from 'next'
+import type {Metadata, ResolvingMetadata} from 'next'
 
 // Dynamische Metadaten für SEO, SSR-kompatibel
+type Props = {
+    params: Promise<{ slug: string }>
+}
+
 export async function generateMetadata(
-    { params }: { params: { slug: string } }
+    { params }: Props
 ): Promise<Metadata> {
-    const service = await fetchServiceDetailBySlug(params.slug)
+    const service = await fetchServiceDetailBySlug((await params).slug)
 
     if (!service) {
         return {
@@ -26,7 +30,7 @@ export async function generateMetadata(
         openGraph: {
             title: service.name,
             description: service.abstract ?? undefined,
-            url: `https://serviceatlas.meimberg.io/service/${params.slug}`,
+            url: `https://serviceatlas.meimberg.io/service/${(await params).slug}`,
             images: service.logo?.url ? [{
                 url: service.logo.url,
                 width: service.logo.width ? Number(service.logo.width) : undefined,
@@ -38,8 +42,11 @@ export async function generateMetadata(
 }
 
 // Hauptseite für Service-Detail
-export default async function Page({ params }: { params: { slug: string } }) {
-    const service = await fetchServiceDetailBySlug(params.slug)
+export default async function Page({params}: {
+    params: Promise<{ slug: string }>
+}) {
+//export default async function Page({ params }: { params: { slug: string } }) {
+    const service = await fetchServiceDetailBySlug((await params).slug)
 
     if (!service) {
         notFound() // 404 Seite
