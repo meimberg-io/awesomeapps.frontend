@@ -20,6 +20,8 @@ export interface Service {
     thumbnail: Image;
     screenshots: Image[];
     logo: Image;
+    youtube_video: string;
+    youtube_title: string;
     tags: Tag[];
     updatedAt: string;
 }

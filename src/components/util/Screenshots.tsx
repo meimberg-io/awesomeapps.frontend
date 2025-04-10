@@ -12,10 +12,12 @@ import 'swiper/css/autoplay'
 export function Screenshots({ service }: { service: Service }) {
 
     return <div className="mb-16">
-        <h2>Screenshots</h2>
 
+
+    <h2>Screenshots</h2>
+        <div className="rounded-lg overflow-hidden">
         <div className="border-2 border-gray-200">
-            <div className="mb-16  ">
+            <div className="mb-0  ">
                 <Swiper
                     effect={"coverflow"}
                     grabCursor={true}
@@ -53,6 +55,7 @@ export function Screenshots({ service }: { service: Service }) {
                 </Swiper>
             </div>
         </div>
+    </div>
 
 
     </div>;

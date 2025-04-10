@@ -8,6 +8,7 @@ export const GET_SERVICES = gql`
             slug
             abstract
             updatedAt
+         
             tags {
                 documentId
                 name
@@ -34,6 +35,8 @@ export const GET_SERVICE_DETAIL = gql`
             description
             functionality
             shortfacts
+            youtube_title
+            youtube_video
             pricing
             articlecontent {
                 __typename
@@ -91,6 +94,8 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
             longdescription
             description
             functionality
+            youtube_title
+            youtube_video
             shortfacts
             pricing
             articlecontent {
