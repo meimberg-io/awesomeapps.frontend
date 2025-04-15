@@ -1,7 +1,7 @@
 import Header from '@/components/Header'
-import {fetchTags} from '@/lib/strapi'
+import {fetchServices, fetchTags} from '@/lib/strapi'
+import InteractiveServiceList from '@/components/servicelist/InteractiveServiceList'
 import {Metadata} from "next";
-import Tagslist from "@/components/home/Tagslist";
 
 
 export const metadata: Metadata = {
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 
 
 export default async function HomePage() {
+    const initialServices = await fetchServices([])
     const initialTags = await fetchTags([])
 
     return (
@@ -18,7 +19,10 @@ export default async function HomePage() {
             <Header/>
             <main>
                 <div className="relative isolate overflow-hidden pt-16">
-                    <Tagslist tags={initialTags}/>
+                    <InteractiveServiceList
+                        initialServices={initialServices}
+                        initialTags={initialTags}
+                    />
                 </div>
             </main>
         </div>

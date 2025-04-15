@@ -7,16 +7,19 @@ import TagsSelected from '@/components/servicelist/TagsSelected'
 import {Service} from '@/types/service'
 import {Tag} from '@/types/tag'
 import {fetchServices, fetchTags} from '@/lib/strapi'
+import PageHeader, {PageHeaderStyle} from "@/components/PageHeader";
 
 interface Props {
     initialServices: Service[]
     initialTags: Tag[]
+    maintag?: Tag
 }
 
-export default function InteractiveServiceList({ initialServices, initialTags }: Props) {
+export default function InteractiveServiceList({ initialServices, initialTags, maintag }: Props) {
     const [services, setServices] = useState<Service[]>(initialServices)
     const [tags, setTags] = useState<Tag[]>(initialTags)
-    const [selectedTags, setSelectedTags] = useState<Tag[]>([])
+
+    const [selectedTags, setSelectedTags] = useState<Tag[]>(maintag ? [maintag] : [])
 
     const toggleTag = (tagID: string) => {
         const tag = tags.find((t) => t.documentId === tagID)
@@ -36,9 +39,19 @@ export default function InteractiveServiceList({ initialServices, initialTags }:
     return (
         <>
             <div className="shadow-lg">
-                <TagsAvailable tags={tags} selectedTags={selectedTags} toggleTag={toggleTag} />
+                {maintag !== undefined && (
+                    <PageHeader
+                        title={maintag.name}
+                        subtitle={maintag.description ?? " "}
+                        iconname={maintag.icon}
+                        style={PageHeaderStyle.TAG}
+                    />
+                )}
+                <TagsAvailable tags={tags} selectedTags={selectedTags} toggleTag={maintag ? toggleTag : undefined} />
                 {selectedTags.length > 0 && (
-                    <TagsSelected selectedTags={selectedTags} toggleTag={toggleTag} />
+                    <TagsSelected selectedTags={selectedTags.filter(tag => {
+                        return !maintag || tag.name !== maintag.name
+                    })} toggleTag={toggleTag} />
                 )}
             </div>
             <ServiceList services={services} selectedTags={selectedTags} toggleTag={toggleTag} />
