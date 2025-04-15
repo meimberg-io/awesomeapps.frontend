@@ -8,7 +8,7 @@ export const GET_SERVICES = gql`
             slug
             abstract
             updatedAt
-         
+
             tags {
                 documentId
                 name
@@ -144,6 +144,18 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
                 url
             }
 
+        }
+    }
+`;
+
+
+export const GET_TAG_DETAIL_BY_NAME = gql`
+    query GetTagDetailByName($name: String!) {
+        tags(filters: { name: { eq: $name } }) {
+            documentId
+            name            
+            description
+            icon
         }
     }
 `;
