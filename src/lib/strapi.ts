@@ -40,8 +40,7 @@ export const fetchServiceDetail = async (id: string): Promise<Service> => {
         query: GET_SERVICE_DETAIL,
         variables: {id},
     });
-    const item: Service = data.service;
-    return item;
+    return data.service;
 };
 
 export const fetchServiceDetailBySlug = async (slug: string): Promise<Service | undefined> => {
