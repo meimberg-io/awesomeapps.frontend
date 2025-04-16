@@ -6,8 +6,7 @@ import {renderIcon} from "@/components/util/renderIcon";
 
 export interface TagsAvailableProps {
     tags: Tag[];
-    selectedTags: Tag[];
-    toggleTag: (tag: string) => void;
+
 }
 
 
