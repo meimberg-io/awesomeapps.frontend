@@ -1,11 +1,12 @@
 import {fetchServiceDetailBySlug} from '@/lib/strapi'
 import Header from '@/components/Header'
-import PageHeader, {PageHeaderStyle} from '@/components/PageHeader'
+import PageHeader from '@/components/PageHeader'
 import ServiceDetail from '@/components/servicedetail/ServiceDetail'
 import {ArrowRightCircleIcon} from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import {notFound} from 'next/navigation'
 import type {Metadata} from 'next'
+import {PageHeaderStyle} from "@/types/PageHeaderStyle";
 
 // Dynamische Metadaten für SEO, SSR-kompatibel
 type Props = {

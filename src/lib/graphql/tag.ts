@@ -12,3 +12,14 @@ export const GET_TAGS = gql`
     }
 `;
 
+
+export const GET_TAG_DETAIL_BY_NAME = gql`
+    query GetTagDetailByName($name: String!) {
+        tags(filters: { name: { eq: $name } }) {
+            documentId
+            name
+            description
+            icon
+        }
+    }
+`;

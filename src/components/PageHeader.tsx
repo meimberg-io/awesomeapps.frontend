@@ -4,12 +4,8 @@ import React from 'react'
 import {Image} from "@/types/image";
 import {STRAPI_BASEURL} from "@/lib/constants";
 import {renderIcon} from "@/components/util/renderIcon";
+import {PageHeaderStyle} from "@/types/PageHeaderStyle";
 
-export enum PageHeaderStyle {
-    SERVICE = 'service',
-    PAGE = 'page',
-    TAG = 'tag',
-}
 
 export interface PageHeaderProps {
     title: string;
@@ -25,7 +21,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({title, subtitle, icon, iconname,
     let style_color_bg: string;
     let style_color_text: string;
     let style_bg_icon: string;
+    let style_color_icon: string = "text-saprimary-200";
+    let style_color_border: string = "border-saprimary-200";
 
+    console.log("PageHeader", style, iconname, title);
 
     switch (style) {
         case PageHeaderStyle.SERVICE:
@@ -37,16 +36,28 @@ const PageHeader: React.FC<PageHeaderProps> = ({title, subtitle, icon, iconname,
             style_color_bg = "bg-gray-700";
             style_color_text = "text-white";
             style_bg_icon = "bg-white";
+            style_color_icon = "text-saprimary-200";
+            style_color_border = "text-sasecondary-200";
+
             break;
         case PageHeaderStyle.PAGE:
             style_color_bg = "bg-saprimary-200";
             style_color_text = "text-white";
             style_bg_icon = "bg-white";
+
+            break;
+        case PageHeaderStyle.NEWS:
+            style_color_bg = "bg-gray-700";
+            style_color_text = "text-white";
+            style_bg_icon = "bg-white";
+            style_color_icon = "text-sasecondary-200";
+            style_color_border = "border-sasecondary-200";
             break;
         default:
             style_color_bg = "bg-sasecondary-50";
             style_color_text = "text-sasecondary-950";
             style_bg_icon = "bg-white";
+
             break;
     }
 
@@ -58,8 +69,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({title, subtitle, icon, iconname,
                     <p className={`text-lg mt-2 ${style_color_text}`}>{subtitle}</p>
                 </div>
                 {iconname && (
-                    <figure className={`w-20 h-20 rounded-full border-2 border-saprimary-200 flex items-center justify-center  ${style_bg_icon}`}>
-                        {renderIcon(iconname, `text-saprimary-200 mr-1`, 40)}
+                    <figure className={`w-20 h-20 rounded-full border-2 ${style_color_border} flex items-center justify-center  ${style_bg_icon}`}>
+                        {renderIcon(iconname, `${style_color_icon} mr-1`, 40)}
                     </figure>
                 )
                 }

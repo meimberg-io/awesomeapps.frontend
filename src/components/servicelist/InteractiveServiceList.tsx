@@ -7,7 +7,8 @@ import TagsSelected from '@/components/servicelist/TagsSelected'
 import {Service} from '@/types/service'
 import {Tag} from '@/types/tag'
 import {fetchServices, fetchTags} from '@/lib/strapi'
-import PageHeader, {PageHeaderStyle} from "@/components/PageHeader";
+import PageHeader from "@/components/PageHeader";
+import {PageHeaderStyle} from "@/types/PageHeaderStyle";
 
 interface Props {
     initialServices: Service[]

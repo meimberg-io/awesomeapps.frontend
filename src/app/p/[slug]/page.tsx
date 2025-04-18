@@ -2,9 +2,10 @@
 
 import {fetchPage} from '@/lib/strapi'
 import Header from '@/components/Header'
-import PageHeader, {PageHeaderStyle} from '@/components/PageHeader'
+import PageHeader from '@/components/PageHeader'
 import DynamicZoneComponent from '@/components/strapicomponents/dynamiczone/DynamicZoneComponent'
 import {notFound} from 'next/navigation'
+import {PageHeaderStyle} from "@/types/PageHeaderStyle";
 
 
 export default async function Page({params}: {
