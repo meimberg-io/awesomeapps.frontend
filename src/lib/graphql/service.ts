@@ -8,7 +8,43 @@ export const GET_SERVICES = gql`
             slug
             abstract
             updatedAt
+            top
+            publishdate
+            tags {
+                documentId
+                name
+            }
+            thumbnail {
+                url
+            }
+            logo {
+                url
+            }
+        }
 
+    }
+`;
+
+export const GET_SERVICES_NEWS = gql`
+    query GetServicesNews($limit: Int) {
+        services(
+            sort: "publishdate:desc", 
+            pagination: {
+                limit: $limit
+            },
+            filters: { 
+                publishdate: { 
+                    notNull:true 
+                } 
+            }
+        ) {
+            documentId
+            name
+            slug
+            abstract
+            updatedAt
+            top
+            publishdate
             tags {
                 documentId
                 name
@@ -38,6 +74,8 @@ export const GET_SERVICE_DETAIL = gql`
             youtube_title
             youtube_video
             pricing
+            top
+            publishdate
             articlecontent {
                 __typename
                 ... on ComponentSharedRichText {
@@ -98,6 +136,8 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
             youtube_video
             shortfacts
             pricing
+            top
+            publishdate
             articlecontent {
                 __typename
                 ... on ComponentSharedRichText {
@@ -148,14 +188,3 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
     }
 `;
 
-
-export const GET_TAG_DETAIL_BY_NAME = gql`
-    query GetTagDetailByName($name: String!) {
-        tags(filters: { name: { eq: $name } }) {
-            documentId
-            name            
-            description
-            icon
-        }
-    }
-`;

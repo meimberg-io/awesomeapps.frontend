@@ -11,8 +11,9 @@ import {BellIcon, XMarkIcon} from '@heroicons/react/24/outline'
 import Link from "next/link";
 
 const navigation = [
-    {name: 'Home', href: '/'},
-    {name: 'About', href: '/p/about'},
+     {name: 'Kategorien', href: '/'},
+    {name: 'Neu vorgestellt', href: '/news'},
+    {name: 'Über dieses Projekt', href: '/p/about'},
 
 ]
 
@@ -35,20 +36,14 @@ export default function Header() {
                         className="h-8 w-auto"
                     /></Link>
                 </div>
-                <nav className="hidden md:flex md:gap-x-11 md:text-sm/6 md:font-semibold md:text-gray-700">
+                <nav className="hidden md:flex md:gap-x-11 md:text-md md:font-semibold md:text-gray-700">
                     {navigation.map((item, itemIdx) => (
-                        <a key={itemIdx} href={item.href} className="text-blue-50">
+                        <Link key={itemIdx} href={item.href} className="text-blue-50 hover:no-underline hover:text-saprimary-200" >
                             {item.name}
-                        </a>
+                        </Link>
                     ))}
                 </nav>
-                <div className="flex flex-1 items-center justify-end gap-x-8">
-                    <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
-                        <span className="sr-only">View notifications</span>
-                        <BellIcon aria-hidden="true" className="size-6"/>
-                    </button>
 
-                </div>
             </div>
             <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
                 <div className="fixed inset-0 z-50"/>

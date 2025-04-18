@@ -24,4 +24,6 @@ export interface Service {
     youtube_title: string;
     tags: Tag[];
     updatedAt: string;
+    publishdate: string;
+    top: boolean;
 }
