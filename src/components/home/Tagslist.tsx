@@ -15,7 +15,7 @@ const TagsAvailable: React.FC<TagsAvailableProps> = ({tags}) => {
 
     return (
         <header className="pt-6 pb-4 sm:pb-6 bg-gray-600">
-            <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto ">
+            <div className="max-w-screen-2xl px-4 sm:px-6 lg:px-8 mx-auto ">
                 <div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
 
                     {tags.map((tag: Tag) => (
@@ -35,7 +35,7 @@ const TagsAvailable: React.FC<TagsAvailableProps> = ({tags}) => {
                                     <p className="text-sm group-hover:text-white">{tag.description}</p>
                                 </div>
                                 <div
-                                    className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold bg-white text-saprimary-400  rounded-full bottom-2 end-2 dark:border-gray-900">
+                                    className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold bg-white text-saprimary-400  rounded-full bottom-2 end-2 border-gray-900">
                                     {tag.count}
                                 </div>
 

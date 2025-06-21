@@ -23,7 +23,7 @@ export default function Header() {
     return (
 
         <header className="absolute inset-x-0 top-0 z-50 flex h-16 border-b border-gray-900/10">
-            <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-1 items-center gap-x-6">
                     <button type="button" onClick={() => setMobileMenuOpen(true)} className="-m-3 p-3 md:hidden">
                         <span className="sr-only">Open main menu</span>

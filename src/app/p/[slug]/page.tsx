@@ -1,5 +1,3 @@
-// src/app/p/[slug]/page.tsx
-
 import {fetchPage} from '@/lib/strapi'
 import Header from '@/components/Header'
 import PageHeader from '@/components/PageHeader'

@@ -12,7 +12,7 @@ interface Props {
 const ServiceDetail: React.FC<Props> = ({service}) => {
     return (
 
-        <div className="pt-0 pb-4 sm:pb-6 max-w-7xl gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8 mx-auto contentsection">
+        <div className="pt-0 pb-4 sm:pb-6 max-w-screen-2xl gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8 mx-auto contentsection">
 
             {/* description */}
 

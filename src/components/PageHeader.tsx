@@ -63,7 +63,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({title, subtitle, icon, iconname,
 
     return (
         <header className={`py-8  ${style_color_bg} `}>
-            <div className="mx-auto flex max-w-7xl flex-row items-stretch gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8 justify-between">
+            <div className="mx-auto flex max-w-screen-2xl flex-row items-stretch gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8 justify-between">
                 <div>
                     <h1 className={`text-xl2 mb-0 mt-0 font-semibold ${style_color_text}`}>{title}</h1>
                     <p className={`text-lg mt-2 ${style_color_text}`}>{subtitle}</p>
