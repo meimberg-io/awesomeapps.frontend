@@ -49,7 +49,7 @@ export default function InteractiveServiceList({ initialServices, initialTags, m
                     />
                 )}
                 <TagsAvailable tags={tags} selectedTags={selectedTags} toggleTag={maintag ? toggleTag : undefined} />
-                {selectedTags.length > 0 && (
+                {selectedTags.length > 1 && (
                     <TagsSelected selectedTags={selectedTags.filter(tag => {
                         return !maintag || tag.name !== maintag.name
                     })} toggleTag={toggleTag} />

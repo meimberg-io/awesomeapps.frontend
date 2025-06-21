@@ -18,7 +18,7 @@ const TagsAvailable: React.FC<TagsAvailableProps> = ({tags, selectedTags, toggle
 
     return (
         <header className="pt-6 pb-4 sm:pb-6 bg-gray-600">
-            <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-4 px-4 sm:px-6 lg:px-8 text-md">
+            <div className="mx-auto flex max-w-screen-2xl flex-wrap items-center gap-4 px-4 sm:px-6 lg:px-8 text-md">
                 {tags.filter(tag => !selectedTags.some(selectedTag => selectedTag.documentId === tag.documentId)).map((tag: Tag) => {
                         const content = (
                             <button key={tag.documentId}

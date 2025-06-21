@@ -65,7 +65,7 @@ export default async function Page({params}: {
                 </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-x-2 gap-y-16 lg:mx-auto max-w-7xl lg:mx-0 lg:grid-cols-2 lg:items-start lg:gap-y-10">
+            <div className="grid grid-cols-3 gap-x-2 gap-y-16 lg:mx-auto max-w-screen-2xl lg:mx-0 lg:grid-cols-2 lg:items-start lg:gap-y-10">
                 <div className="col-span-2 lg:gap-x-2 lg:pr-8">
                     <ServiceDetail service={service}/>
                 </div>
