@@ -25,6 +25,9 @@ jobs:
       run: npm ci
 
     - name: Run tests
+      env:
+        NEXT_PUBLIC_STRAPI_BASEURL: http://localhost:8202
+        NEXT_PUBLIC_APP_BASEURL: http://localhost:8203
       run: |
         npm run lint
         npm run build
