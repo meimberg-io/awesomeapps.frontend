@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-    {ignores: ['dist']},
+    {ignores: ['dist', '.next', 'node_modules']},
     {
         extends: [js.configs.recommended, ...tseslint.configs.recommended],
         files: ['**/*.{ts,tsx}'],
@@ -19,8 +19,20 @@ export default tseslint.config(
         },
         rules: {
             ...reactHooks.configs.recommended.rules,
-            'react-refresh/only-export-components': [                 'warn',                {allowConstantExport: true},            ],
-            "@typescript-eslint/ban-ts-comment": "off", // Oder "off"
+            // Allow metadata exports in Next.js App Router pages
+            'react-refresh/only-export-components': [
+                'warn',
+                {
+                    allowConstantExport: true,
+                    allowExportNames: ['metadata', 'generateMetadata', 'dynamic']
+                }
+            ],
+            "@typescript-eslint/ban-ts-comment": "off",
+            // Enforce no unused vars (catches errors that fail in CI/CD)
+            "@typescript-eslint/no-unused-vars": ["error", {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_"
+            }]
         },
     },
 )
