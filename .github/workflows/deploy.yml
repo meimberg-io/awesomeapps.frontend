@@ -91,9 +91,9 @@ jobs:
           # Verify deployment
           echo "Waiting for application to start..."
           sleep 30
-          if curl -f http://localhost:$APP_PORT/ > /dev/null 2>&1; then
-            echo "✅ ServiceAtlas Frontend deployed successfully on port $APP_PORT!"
-            echo "🌐 Application is available at: http://${{ vars.HOST }}:$APP_PORT"
+          if curl -f http://localhost:${APP_PORT}/ > /dev/null 2>&1; then
+            echo "✅ ServiceAtlas Frontend deployed successfully on port ${APP_PORT}!"
+            echo "🌐 Application is available at: http://${{ vars.HOST }}:${APP_PORT}"
           else
             echo "❌ Deployment verification failed!"
             echo "📋 Container logs:"
