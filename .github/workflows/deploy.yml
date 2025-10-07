@@ -26,8 +26,9 @@ jobs:
 
     - name: Run tests
       env:
-        NEXT_PUBLIC_STRAPI_BASEURL: http://localhost:8202
-        NEXT_PUBLIC_APP_BASEURL: http://localhost:8203
+        NEXT_PUBLIC_STRAPI_BASEURL: ${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
+        NEXT_PUBLIC_APP_BASEURL: ${{ vars.NEXT_PUBLIC_APP_BASEURL }}
+        NEXT_PUBLIC_MATOMO_TRACKER: ${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
       run: |
         npm run lint
         npm run build
@@ -64,9 +65,9 @@ jobs:
           NODE_ENV=production
           APP_PORT=$APP_PORT
           PORT=5680
-          NEXT_PUBLIC_STRAPI_BASEURL=${{ vars.NEXT_PUBLIC_STRAPI_BASEURL || 'http://localhost:8202' }}
+          NEXT_PUBLIC_STRAPI_BASEURL=${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
           NEXT_PUBLIC_APP_BASEURL=${{ vars.NEXT_PUBLIC_APP_BASEURL }}
-          NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER || 'false' }}
+          NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
           REVALIDATE_SECRET=${{ secrets.REVALIDATE_SECRET }}
           EOF
           
@@ -92,7 +93,7 @@ jobs:
           sleep 30
           if curl -f http://localhost:$APP_PORT/ > /dev/null 2>&1; then
             echo "✅ ServiceAtlas Frontend deployed successfully on port $APP_PORT!"
-            echo "🌐 Application is available at: http://${{ vars.HOST || secrets.HOST }}:$APP_PORT"
+            echo "🌐 Application is available at: http://${{ vars.HOST }}:$APP_PORT"
           else
             echo "❌ Deployment verification failed!"
             echo "📋 Container logs:"
