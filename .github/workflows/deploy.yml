@@ -42,44 +42,37 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Deploy to server
+    - name: Create .env file
+      run: |
+        cat > .env << EOF
+        NODE_ENV=production
+        APP_PORT=${{ vars.APP_PORT }}
+        PORT=5680
+        NEXT_PUBLIC_STRAPI_BASEURL=${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
+        NEXT_PUBLIC_APP_BASEURL=${{ vars.NEXT_PUBLIC_APP_BASEURL }}
+        NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
+        REVALIDATE_SECRET=${{ secrets.REVALIDATE_SECRET }}
+        EOF
+
+    - name: Deploy files to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ vars.HOST }}
+        username: ${{ vars.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "."
+        target: "/opt/serviceatlas-frontend"
+        rm: false
+        strip_components: 0
+
+    - name: Deploy with Docker Compose
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ vars.HOST  }}
-        username: ${{ vars.USERNAME || 'deploy' }}
+        host: ${{ vars.HOST }}
+        username: ${{ vars.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-
-          # setup variables
-          APP_NAME=${{ env.APP_NAME }}
-          APP_PORT="${{ env.APP_PORT }}"
-          APP_DIR="/opt/$APP_NAME"
-
-          # Create application directory
-          mkdir -p $APP_DIR
-          cd $APP_DIR
-          
-          # Create production environment file
-          echo "Creating .env with APP_PORT=$APP_PORT"
-          cat > .env << EOF
-          NODE_ENV=production
-          APP_PORT=$APP_PORT
-          PORT=5680
-          NEXT_PUBLIC_STRAPI_BASEURL=${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
-          NEXT_PUBLIC_APP_BASEURL=${{ vars.NEXT_PUBLIC_APP_BASEURL }}
-          NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
-          REVALIDATE_SECRET=${{ secrets.REVALIDATE_SECRET }}
-          EOF
-          
-          echo "Created .env file:"
-          cat .env
-          
-          # Clone the repository on the server
-          rm -rf temp-deploy
-          git clone --depth 1 https://github.com/${{ github.repository }}.git temp-deploy
-          cp -r temp-deploy/* ./
-          cp -r temp-deploy/.* ./ 2>/dev/null || true
-          rm -rf temp-deploy
+          cd /opt/serviceatlas-frontend
           
           # Deploy using the unified docker-compose.yml with production profile
           docker-compose down || true
