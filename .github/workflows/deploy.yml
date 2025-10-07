@@ -1,0 +1,99 @@
+name: Deploy ServiceAtlas Frontend to Server
+
+on:
+  push:
+    branches: [ main, master ]
+
+env:
+  APP_PORT: ${{ vars.APP_PORT }}
+  APP_NAME: "serviceatlas-frontend"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: |
+        npm run lint
+        npm run build
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ vars.HOST  }}
+        username: ${{ vars.USERNAME || 'deploy' }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+
+          # setup variables
+          APP_NAME=${{ env.APP_NAME }}
+          APP_PORT="${{ env.APP_PORT }}"
+          APP_DIR="/opt/$APP_NAME"
+
+          # Create application directory
+          mkdir -p $APP_DIR
+          cd $APP_DIR
+          
+          # Create production environment file
+          echo "Creating .env with APP_PORT=$APP_PORT"
+          cat > .env << EOF
+          NODE_ENV=production
+          APP_PORT=$APP_PORT
+          PORT=5680
+          NEXT_PUBLIC_STRAPI_BASEURL=${{ vars.NEXT_PUBLIC_STRAPI_BASEURL || 'http://localhost:8202' }}
+          NEXT_PUBLIC_APP_BASEURL=${{ vars.NEXT_PUBLIC_APP_BASEURL }}
+          NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER || 'false' }}
+          REVALIDATE_SECRET=${{ secrets.REVALIDATE_SECRET }}
+          EOF
+          
+          echo "Created .env file:"
+          cat .env
+          
+          # Clone the repository on the server
+          rm -rf temp-deploy
+          git clone --depth 1 https://github.com/${{ github.repository }}.git temp-deploy
+          cp -r temp-deploy/* ./
+          cp -r temp-deploy/.* ./ 2>/dev/null || true
+          rm -rf temp-deploy
+          
+          # Deploy using the unified docker-compose.yml with production profile
+          docker-compose down || true
+          docker-compose --profile prod up -d --build
+          
+          # Clean up
+          docker image prune -f
+          
+          # Verify deployment
+          echo "Waiting for application to start..."
+          sleep 30
+          if curl -f http://localhost:$APP_PORT/ > /dev/null 2>&1; then
+            echo "✅ ServiceAtlas Frontend deployed successfully on port $APP_PORT!"
+            echo "🌐 Application is available at: http://${{ vars.HOST || secrets.HOST }}:$APP_PORT"
+          else
+            echo "❌ Deployment verification failed!"
+            echo "📋 Container logs:"
+            docker-compose --profile prod logs || true
+            exit 1
+          fi
+

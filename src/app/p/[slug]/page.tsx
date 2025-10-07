@@ -5,7 +5,6 @@ import DynamicZoneComponent from '@/components/strapicomponents/dynamiczone/Dyna
 import {notFound} from 'next/navigation'
 import {PageHeaderStyle} from "@/types/PageHeaderStyle";
 
-
 export default async function Page({params}: {
     params: Promise<{ slug: string }>
 }) {
