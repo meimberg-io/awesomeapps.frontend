@@ -1,5 +1,5 @@
 import Header from '@/components/Header'
-import {fetchServiceDetailBySlug, fetchServices, fetchTagDetailByName, fetchTags} from '@/lib/strapi'
+import {fetchServices, fetchTagDetailByName, fetchTags} from '@/lib/strapi'
 import InteractiveServiceList from '@/components/servicelist/InteractiveServiceList'
 import {Metadata} from "next";
 import {notFound} from "next/navigation";

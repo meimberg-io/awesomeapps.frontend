@@ -29,7 +29,7 @@ export function MatomoTracker() {
         g.async = true
         g.src = "https://matomo.meimberg.io/matomo.js"
         s.parentNode?.insertBefore(g, s)
-    }, [])
+    }, [enabled])
 
     return null
 }

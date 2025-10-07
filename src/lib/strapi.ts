@@ -6,7 +6,6 @@ import {STRAPI_BASEURL} from "@/lib/constants";
 import {GET_SERVICE_DETAIL, GET_SERVICE_DETAIL_BY_SLUG, GET_SERVICES, GET_SERVICES_NEWS} from "@/lib/graphql/service";
 import {GET_TAG_DETAIL_BY_NAME, GET_TAGS} from "@/lib/graphql/tag";
 import {GET_PAGES, GET_PAGES_BY_SLUG} from "@/lib/graphql/page";
-import * as console from "node:console";
 
 const client = new ApolloClient({
     uri: STRAPI_BASEURL + "/graphql",
