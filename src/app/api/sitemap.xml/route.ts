@@ -5,7 +5,6 @@ import {APP_BASEURL} from "@/lib/constants";
 import {NextResponse} from "next/server";
 import {Tag} from "@/types/tag";
 
-
 const generateSitemap = (services: Service[], pages: Page[], tags: Tag[]) => {
     const baseUrl = APP_BASEURL; // Deine Domain
 

@@ -1,58 +1,94 @@
+# ServiceAtlas Frontend
 
-# Setup
+Next.js frontend application for ServiceAtlas platform.
 
+## Quick Start
 
-## see markdown files
-
-
-
-
-
-## Production Setup
+### Local Development (Standard)
 
 ```bash
-
-# user www  
-
-mkdir /srv/www
-useradd -d /srv/www -s /bin/bash www
-chown www:www /srv/www
-
-# node 
-
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-
-
-# nextjs
-
-cd /srv/www
-su www
-
-git clone https://###token###@github.com/meimberg-io/serviceatlas.frontend/ /srv/www/serviceatlas
-
-cd /srv/www/serviceatlas
-
 npm install
-npm run build
-
-pm2 start npm --name "serviceatlas" -- start
-pm2 save
-pm2 startup
-
-
-
+npm run dev
 ```
 
+Visit `http://localhost:3000`
 
-## Deploy
+### Local Development (Docker)
 
 ```bash
- git pull && rm -rf .next && npm run build && pm2 restart serviceatlas
+# Copy environment file
+cp env.example .env
 
+# Edit .env with your settings
 
+# Start with Docker
+docker-compose --profile dev up --build
 ```
+
+Visit `http://localhost:8203` (or your configured `APP_PORT`)
+
+## Documentation
+
+- **[Quick Reference](doc/QUICK-REFERENCE.md)** - 🚀 Fast access to all commands and configs
+- **[Docker Setup](doc/DOCKER.md)** - Complete Docker usage guide for development and production
+- **[Build Arguments Explained](doc/BUILD-ARGS-EXPLAINED.md)** - ⭐ How build args enable static page generation
+- **[GitHub Actions](doc/GITHUB-ACTIONS.md)** - Automated deployment setup and configuration
+- **[Deployment Guide](doc/DEPLOYMENT.md)** - Manual server deployment with Nginx and PM2
+- **[Integration Guide](doc/INTEGRATION.md)** - How frontend connects to Strapi backend, ports, and troubleshooting
+
+## Environment Variables
+
+Copy `env.example` to `.env` and configure:
+
+```env
+NODE_ENV=development
+APP_PORT=8203
+NEXT_PUBLIC_STRAPI_BASEURL=http://localhost:8202
+NEXT_PUBLIC_APP_BASEURL=http://localhost:8203
+NEXT_PUBLIC_MATOMO_TRACKER=false
+REVALIDATE_SECRET=your-secret-token-here
+```
+
+## Scripts
+
+- `npm run dev` - Start development server (port 3000)
+- `npm run build` - Build production application
+- `npm run start` - Start production server (port 5680)
+- `npm run lint` - Run ESLint
+
+## Docker Commands
+
+**Development:**
+```bash
+docker-compose --profile dev up -d --build
+```
+
+**Production:**
+```bash
+docker-compose --profile prod up -d --build
+```
+
+**View Logs:**
+```bash
+docker-compose logs -f
+```
+
+## Technology Stack
+
+- **Next.js 15** - React framework
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **Apollo Client** - GraphQL client
+- **Strapi** - Headless CMS backend
+- **Docker** - Containerization
+
+## Quick Deploy (PM2)
+
+```bash
+git pull && rm -rf .next && npm run build && pm2 restart serviceatlas
+```
+
+For detailed deployment instructions, see [doc/DEPLOYMENT.md](doc/DEPLOYMENT.md).
 
 
 

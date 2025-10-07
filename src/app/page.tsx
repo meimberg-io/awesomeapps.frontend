@@ -5,7 +5,6 @@ import Tagslist from "@/components/home/Tagslist";
 import PageHeader from "@/components/PageHeader";
 import {PageHeaderStyle} from "@/types/PageHeaderStyle";
 
-
 export const metadata: Metadata = {
     title: 'Serviceatlas',
     description: 'Der Serviceatlas ist eine Sammlung von Software-as-a-Service (SaaS) Lösungen.',
