@@ -1,14 +1,8 @@
 'use client'
 
-import React, {useEffect, useState} from 'react'
-import ServiceList from '@/components/servicelist/ServiceList'
-import TagsAvailable from '@/components/servicelist/TagsAvailable'
-import TagsSelected from '@/components/servicelist/TagsSelected'
+import React from 'react'
 import {Service} from '@/types/service'
-import {Tag} from '@/types/tag'
-import {fetchServices, fetchTags} from '@/lib/strapi'
 import PageHeader from "@/components/PageHeader";
-import ServiceTile from "@/components/servicelist/ServiceTile";
 import ServiceNewsTile from "@/components/news/ServiceNewsTile";
 import {PageHeaderStyle} from "@/types/PageHeaderStyle";
 

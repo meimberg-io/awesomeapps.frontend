@@ -1,8 +1,7 @@
 import React from "react";
 import {BlocksRenderer} from "@strapi/blocks-react-renderer";
 // @ts-ignore
-// @ts-ignore
-import {RootNode, BlocksComponents as DefaultBlocksComponents, BlockRendererProps} from "@strapi/blocks-react-renderer/dist/BlocksRenderer";
+import {RootNode} from "@strapi/blocks-react-renderer/dist/BlocksRenderer";
 
 
 type RichTextProps = {
