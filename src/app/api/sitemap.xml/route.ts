@@ -43,14 +43,34 @@ const generateSitemap = (services: Service[], pages: Page[], tags: Tag[]) => {
 };
 
 export async function GET() {
-    const services = await fetchServices();
-    const pages = await fetchPages();
-    const tags = await fetchTags();
+    try {
+        const services = await fetchServices();
+        const pages = await fetchPages();
+        const tags = await fetchTags();
 
-    return new NextResponse(generateSitemap(services, pages, tags), {
-        status: 200,
-        headers: {
-            'Content-Type': 'application/xml',
-        },
-    })
+        return new NextResponse(generateSitemap(services, pages, tags), {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/xml',
+            },
+        })
+    } catch (error) {
+        // Return minimal sitemap if Strapi is unavailable (e.g., during build)
+        console.error('Error generating sitemap:', error);
+        const minimalSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+                <url>
+                  <loc>${APP_BASEURL}</loc>
+                  <changefreq>daily</changefreq>
+                  <priority>1.0</priority>
+                </url>
+          </urlset>`;
+        
+        return new NextResponse(minimalSitemap, {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/xml',
+            },
+        })
+    }
 }
