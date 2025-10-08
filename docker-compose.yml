@@ -1,36 +1,38 @@
 # Unified docker-compose.yml for both local development and production deployment
-x-app-base: &app-base
-  build:
-    context: .
-    dockerfile: Dockerfile
-    args:
-      NEXT_PUBLIC_STRAPI_BASEURL: ${NEXT_PUBLIC_STRAPI_BASEURL}
-      NEXT_PUBLIC_APP_BASEURL: ${NEXT_PUBLIC_APP_BASEURL}
-      NEXT_PUBLIC_MATOMO_TRACKER: ${NEXT_PUBLIC_MATOMO_TRACKER:-false}
-  ports:
-    - "${APP_PORT}:5680"
-  environment:
-    - NODE_ENV=${NODE_ENV:-development}
-    - PORT=5680
-    - NEXT_PUBLIC_STRAPI_BASEURL=${NEXT_PUBLIC_STRAPI_BASEURL}
-    - NEXT_PUBLIC_APP_BASEURL=${NEXT_PUBLIC_APP_BASEURL}
-    - NEXT_PUBLIC_MATOMO_TRACKER=${NEXT_PUBLIC_MATOMO_TRACKER:-false}
-    - REVALIDATE_SECRET=${REVALIDATE_SECRET}
-  restart: unless-stopped
-  networks:
-    - app-network
-  healthcheck:
-    test: ["CMD", "node", "-e", "require('http').get('http://localhost:5680/', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
-    interval: 30s
-    timeout: 10s
-    retries: 3
-    start_period: 40s
-
 services:
+  # Base service definition (template only - never instantiated)
+  app-base:
+    profiles: ["base"]  # Dummy profile to prevent instantiation
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_STRAPI_BASEURL: ${NEXT_PUBLIC_STRAPI_BASEURL}
+        NEXT_PUBLIC_APP_BASEURL: ${NEXT_PUBLIC_APP_BASEURL}
+        NEXT_PUBLIC_MATOMO_TRACKER: ${NEXT_PUBLIC_MATOMO_TRACKER:-false}
+    ports:
+      - "${APP_PORT}:5680"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=5680
+      - NEXT_PUBLIC_STRAPI_BASEURL=${NEXT_PUBLIC_STRAPI_BASEURL}
+      - NEXT_PUBLIC_APP_BASEURL=${NEXT_PUBLIC_APP_BASEURL}
+      - NEXT_PUBLIC_MATOMO_TRACKER=${NEXT_PUBLIC_MATOMO_TRACKER:-false}
+      - REVALIDATE_SECRET=${REVALIDATE_SECRET}
+    restart: unless-stopped
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5680/', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
   # Development service with volume mounts
   app-dev:
-    <<: *app-base
     profiles: ["dev"]
+    extends: app-base
     volumes:
       - ./src:/app/src:ro
       - ./public:/app/public:ro
@@ -43,8 +45,8 @@ services:
 
   # Production service without volume mounts
   app-prod:
-    <<: *app-base
     profiles: ["prod"]
+    extends: app-base
 
   
 
