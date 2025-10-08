@@ -83,7 +83,7 @@ jobs:
           
           # Verify deployment
           echo "Waiting for application to start..."
-          sleep 60
+          sleep 120
           if curl -f http://localhost:$APP_PORT/ > /dev/null 2>&1; then
             echo "✅ Serviceatlas deployed successfully on port $APP_PORT!"
             echo "🌐 Application is available at: http://${{ vars.HOST || secrets.HOST }}:$APP_PORT"
