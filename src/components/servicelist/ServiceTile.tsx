@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import {Tag} from "@/types/tag";
 import {Service} from "@/types/service";
 import {STRAPI_BASEURL} from "@/lib/constants";

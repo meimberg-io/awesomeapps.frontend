@@ -9,10 +9,6 @@ export interface TagsSelectedProps {
 
 }
 
-export function classNames(...classes: string[]): string {
-    return classes.filter(Boolean).join(' ')
-}
-
 const TagsSelected: React.FC<TagsSelectedProps> = ({selectedTags, toggleTag}) => {
     return (
 
