@@ -1,6 +1,5 @@
-import Header from '@/components/Header'
 import {fetchServices, fetchTagDetailByName, fetchTags} from '@/lib/strapi'
-import InteractiveServiceList from '@/components/servicelist/InteractiveServiceList'
+import InteractiveServiceList from '@/components/new/InteractiveServiceList'
 import {Metadata} from "next";
 import {notFound} from "next/navigation";
 import {Tag} from "@/types/tag";
@@ -47,18 +46,11 @@ export default async function Page({params}: {
     const initialTags = await fetchTags([tag])
 
     return (
-        <div>
-            <Header/>
-            <main>
-                <div className="relative isolate overflow-hidden pt-16">
-                    <InteractiveServiceList
-                        initialServices={initialServices}
-                        initialTags={initialTags}
-                        maintag={tag}
-                    />
-                </div>
-            </main>
-        </div>
+        <InteractiveServiceList
+            initialServices={initialServices}
+            initialTags={initialTags}
+            maintag={tag}
+        />
     )
 }
 

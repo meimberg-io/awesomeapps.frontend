@@ -1,84 +1,72 @@
 'use client'
 
 import {useState} from 'react'
-import {Dialog, DialogPanel} from '@headlessui/react'
+import {Menu, X} from 'lucide-react'
+import Link from "next/link"
+import {Button} from "@/components/ui/button"
 import {
-
-    Bars3Icon,
-
-} from '@heroicons/react/20/solid'
-import {XMarkIcon} from '@heroicons/react/24/outline'
-import Link from "next/link";
+    Sheet,
+    SheetContent,
+    SheetTrigger,
+} from "@/components/ui/sheet"
 
 const navigation = [
-     {name: 'Kategorien', href: '/'},
+    {name: 'Kategorien', href: '/'},
     {name: 'Neu vorgestellt', href: '/news'},
     {name: 'Über dieses Projekt', href: '/p/about'},
-
 ]
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (
-
-        <header className="absolute inset-x-0 top-0 z-50 flex h-16 border-b border-gray-900/10">
-            <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-1 items-center gap-x-6">
-                    <button type="button" onClick={() => setMobileMenuOpen(true)} className="-m-3 p-3 md:hidden">
-                        <span className="sr-only">Open main menu</span>
-                        <Bars3Icon aria-hidden="true" className="size-5 text-gray-900"/>
-                    </button>
-                    <Link href={`/`} passHref className="">
-                    <img
-                        alt="serviceatlas.meimberg.io"
-                        src="/logo-full.svg"
-                        className="h-8 w-auto"
-                    /></Link>
-                </div>
-                <nav className="hidden md:flex md:gap-x-11 md:text-md md:font-semibold md:text-gray-700">
-                    {navigation.map((item, itemIdx) => (
-                        <Link key={itemIdx} href={item.href} className="text-blue-50 hover:no-underline hover:text-saprimary-200" >
-                            {item.name}
-                        </Link>
-                    ))}
-                </nav>
-
-            </div>
-            <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-                <div className="fixed inset-0 z-50"/>
-                <DialogPanel className="fixed inset-y-0 left-0 z-50 w-full overflow-y-auto bg-white px-4 pb-6 sm:max-w-sm sm:px-6 sm:ring-1 sm:ring-gray-900/10">
-                    <div className="-ml-0.5 flex h-16 items-center gap-x-6">
-                        <button type="button" onClick={() => setMobileMenuOpen(false)} className="-m-2.5 p-2.5 text-gray-700">
-                            <span className="sr-only">Close menu</span>
-                            <XMarkIcon aria-hidden="true" className="size-6"/>
-                        </button>
-                        <div className="-ml-0.5">
-                            <a href="#" className="-m-1.5 block p-1.5">
-                                <span className="sr-only">Your Company</span>
-                                <img
-                                    alt=""
-                                    src="logo-full.svg"
-                                    className="h-8 w-auto"
-                                />
-                            </a>
-                        </div>
-                    </div>
-                    <div className="mt-2 space-y-2">
+        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container flex h-16 items-center justify-between px-6">
+                <div className="flex items-center gap-6">
+                    <Link href="/" className="flex items-center space-x-2">
+                        <img
+                            alt="Serviceatlas"
+                            src="/logo-full.svg"
+                            className="h-8 w-auto"
+                        />
+                    </Link>
+                    <nav className="hidden md:flex md:gap-x-8">
                         {navigation.map((item) => (
-                            <a
+                            <Link
                                 key={item.name}
                                 href={item.href}
-                                className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
+                                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
                             >
                                 {item.name}
-                            </a>
+                            </Link>
                         ))}
-                    </div>
-                </DialogPanel>
-            </Dialog>
+                    </nav>
+                </div>
+
+                {/* Mobile menu */}
+                <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                    <SheetTrigger asChild className="md:hidden">
+                        <Button variant="ghost" size="icon">
+                            <Menu className="h-5 w-5" />
+                            <span className="sr-only">Toggle menu</span>
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                        <nav className="flex flex-col gap-4 mt-8">
+                            {navigation.map((item) => (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="block px-4 py-2 text-lg font-medium text-foreground hover:text-primary transition-colors rounded-md hover:bg-accent"
+                                >
+                                    {item.name}
+                                </Link>
+                            ))}
+                        </nav>
+                    </SheetContent>
+                </Sheet>
+            </div>
         </header>
-
-
     )
 }
