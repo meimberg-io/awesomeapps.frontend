@@ -1,43 +1,93 @@
 module.exports = {
+    darkMode: ["class"],
     content: [
-        "./index.html",
-        "./src/**/*.{js,ts,jsx,tsx}",
-        './src/styles/**/*.{css,scss}',
+        "./pages/**/*.{ts,tsx}",
+        "./components/**/*.{ts,tsx}",
+        "./app/**/*.{ts,tsx}",
+        "./src/**/*.{ts,tsx,js,jsx}",
     ],
+    prefix: "",
     theme: {
+        container: {
+            center: true,
+            padding: "2rem",
+            screens: {
+                "2xl": "1400px",
+            },
+        },
         extend: {
             colors: {
-                saprimary: {
-                    50: "#feeee6",
-                    100: "#fdd7c3",
-                    200: "#fc9d6b",
-                    300: "#fb8141",
-                    400: "#f95905",
-                    500: "#d14b04",
-                    600: "#ae3e03",
-                    700: "#8b3202",
-                    800: "#6d2702",
-                    900: "#4f1c01",
-                    950: "#311101",
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+                primary: {
+                    DEFAULT: "hsl(var(--primary))",
+                    foreground: "hsl(var(--primary-foreground))",
                 },
-                sasecondary: {
-                    50: "#e6f6fe",
-                    100: "#c3e9fd",
-                    200: "#82d2fc",
-                    300: "#41bafb",
-                    400: "#05a5f9",
-                    500: "#036294",
-                    600: "#0373ae",
-                    700: "#025c8b",
-                    800: "#02486d",
-                    900: "#01344f",
-                    950: "#012131",
+                secondary: {
+                    DEFAULT: "hsl(var(--secondary))",
+                    foreground: "hsl(var(--secondary-foreground))",
                 },
+                destructive: {
+                    DEFAULT: "hsl(var(--destructive))",
+                    foreground: "hsl(var(--destructive-foreground))",
+                },
+                muted: {
+                    DEFAULT: "hsl(var(--muted))",
+                    foreground: "hsl(var(--muted-foreground))",
+                },
+                accent: {
+                    DEFAULT: "hsl(var(--accent))",
+                    foreground: "hsl(var(--accent-foreground))",
+                },
+                popover: {
+                    DEFAULT: "hsl(var(--popover))",
+                    foreground: "hsl(var(--popover-foreground))",
+                },
+                card: {
+                    DEFAULT: "hsl(var(--card))",
+                    foreground: "hsl(var(--card-foreground))",
+                },
+            },
+            backgroundImage: {
+                'gradient-hero': 'var(--gradient-hero)',
+                'gradient-card': 'var(--gradient-card)',
+            },
+            boxShadow: {
+                'sm': 'var(--shadow-sm)',
+                'md': 'var(--shadow-md)',
+                'lg': 'var(--shadow-lg)',
+            },
+            borderRadius: {
+                lg: "var(--radius)",
+                md: "calc(var(--radius) - 2px)",
+                sm: "calc(var(--radius) - 4px)",
+            },
+            keyframes: {
+                "accordion-down": {
+                    from: {
+                        height: "0",
+                    },
+                    to: {
+                        height: "var(--radix-accordion-content-height)",
+                    },
+                },
+                "accordion-up": {
+                    from: {
+                        height: "var(--radix-accordion-content-height)",
+                    },
+                    to: {
+                        height: "0",
+                    },
+                },
+            },
+            animation: {
+                "accordion-down": "accordion-down 0.2s ease-out",
+                "accordion-up": "accordion-up 0.2s ease-out",
             },
         },
     },
-    plugins: [require("daisyui")],
-    daisyui: {
-        themes: ["dark", "black"],
-    },
+    plugins: [require("tailwindcss-animate")],
 };

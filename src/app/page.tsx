@@ -1,9 +1,6 @@
-import Header from '@/components/Header'
-import {fetchTags} from '@/lib/strapi'
+import {fetchServices, fetchTags} from '@/lib/strapi'
 import {Metadata} from "next";
-import Tagslist from "@/components/home/Tagslist";
-import PageHeader from "@/components/PageHeader";
-import {PageHeaderStyle} from "@/types/PageHeaderStyle";
+import InteractiveServiceList from "@/components/new/InteractiveServiceList";
 
 export const metadata: Metadata = {
     title: 'Serviceatlas',
@@ -12,25 +9,13 @@ export const metadata: Metadata = {
 
 
 export default async function HomePage() {
+    const initialServices = await fetchServices([])
     const initialTags = await fetchTags([])
 
     return (
-        <div>
-            <Header/>
-            <div className="relative isolate overflow-hidden pt-16  mx-auto">
-                <div className="shadow-lg">
-                    <PageHeader
-                        title="Serviceatlas"
-                        subtitle="Kategorieübersicht"
-
-                        style={PageHeaderStyle.NEWS}
-                    />
-                </div>
-            </div>
-            <main>
-                    <Tagslist tags={initialTags}/>
-
-            </main>
-        </div>
+        <InteractiveServiceList
+            initialServices={initialServices}
+            initialTags={initialTags}
+        />
     )
 }

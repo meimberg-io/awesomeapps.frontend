@@ -3,50 +3,65 @@ import React from "react";
 import Link from "next/link";
 import {Service} from "@/types/service";
 import {STRAPI_BASEURL} from "@/lib/constants";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight } from "lucide-react";
 
 interface ServiceTileProps {
     service: Service,
-
 }
-
 
 const ServiceTile: React.FC<ServiceTileProps> = ({service}) => {
     const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
 
     return (
-        <div key={service.documentId} className="card shadow-xl overflow-hidden transition-all-transform duration-300 ease-in-out">
+        <Link href={`/s/${service.slug}`} className="block">
+            <Card className="group relative overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 bg-card h-full flex flex-col">
+                {/* Logo Header */}
+                <div className="bg-muted/50 px-7 py-4 flex items-center justify-center border-b border-border/50 group-hover:bg-primary/10 transition-colors duration-300">
+                    <img 
+                        src={iconurl} 
+                        alt={service.name} 
+                        className="max-h-12 w-auto object-contain"
+                    />
+                </div>
 
-            <div className="flex flex-col h-full group ">
-
-
-                <Link href={`/s/${service.slug}`} passHref className="cursor-pointer ">
-                    <figure className="bg-gray-200 px-7 h-16 group-hover:bg-saprimary-200 transition-all-transform duration-300 ease-in-out">
-                        <img src={iconurl} alt={service.name} className="max-h-10 w-auto my-4 mx-5"/>
-                    </figure>
-                </Link>
-
-                {/* cardbody */}
-                <Link href={`/s/${service.slug}`} passHref className="cursor-pointer card-body bg-gray-50 hover:no-underline group/card">
-                    <h2 className="card-title text-sasecondary-500 group-hover:text-saprimary-400 transition-all-transform duration-300 ease-in-out">
+                {/* Content */}
+                <div className="p-6 flex-1 flex flex-col">
+                    <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
                         {service.name}
                     </h2>
-                    <p className="text-sm mt-1 text-gray-500">{service.abstract}</p>
-                </Link>
-            </div>
+                    <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed flex-1">
+                        {service.abstract}
+                    </p>
+                    
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2 mt-4">
+                        {service.tags.slice(0, 3).map((tag) => (
+                            <Badge 
+                                key={tag.documentId} 
+                                variant="secondary" 
+                                className="text-xs"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    window.location.href = `/t/${tag.name}`;
+                                }}
+                            >
+                                {tag.icon} {tag.name}
+                            </Badge>
+                        ))}
+                    </div>
 
-            {/* cardfooter */}
-
-            <div className="card-actions bg-sasecondary-200 p-5 :">
-                {service.tags.map((tag) => (
-                    <Link href={"/t/" + tag.name} key={tag.documentId}>
-                        <div className={`cursor-pointer badge badge-md border-0 bg-sasecondary-50 text-sasecondary-800 hover:bg-saprimary-200 hover:text-saprimary-950`}>
-                            {tag.name}
-                        </div>
-                    </Link>
-                ))}
-
-            </div>
-        </div>
+                    {/* View Details Footer */}
+                    <div className="flex items-center justify-between pt-4 mt-4 border-t border-border/50">
+                        <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                            Details anzeigen
+                        </span>
+                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                    </div>
+                </div>
+            </Card>
+        </Link>
     );
 };
 
