@@ -14,7 +14,7 @@ npm run dev
 cp env.example .env
 docker-compose --profile dev up --build
 ```
-→ http://localhost:8203
+→ http://localhost:8204
 
 ### Docker Prod
 ```bash
@@ -27,7 +27,7 @@ docker-compose --profile prod up -d --build
 | Mode | Port | URL |
 |------|------|-----|
 | npm dev | 3000 | http://localhost:3000 |
-| Docker dev | 8203 | http://localhost:8203 |
+| Docker dev | 8204 | http://localhost:8204 |
 | Docker prod | 5680 | http://localhost:5680 |
 | Strapi Backend | 8202 | http://localhost:8202 |
 
@@ -36,14 +36,14 @@ docker-compose --profile prod up -d --build
 **All required:**
 ```env
 NEXT_PUBLIC_STRAPI_BASEURL=http://localhost:8202
-NEXT_PUBLIC_APP_BASEURL=http://localhost:8203  
+NEXT_PUBLIC_APP_BASEURL=http://localhost:8204  
 REVALIDATE_SECRET=your-random-secret-token
 ```
 
 **Optional:**
 ```env
 NEXT_PUBLIC_MATOMO_TRACKER=false
-APP_PORT=8203
+APP_PORT=8204
 ```
 
 **⚠️ Important:** `NEXT_PUBLIC_*` vars are build-time - change requires rebuild!

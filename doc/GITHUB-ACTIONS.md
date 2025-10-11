@@ -22,7 +22,7 @@ The deployment workflow automatically:
 |----------|-------------|---------|
 | `HOST` | Server hostname/IP | `awesomeapps.example.com` or `123.45.67.89` |
 | `USERNAME` | SSH username (optional, defaults to `deploy`) | `deploy` or `awesomeapps` |
-| `APP_PORT` | Host port for the application | `8203` |
+| `APP_PORT` | Host port for the application | `8204` |
 | `NEXT_PUBLIC_STRAPI_BASEURL` | Strapi API URL | `http://localhost:8202` or `https://api.example.com` |
 | `NEXT_PUBLIC_APP_BASEURL` | Frontend URL | `https://awesomeapps.example.com` |
 | `NEXT_PUBLIC_MATOMO_TRACKER` | Enable Matomo (optional) | `true` or `false` |
