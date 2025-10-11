@@ -4,8 +4,8 @@ import ServiceNewsList from "@/components/news/ServiceNewsList";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-    title: 'Serviceatlas',
-    description: 'Der Serviceatlas ist eine Sammlung von Software-as-a-Service (SaaS) Lösungen.',
+    title: 'AwesomeApps',
+    description: 'AwesomeApps ist eine Sammlung von Software-as-a-Service (SaaS) Lösungen.',
 }
 
 

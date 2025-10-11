@@ -1,4 +1,4 @@
-name: Deploy ServiceAtlas Frontend to Server
+name: Deploy AwesomeApps Frontend to Server
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 env:
   APP_PORT: ${{ vars.APP_PORT }}
-  APP_NAME: "serviceatlas-frontend"
+  APP_NAME: "awesomeapps-frontend"
 
 jobs:
   test:
@@ -61,7 +61,7 @@ jobs:
         username: ${{ vars.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "."
-        target: "/opt/serviceatlas-frontend"
+        target: "/srv/awesomeapps-frontend/app"
         rm: false
         strip_components: 0
 
@@ -72,7 +72,7 @@ jobs:
         username: ${{ vars.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /opt/serviceatlas-frontend
+          cd /srv/awesomeapps-frontend/app
           
           # Deploy using the unified docker-compose.yml with production profile
           docker-compose down || true
@@ -85,7 +85,7 @@ jobs:
           echo "Waiting for application to start..."
           sleep 120
           if curl -f http://localhost:$APP_PORT/ > /dev/null 2>&1; then
-            echo "✅ Serviceatlas deployed successfully on port $APP_PORT!"
+            echo "✅ AwesomeApps deployed successfully on port $APP_PORT!"
             echo "🌐 Application is available at: http://${{ vars.HOST || secrets.HOST }}:$APP_PORT"
           else
             echo "❌ Deployment verification failed!"

@@ -41,7 +41,7 @@ NEXT_PUBLIC_STRAPI_BASEURL=http://host.docker.internal:8202
 NEXT_PUBLIC_APP_BASEURL=http://localhost:8203
 
 # Production
-# NEXT_PUBLIC_STRAPI_BASEURL=https://api.serviceatlas.example.com
+# NEXT_PUBLIC_STRAPI_BASEURL=https://api.awesomeapps.example.com
 ```
 
 ## Results

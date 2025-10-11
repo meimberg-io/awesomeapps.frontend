@@ -1,135 +1,131 @@
 # Quick Reference Card
 
-## 🚀 Quick Start Commands
+## 🚀 Quick Start
 
-### Development (Standard)
+### Development
 ```bash
 npm install
 npm run dev
 ```
-→ Visit http://localhost:3000
+→ http://localhost:3000
 
-### Development (Docker)
+### Docker Dev
 ```bash
 cp env.example .env
 docker-compose --profile dev up --build
 ```
-→ Visit http://localhost:8203
+→ http://localhost:8203
 
-### Production (Docker)
+### Docker Prod
 ```bash
 docker-compose --profile prod up -d --build
 ```
-→ Application runs on port 5680
+→ Port 5680
 
-## 📊 Port Configuration
+## 📊 Ports
 
-| Service | Environment | Port | URL |
-|---------|-------------|------|-----|
-| **Frontend** | npm dev | 3000 | http://localhost:3000 |
-| **Frontend** | Docker dev | 8203 | http://localhost:8203 |
-| **Frontend** | Docker prod | 5680 | http://localhost:5680 |
-| **Strapi** | Local/Docker | 8202 | http://localhost:8202 |
+| Mode | Port | URL |
+|------|------|-----|
+| npm dev | 3000 | http://localhost:3000 |
+| Docker dev | 8203 | http://localhost:8203 |
+| Docker prod | 5680 | http://localhost:5680 |
+| Strapi Backend | 8202 | http://localhost:8202 |
 
-## 🔧 Environment Variables
+## 🔧 Required Environment Variables
 
+**All required:**
 ```env
-# Local Development
-APP_PORT=8203
 NEXT_PUBLIC_STRAPI_BASEURL=http://localhost:8202
-NEXT_PUBLIC_APP_BASEURL=http://localhost:8203
-REVALIDATE_SECRET=your-secret-token-here
+NEXT_PUBLIC_APP_BASEURL=http://localhost:8203  
+REVALIDATE_SECRET=your-random-secret-token
 ```
 
-## 🐳 Docker Commands
+**Optional:**
+```env
+NEXT_PUBLIC_MATOMO_TRACKER=false
+APP_PORT=8203
+```
+
+**⚠️ Important:** `NEXT_PUBLIC_*` vars are build-time - change requires rebuild!
+
+## 🐳 Docker
 
 ```bash
-# Development
-docker-compose --profile dev up -d --build     # Start
-docker-compose --profile dev down              # Stop
-docker-compose --profile dev logs -f           # View logs
+# Dev
+docker-compose --profile dev up -d --build
+docker-compose --profile dev logs -f
+docker-compose --profile dev down
 
-# Production
-docker-compose --profile prod up -d --build    # Start
-docker-compose --profile prod down             # Stop
-docker-compose --profile prod logs -f          # View logs
+# Prod
+docker-compose --profile prod up -d --build
+docker-compose --profile prod logs -f
+docker-compose --profile prod down
 
-# Rebuild from scratch
+# Clean rebuild
 docker-compose build --no-cache
-docker system prune -a  # Clean all Docker cache
+docker system prune -a
 ```
 
-## 📦 PM2 Commands (Production Server)
+## 📦 PM2 (Production Server)
 
 ```bash
 # Start
-pm2 start npm --name serviceatlas-frontend -- run start
-
-# Manage
-pm2 restart serviceatlas-frontend
-pm2 stop serviceatlas-frontend
-pm2 logs serviceatlas-frontend
-pm2 monit
-
-# Save & Persist
+pm2 start npm --name awesomeapps-frontend -- run start
 pm2 save
-pm2 startup
+pm2 startup  # Run once
+
+# Daily use
+pm2 restart awesomeapps-frontend
+pm2 logs awesomeapps-frontend
+pm2 monit
+pm2 status
 ```
 
 ## 🔄 Deploy/Update
 
 ```bash
-# Quick update
-git pull && rm -rf .next && npm run build && pm2 restart serviceatlas-frontend
-
-# Full rebuild
-git pull && rm -rf node_modules .next && npm install && npm run build && pm2 restart serviceatlas-frontend
+cd /srv/awesomeapps-frontend/app
+git pull
+npm install
+npm run build
+pm2 restart awesomeapps-frontend
 ```
 
-## ✅ Health Checks
+**⚠️ If env vars changed:** Rebuild Docker or restart after npm build
+
+## ✅ Health Check
 
 ```bash
-# Frontend alive?
-curl http://localhost:8203/
+# Frontend
+curl http://localhost:5680/
 
-# Strapi alive?
+# Strapi
 curl http://localhost:8202/_health
-
-# GraphQL working?
-curl -X POST http://localhost:8202/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query":"{ __typename }"}'
 ```
 
-## 🐛 Common Issues
+## 🐛 Troubleshooting
 
 | Problem | Solution |
 |---------|----------|
-| Port already in use | `netstat -tuln \| grep 8203` or change `APP_PORT` |
-| CORS errors | Check Strapi CORS config includes frontend URL |
-| Can't connect to Strapi | Verify Strapi is running on port 8202 |
+| Port in use | `netstat -tuln \| grep PORT` or change `APP_PORT` |
+| Can't connect to Strapi | Check Strapi runs on 8202, CORS configured |
 | Docker build fails | `docker system prune -a` then rebuild |
-| Changes not reflected | Use `--profile dev` for hot-reload |
+| Changes not showing | Rebuild required if `NEXT_PUBLIC_*` vars changed |
+| Build errors | Run `npm run lint` and `npx tsc --noEmit` |
 
-## 📚 Documentation Links
+## 🔐 Production Checklist
 
-- [Docker Setup](DOCKER.md)
-- [Deployment Guide](DEPLOYMENT.md)  
-- [Integration Guide](INTEGRATION.md)
+- [ ] Strong random `REVALIDATE_SECRET`
+- [ ] Correct `NEXT_PUBLIC_STRAPI_BASEURL` (production URL)
+- [ ] Correct `NEXT_PUBLIC_APP_BASEURL` (production URL)
+- [ ] `.env` never committed to git
+- [ ] HTTPS enabled (Nginx + Let's Encrypt)
+- [ ] Strapi CORS configured for frontend URL
+- [ ] Firewall: Only 80, 443, 22 exposed
+- [ ] App runs as non-root user
 
-## 🔐 Security Checklist
+## 📚 More Docs
 
-- [ ] `.env` file is in `.gitignore`
-- [ ] Strong `REVALIDATE_SECRET` set
-- [ ] CORS properly configured in Strapi
-- [ ] HTTPS enabled in production
-- [ ] Firewall rules configured
-- [ ] Non-root user for deployment
-
-## 📞 Support
-
-For detailed information, see the full documentation:
-- Docker: `doc/DOCKER.md`
-- Deployment: `doc/DEPLOYMENT.md`
-- Integration: `doc/INTEGRATION.md`
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Full deployment guide
+- [DOCKER.md](DOCKER.md) - Docker details
 

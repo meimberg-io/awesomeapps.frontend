@@ -1,299 +1,312 @@
-# Deployment Guide for ServiceAtlas Frontend
+# Deployment Guide
 
-This guide explains how to deploy the ServiceAtlas frontend application to a production server.
+Simple production deployment guide for AwesomeApps Frontend.
 
-## Server Setup
+## Prerequisites
 
-### 1. Create User and Home Directory
+- Ubuntu/Debian server with SSH access
+- Domain name pointed to your server
+- Strapi backend running (port 8202)
+
+## Required Environment Variables
+
+Before deployment, prepare these values:
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `NEXT_PUBLIC_STRAPI_BASEURL` | `https://api.yourdomain.com` | Strapi backend URL (public) |
+| `NEXT_PUBLIC_APP_BASEURL` | `https://yourdomain.com` | Frontend URL (public) |
+| `REVALIDATE_SECRET` | `random-token-xyz` | Secret for cache revalidation API |
+| `NEXT_PUBLIC_MATOMO_TRACKER` | `true` or `false` | Enable/disable analytics |
+
+**⚠️ Important:** `NEXT_PUBLIC_*` variables are embedded during build - changing them requires rebuild!
+
+## Quick Setup
+
+### 1. Create User & Directory
 
 ```bash
 # As root
-mkdir /srv/serviceatlas-frontend
-useradd -d /srv/serviceatlas-frontend -s /bin/bash serviceatlas
-chown -R serviceatlas:serviceatlas /srv/serviceatlas-frontend
-su - serviceatlas
+mkdir /srv/awesomeapps-frontend
+useradd -d /srv/awesomeapps-frontend -s /bin/bash awesomeapps
+chown -R awesomeapps:awesomeapps /srv/awesomeapps-frontend
+su - awesomeapps
 ```
 
-### 2. Setup SSH Access
+### 2. Setup SSH Keys
 
 ```bash
-# As user serviceatlas
-cd ~
+# As user awesomeapps
 mkdir .ssh && chmod 700 .ssh
 touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys
-vim .ssh/authorized_keys   # Add your SSH public keys
+# Add your SSH public key to authorized_keys
 ```
 
-## Node.js Installation
-
-### Install NVM and Node.js
+### 3. Install Node.js
 
 ```bash
+# Install NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc
-echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.bashrc
-echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.bashrc
-```
 
-### Configure .profile
-
-```bash
-vim ~/.profile
-```
-
-Add the following:
-```bash
-if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-fi
-```
-
-### Install Node and PM2
-
-```bash
+# Reload shell
 source ~/.bashrc
+
+# Install Node.js 20
 nvm install 20
 nvm use 20
+node --version  # Verify
+
+# Install PM2
 npm install pm2 -g
 ```
 
-## Application Installation
-
-### Clone Repository
+### 4. Clone & Setup Application
 
 ```bash
-# As user serviceatlas
-git clone https://___token___@github.com/YOUR_ORG/serviceatlas.frontend /srv/serviceatlas-frontend/app
+# Clone repository
+git clone https://YOUR_TOKEN@github.com/YOUR_ORG/awesomeapps.frontend /srv/awesomeapps-frontend/app
 
-cd /srv/serviceatlas-frontend/app
-```
+cd /srv/awesomeapps-frontend/app
 
-### Configure Environment
-
-```bash
+# Create environment file
 cp env.example .env
 vim .env
 ```
 
-Update with production values:
+**Configure `.env`:**
 ```env
 NODE_ENV=production
 APP_PORT=5680
-NEXT_PUBLIC_STRAPI_BASEURL=http://localhost:8202
-NEXT_PUBLIC_APP_BASEURL=http://localhost:5680
+
+# ⚠️ Use production URLs!
+NEXT_PUBLIC_STRAPI_BASEURL=https://api.yourdomain.com
+NEXT_PUBLIC_APP_BASEURL=https://yourdomain.com
+
+# Generate strong random token
+REVALIDATE_SECRET=your-strong-random-token-here
+
+# Optional
 NEXT_PUBLIC_MATOMO_TRACKER=true
-REVALIDATE_SECRET=your-production-secret-token
 ```
 
-**Note:** In production, if using a reverse proxy (Nginx), the `NEXT_PUBLIC_STRAPI_BASEURL` should point to your Strapi backend URL (e.g., `https://api.serviceatlas.example.com` or `http://localhost:8202` for local backend).
-
-### Install and Build
+### 5. Build Application
 
 ```bash
 npm install
 npm run build
 ```
 
+**Note:** Build runs:
+- TypeScript type checking
+- ESLint linting  
+- Next.js production build
+
+Any errors here will fail the build!
+
+### 6. Start with PM2
+
+```bash
+pm2 start npm --name awesomeapps-frontend -- run start
+pm2 save
+pm2 startup  # Follow the instructions shown
+```
+
+**Verify it's running:**
+```bash
+pm2 status
+curl http://localhost:5680/
+```
+
 ## Nginx Configuration
 
-### Create Site Configuration
+### Create Nginx Config
 
 ```bash
 # As root
-vim /etc/nginx/sites-available/serviceatlas-frontend
+vim /etc/nginx/sites-available/awesomeapps-frontend
 ```
 
-Add the following configuration:
 ```nginx
 server {
-    server_name serviceatlas.example.com;
+    server_name yourdomain.com www.yourdomain.com;
 
-    # Next.js Application
     location / {
         proxy_pass http://localhost:5680;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-
-        # Gzip compression for better performance
-        gzip on;
-        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-        gzip_min_length 1000;
+        proxy_cache_bypass $http_upgrade;
     }
 
-    # Next.js static files with caching
+    # Cache static assets
     location /_next/static {
         proxy_pass http://localhost:5680;
         proxy_cache_valid 200 365d;
         add_header Cache-Control "public, immutable";
     }
-
-    # Public files with caching
-    location /public {
-        proxy_pass http://localhost:5680;
-        proxy_cache_valid 200 7d;
-        add_header Cache-Control "public";
-    }
 }
 
 server {
     listen 80;
-    server_name serviceatlas.example.com;
+    server_name yourdomain.com www.yourdomain.com;
 }
 ```
 
 ### Enable Site
 
 ```bash
-cd /etc/nginx/sites-enabled
-ln -s ../sites-available/serviceatlas-frontend .
+ln -s /etc/nginx/sites-available/awesomeapps-frontend /etc/nginx/sites-enabled/
 nginx -t
 systemctl reload nginx
 ```
 
-### Setup SSL with Let's Encrypt
+### Setup SSL
 
 ```bash
-certbot --nginx -d serviceatlas.example.com
-# Enter email address and accept terms
+certbot --nginx -d yourdomain.com -d www.yourdomain.com
+# Follow prompts to get SSL certificate
 ```
 
-## Application Management
+## Updates & Redeployment
 
-### Start Application
+### Standard Update
 
 ```bash
-# As user serviceatlas
-cd /srv/serviceatlas-frontend/app
-pm2 start npm --name serviceatlas-frontend -- run start
-pm2 save
-pm2 startup  # Follow the instructions shown
+cd /srv/awesomeapps-frontend/app
+git pull
+npm install
+npm run build
+pm2 restart awesomeapps-frontend
 ```
 
-### Useful PM2 Commands
+### After Environment Variable Change
+
+If you changed `NEXT_PUBLIC_*` variables:
 
 ```bash
-# View logs
-pm2 logs serviceatlas-frontend
+cd /srv/awesomeapps-frontend/app
+vim .env  # Update variables
+npm run build  # Rebuild required!
+pm2 restart awesomeapps-frontend
+```
 
-# Monitor
-pm2 monit
+### Quick Check
 
-# Restart
-pm2 restart serviceatlas-frontend
-
-# Stop
-pm2 stop serviceatlas-frontend
-
-# Status
+```bash
 pm2 status
+pm2 logs awesomeapps-frontend --lines 50
+curl https://yourdomain.com/
 ```
 
-## Update/Redeploy
-
-### Manual Update
+## PM2 Commands
 
 ```bash
-# As user serviceatlas
-cd /srv/serviceatlas-frontend/app
-git pull
-rm -rf .next
-npm install
-npm run build
-pm2 restart serviceatlas-frontend
-```
-
-### Automated Deployment (Optional)
-
-You can set up GitHub Actions or a webhook to automate deployments. Example webhook endpoint:
-
-```bash
-# Create a simple deployment script
-vim ~/deploy.sh
-```
-
-```bash
-#!/bin/bash
-cd /srv/serviceatlas-frontend/app
-git pull
-npm install
-npm run build
-pm2 restart serviceatlas-frontend
-```
-
-```bash
-chmod +x ~/deploy.sh
-```
-
-## Monitoring
-
-### Check Application Health
-
-```bash
-curl http://localhost:5680/
-```
-
-### Check Logs
-
-```bash
-pm2 logs serviceatlas-frontend --lines 100
-```
-
-### Monitor Performance
-
-```bash
-pm2 monit
+pm2 status                        # Check status
+pm2 logs awesomeapps-frontend     # View logs
+pm2 monit                         # Monitor
+pm2 restart awesomeapps-frontend  # Restart
+pm2 stop awesomeapps-frontend     # Stop
 ```
 
 ## Troubleshooting
 
-### Application won't start:
-1. Check if port 5680 is available: `netstat -tuln | grep 5680`
-2. Verify environment variables: `cat .env`
-3. Check build errors: `npm run build`
-4. Review PM2 logs: `pm2 logs serviceatlas-frontend --err`
+### Build Fails
 
-### High memory usage:
-1. Check Next.js cache: `du -sh .next`
-2. Review PM2 memory: `pm2 monit`
-3. Consider increasing server resources
+```bash
+# Check for linting errors
+npm run lint
 
-### Nginx errors:
-1. Test configuration: `nginx -t`
-2. Check Nginx logs: `tail -f /var/log/nginx/error.log`
-3. Verify proxy_pass target: `curl http://localhost:5680`
+# Check for TypeScript errors
+npx tsc --noEmit
+
+# Clear cache and rebuild
+rm -rf .next node_modules
+npm install
+npm run build
+```
+
+### App Won't Start
+
+```bash
+# Check port availability
+netstat -tuln | grep 5680
+
+# Check PM2 errors
+pm2 logs awesomeapps-frontend --err
+
+# Check environment
+cat .env
+```
+
+### Can't Connect to Backend
+
+1. Verify Strapi is running: `curl http://localhost:8202/_health`
+2. Check CORS in Strapi config includes your frontend URL
+3. Check firewall rules
+4. Verify `NEXT_PUBLIC_STRAPI_BASEURL` in `.env`
+
+### Changes Not Showing
+
+1. If you changed `NEXT_PUBLIC_*` vars → rebuild required
+2. Clear browser cache
+3. Check PM2 logs for errors
+4. Verify Nginx is proxying correctly
+
+## Security Checklist
+
+- [ ] Strong random `REVALIDATE_SECRET` token
+- [ ] Production URLs in `NEXT_PUBLIC_*` variables
+- [ ] `.env` file never committed to git
+- [ ] HTTPS enabled with valid SSL certificate
+- [ ] Firewall configured (only ports 22, 80, 443)
+- [ ] Application runs as non-root user
+- [ ] SSH key-only authentication
+- [ ] Strapi CORS configured for frontend domain
+- [ ] Regular security updates (`apt update && apt upgrade`)
+
+## Monitoring
+
+### Health Check
+
+```bash
+# Frontend
+curl https://yourdomain.com/
+
+# PM2 Status
+pm2 status
+pm2 monit
+
+# Resource usage
+htop
+```
+
+### Logs
+
+```bash
+# PM2 logs
+pm2 logs awesomeapps-frontend --lines 100
+
+# Nginx logs
+tail -f /var/log/nginx/access.log
+tail -f /var/log/nginx/error.log
+```
 
 ## Backup
 
-### Important files to backup:
-- `.env` - Environment configuration
-- `public/uploads/` - If storing uploads locally
-- PM2 configuration: `~/.pm2/`
+Backup these files regularly:
 
 ```bash
-# Example backup command
-tar -czf backup-$(date +%Y%m%d).tar.gz .env public/uploads/
+# Environment config
+cp .env /backup/env.backup
+
+# PM2 config
+pm2 save
 ```
 
-## Security Considerations
+## Need Help?
 
-1. **Environment Variables**: Never commit `.env` to git
-2. **REVALIDATE_SECRET**: Use a strong, random token
-3. **Firewall**: Only expose necessary ports (80, 443, 22)
-4. **Updates**: Keep Node.js, npm, and dependencies updated
-5. **SSL**: Always use HTTPS in production (Let's Encrypt)
-6. **User Permissions**: Run application as non-root user
-
-## Performance Optimization
-
-1. **Enable caching** in Nginx for static files
-2. **Use CDN** for static assets if available
-3. **Enable gzip compression** (already in config)
-4. **Monitor** with tools like PM2, htop, or external monitoring services
-5. **Database connection pooling** if using a database
-
+See [QUICK-REFERENCE.md](QUICK-REFERENCE.md) for quick command reference.

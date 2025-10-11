@@ -25,7 +25,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         openGraph: {
             title: tag.name,
             description: tag.description ?? undefined,
-            url: `https://serviceatlas.meimberg.io/t/${tagname}`
+            url: `https://awesomeapps.meimberg.io/t/${tagname}`
         },
     }
 }

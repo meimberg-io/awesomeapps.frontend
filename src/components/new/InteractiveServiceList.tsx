@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import { Hero } from "@/components/new/Hero";
@@ -8,6 +8,7 @@ import { ServiceCard } from "@/components/new/ServiceCard";
 import { FilterSidebar } from "@/components/new/FilterSidebar";
 import { Service } from "@/types/service";
 import { Tag } from "@/types/tag";
+import { fetchServices, fetchTags } from "@/lib/strapi";
 
 interface InteractiveServiceListProps {
   initialServices: Service[];
@@ -19,9 +20,11 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<Tag[]>(maintag ? [maintag] : []);
+  const [services, setServices] = useState<Service[]>(initialServices);
+  const [tags, setTags] = useState<Tag[]>(initialTags);
 
   const handleTagChange = (tagId: string) => {
-    const tag = initialTags.find(t => t.documentId === tagId);
+    const tag = tags.find(t => t.documentId === tagId);
     if (!tag) return;
 
     setSelectedTags((prev) => {
@@ -34,8 +37,25 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
     });
   };
 
+  const handleClearFilters = () => {
+    setSelectedTags([]);
+  };
+
+  // Dynamic fetching based on selected tags (like old frontend)
+  // Only fetch when tags are selected, not on initial mount with empty tags
+  useEffect(() => {
+    if (selectedTags.length > 0) {
+      fetchServices(selectedTags).then(setServices).catch(console.error);
+      fetchTags(selectedTags).then(setTags).catch(console.error);
+    } else if (!maintag) {
+      // When no tags selected and no maintag, reset to initial featured services
+      setServices(initialServices);
+      setTags(initialTags);
+    }
+  }, [selectedTags, maintag, initialServices, initialTags]);
+
   const filteredServices = useMemo(() => {
-    return initialServices.filter((service) => {
+    return services.filter((service) => {
       const matchesSearch =
         searchQuery === "" ||
         service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -45,15 +65,9 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
           tag.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
-      const matchesTags =
-        selectedTags.length === 0 ||
-        selectedTags.some(selectedTag =>
-          service.tags.some(serviceTag => serviceTag.documentId === selectedTag.documentId)
-        );
-
-      return matchesSearch && matchesTags;
+      return matchesSearch;
     });
-  }, [searchQuery, selectedTags, initialServices]);
+  }, [searchQuery, services]);
 
   const handleServiceClick = (service: Service) => {
     router.push(`/s/${service.slug}`);
@@ -69,8 +83,9 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
           <FilterSidebar
             selectedTags={selectedTags}
             onTagChange={handleTagChange}
-            availableTags={initialTags}
-            services={initialServices}
+            availableTags={tags}
+            services={services}
+            onClearFilters={handleClearFilters}
           />
 
           <main className="flex-1">
@@ -96,6 +111,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                     key={service.documentId}
                     service={service}
                     onServiceClick={handleServiceClick}
+                    selectedTags={selectedTags}
                   />
                 ))}
               </div>

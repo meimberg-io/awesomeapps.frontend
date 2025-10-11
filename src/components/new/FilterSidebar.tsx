@@ -5,21 +5,26 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import { Tag } from "@/types/tag";
 import { Service } from "@/types/service";
 import { useMemo, useState } from "react";
+import { renderIcon } from "@/components/util/renderIcon";
+import { X } from "lucide-react";
 
 interface FilterSidebarProps {
   selectedTags: Tag[];
   onTagChange: (tagId: string) => void;
   availableTags: Tag[];
   services: Service[];
+  onClearFilters: () => void;
 }
 
 export const FilterSidebar = ({
   selectedTags,
   onTagChange,
   availableTags,
+  onClearFilters,
 }: FilterSidebarProps) => {
   const [tagSearch, setTagSearch] = useState("");
 
@@ -31,18 +36,33 @@ export const FilterSidebar = ({
     );
   }, [availableTags, tagSearch]);
 
+  const hasActiveFilters = selectedTags.length > 0;
+
   return (
-    <aside className="w-full lg:w-64 space-y-6">
+    <aside className="w-full lg:w-80 space-y-6">
       <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50">
-        <h3 className="font-semibold text-lg mb-4">Kategorien & Tags</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-lg">Kategorien & Tags</h3>
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClearFilters}
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              title="Filter zurücksetzen"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
         <Input
           placeholder="Tag suchen..."
           value={tagSearch}
           onChange={(e) => setTagSearch(e.target.value)}
           className="mb-4"
         />
-        <ScrollArea className="h-[400px] pr-4">
-          <div className="space-y-3">
+        <ScrollArea className="h-[400px]">
+          <div className="space-y-3 pr-4">
             {filteredTags.map((tag) => (
               <div key={tag.documentId} className="flex items-center space-x-2">
                 <Checkbox
@@ -52,11 +72,12 @@ export const FilterSidebar = ({
                 />
                 <Label
                   htmlFor={tag.documentId}
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1 flex items-center gap-2"
                 >
-                  {tag.icon} {tag.name}
+                  {tag.icon && renderIcon(tag.icon, 'text-primary', 16)}
+                  <span className="truncate">{tag.name}</span>
                 </Label>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground shrink-0 ml-2">
                   ({tag.count})
                 </span>
               </div>

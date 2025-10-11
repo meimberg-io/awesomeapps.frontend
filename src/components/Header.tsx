@@ -1,7 +1,7 @@
 'use client'
 
 import {useState} from 'react'
-import {Menu, X} from 'lucide-react'
+import {Menu} from 'lucide-react'
 import Link from "next/link"
 import {Button} from "@/components/ui/button"
 import {
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sheet"
 
 const navigation = [
-    {name: 'Kategorien', href: '/'},
+    {name: 'Apps', href: '/'},
     {name: 'Neu vorgestellt', href: '/news'},
     {name: 'Über dieses Projekt', href: '/p/about'},
 ]
@@ -25,7 +25,7 @@ export default function Header() {
                 <div className="flex items-center gap-6">
                     <Link href="/" className="flex items-center space-x-2">
                         <img
-                            alt="Serviceatlas"
+                            alt="AwesomeApps"
                             src="/logo-full.svg"
                             className="h-8 w-auto"
                         />

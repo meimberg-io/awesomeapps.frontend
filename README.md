@@ -1,94 +1,91 @@
-# ServiceAtlas Frontend
+# AwesomeApps Frontend
 
-Next.js frontend application for ServiceAtlas platform.
+Modern Next.js frontend for the AwesomeApps platform with Strapi CMS integration.
 
 ## Quick Start
 
-### Local Development (Standard)
-
+### Development
 ```bash
 npm install
 npm run dev
 ```
-
 Visit `http://localhost:3000`
 
-### Local Development (Docker)
-
+### Docker Development
 ```bash
-# Copy environment file
 cp env.example .env
-
-# Edit .env with your settings
-
-# Start with Docker
 docker-compose --profile dev up --build
 ```
+Visit `http://localhost:8203`
 
-Visit `http://localhost:8203` (or your configured `APP_PORT`)
-
-## Documentation
-
-- **[Quick Reference](doc/QUICK-REFERENCE.md)** - 🚀 Fast access to all commands and configs
-- **[Docker Setup](doc/DOCKER.md)** - Complete Docker usage guide for development and production
-- **[Build Arguments Explained](doc/BUILD-ARGS-EXPLAINED.md)** - ⭐ How build args enable static page generation
-- **[GitHub Actions](doc/GITHUB-ACTIONS.md)** - Automated deployment setup and configuration
-- **[Deployment Guide](doc/DEPLOYMENT.md)** - Manual server deployment with Nginx and PM2
-- **[Integration Guide](doc/INTEGRATION.md)** - How frontend connects to Strapi backend, ports, and troubleshooting
-
-## Environment Variables
-
-Copy `env.example` to `.env` and configure:
-
-```env
-NODE_ENV=development
-APP_PORT=8203
-NEXT_PUBLIC_STRAPI_BASEURL=http://localhost:8202
-NEXT_PUBLIC_APP_BASEURL=http://localhost:8203
-NEXT_PUBLIC_MATOMO_TRACKER=false
-REVALIDATE_SECRET=your-secret-token-here
-```
-
-## Scripts
-
-- `npm run dev` - Start development server (port 3000)
-- `npm run build` - Build production application
-- `npm run start` - Start production server (port 5680)
-- `npm run lint` - Run ESLint
-
-## Docker Commands
-
-**Development:**
-```bash
-docker-compose --profile dev up -d --build
-```
-
-**Production:**
+### Docker Production
 ```bash
 docker-compose --profile prod up -d --build
 ```
+Application runs on port `5680`
 
-**View Logs:**
-```bash
-docker-compose logs -f
+## Required Environment Variables
+
+Create `.env` file with these variables:
+
+```env
+# Required - Backend API URL
+NEXT_PUBLIC_STRAPI_BASEURL=http://localhost:8202
+
+# Required - Frontend URL
+NEXT_PUBLIC_APP_BASEURL=http://localhost:8203
+
+# Required - Secret for revalidation API
+REVALIDATE_SECRET=your-random-secret-token
+
+# Optional - Analytics
+NEXT_PUBLIC_MATOMO_TRACKER=false
+
+# Optional - Development port
+APP_PORT=8203
 ```
+
+**Important:** 
+- `NEXT_PUBLIC_*` variables are **build-time** variables - they're embedded in the static build
+- Change these? Rebuild required: `npm run build` or rebuild Docker image
+- `REVALIDATE_SECRET` should be a strong random token in production
+
+## Scripts
+
+- `npm run dev` - Development server
+- `npm run build` - Production build (runs TypeScript & ESLint checks)
+- `npm run start` - Production server
+- `npm run lint` - ESLint only
 
 ## Technology Stack
 
-- **Next.js 15** - React framework
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling
-- **Apollo Client** - GraphQL client
-- **Strapi** - Headless CMS backend
-- **Docker** - Containerization
+- Next.js 15 (App Router, TypeScript)
+- Tailwind CSS + Manrope font
+- Apollo Client (GraphQL)
+- Strapi CMS backend
+- Docker (multi-stage builds)
 
-## Quick Deploy (PM2)
+## Documentation
 
+- **[Quick Reference](doc/QUICK-REFERENCE.md)** - 🚀 Fast command reference
+- **[Pre-Deployment Checklist](doc/PRE-DEPLOYMENT-CHECKLIST.md)** - ✅ Required vars & checklist
+- **[Deployment Guide](doc/DEPLOYMENT.md)** - 📦 Complete deployment guide
+- **[Docker Guide](doc/DOCKER.md)** - 🐳 Docker usage details
+
+## Production Deployment
+
+**Before deploying:** Review [doc/PRE-DEPLOYMENT-CHECKLIST.md](doc/PRE-DEPLOYMENT-CHECKLIST.md)
+
+**For deployment:** See [doc/DEPLOYMENT.md](doc/DEPLOYMENT.md)
+
+Quick update on server:
 ```bash
-git pull && rm -rf .next && npm run build && pm2 restart serviceatlas
+cd /srv/awesomeapps-frontend/app
+git pull
+npm install
+npm run build
+pm2 restart awesomeapps-frontend
 ```
-
-For detailed deployment instructions, see [doc/DEPLOYMENT.md](doc/DEPLOYMENT.md).
 
 
 

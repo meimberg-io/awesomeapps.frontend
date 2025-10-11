@@ -1,22 +1,28 @@
 'use client';
 
-import { Star, ArrowRight } from "lucide-react";
+import { Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Service } from "@/types/service";
 import { STRAPI_BASEURL } from "@/lib/constants";
+import { renderIcon } from "@/components/util/renderIcon";
+import { Tag } from "@/types/tag";
 
 interface ServiceCardProps {
   service: Service;
   onServiceClick: (service: Service) => void;
+  selectedTags?: Tag[];
 }
 
-export const ServiceCard = ({ service, onServiceClick }: ServiceCardProps) => {
+export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: ServiceCardProps) => {
   const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
   
   // Mock rating data (will be replaced with real data when backend supports it)
+  // Using deterministic values based on service ID to avoid hydration errors
   const mockRating = 4.5;
-  const mockReviews = Math.floor(Math.random() * 200) + 50;
+  // Convert documentId string to a number for deterministic but varied mock data
+  const idHash = service.documentId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const mockReviews = (idHash * 37) % 150 + 50; // Deterministic but varied
 
   return (
     <Card 
@@ -26,7 +32,7 @@ export const ServiceCard = ({ service, onServiceClick }: ServiceCardProps) => {
       {service.top && (
         <Badge 
           variant="secondary" 
-          className="absolute top-4 right-4 z-10 shadow-sm"
+          className="absolute top-4 right-4 z-10"
         >
           Featured
         </Badge>
@@ -61,19 +67,22 @@ export const ServiceCard = ({ service, onServiceClick }: ServiceCardProps) => {
         {service.abstract || service.description}
       </p>
 
-      <div className="flex flex-wrap gap-2 mb-4">
-        {service.tags.slice(0, 3).map((tag) => (
-          <Badge key={tag.documentId} variant="outline" className="text-xs">
-            {tag.icon} {tag.name}
-          </Badge>
-        ))}
-      </div>
-
-      <div className="flex items-center justify-between pt-4 border-t border-border/50">
-        <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-          Details anzeigen
-        </span>
-        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+      <div className="flex flex-wrap gap-2">
+        {service.tags.map((tag) => {
+          const isSelected = selectedTags.some(selectedTag => selectedTag.documentId === tag.documentId);
+          return (
+            <Badge 
+              key={tag.documentId} 
+              variant={isSelected ? "default" : "outline"} 
+              className={`text-xs flex items-center gap-1 transition-colors ${
+                isSelected ? 'bg-primary text-primary-foreground' : ''
+              }`}
+            >
+              {tag.icon && renderIcon(tag.icon, isSelected ? 'text-primary-foreground' : 'text-primary', 14)}
+              {tag.name}
+            </Badge>
+          );
+        })}
       </div>
     </Card>
   );

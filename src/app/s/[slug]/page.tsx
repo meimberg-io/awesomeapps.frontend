@@ -24,7 +24,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         openGraph: {
             title: service.name,
             description: service.abstract ?? undefined,
-            url: `https://serviceatlas.meimberg.io/s/${(await params).slug}`,
+            url: `https://awesomeapps.meimberg.io/s/${(await params).slug}`,
             images: service.logo?.url ? [{
                 url: service.logo.url,
                 width: service.logo.width ? Number(service.logo.width) : undefined,

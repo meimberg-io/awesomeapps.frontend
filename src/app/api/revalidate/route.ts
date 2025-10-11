@@ -1,7 +1,7 @@
 import {revalidatePath} from 'next/cache';
 
 export async function POST(req: Request) {
-    const token = req.headers.get('x-serviceatlas-token');
+    const token = req.headers.get('x-awesomeapps-token');
     const expectedToken = process.env.REVALIDATE_SECRET;
 
     if (!token || token !== expectedToken) {
