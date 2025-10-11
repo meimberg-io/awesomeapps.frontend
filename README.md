@@ -38,6 +38,15 @@ NEXT_PUBLIC_APP_BASEURL=http://localhost:8204
 # Required - Secret for revalidation API
 REVALIDATE_SECRET=your-random-secret-token
 
+# Required - NextAuth secrets (for authentication)
+AUTH_SECRET=your-nextauth-secret-here
+NEXTAUTH_URL=http://localhost:8204
+
+# Optional - OAuth providers (see doc/AUTHENTICATION.md for setup)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+# ... (more providers in env.example)
+
 # Optional - Analytics
 NEXT_PUBLIC_MATOMO_TRACKER=false
 
@@ -57,9 +66,18 @@ APP_PORT=8204
 - `npm run start` - Production server
 - `npm run lint` - ESLint only
 
+## Features
+
+- 🔍 Search functionality with Strapi backend integration
+- 🏷️ Tag-based filtering system
+- 🔐 Authentication with Google, GitHub, and Microsoft 365
+- 📱 Responsive design with mobile support
+- 🎨 Modern UI with dark mode support
+
 ## Technology Stack
 
 - Next.js 15 (App Router, TypeScript)
+- NextAuth.js v5 (authentication)
 - Tailwind CSS + Manrope font
 - Apollo Client (GraphQL)
 - Strapi CMS backend
@@ -68,6 +86,7 @@ APP_PORT=8204
 ## Documentation
 
 - **[Quick Reference](doc/QUICK-REFERENCE.md)** - 🚀 Fast command reference
+- **[Authentication Setup](doc/AUTHENTICATION.md)** - 🔐 OAuth provider configuration
 - **[Pre-Deployment Checklist](doc/PRE-DEPLOYMENT-CHECKLIST.md)** - ✅ Required vars & checklist
 - **[Deployment Guide](doc/DEPLOYMENT.md)** - 📦 Complete deployment guide
 - **[Docker Guide](doc/DOCKER.md)** - 🐳 Docker usage details

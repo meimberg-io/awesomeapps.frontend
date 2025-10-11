@@ -9,6 +9,7 @@ import {
     SheetContent,
     SheetTrigger,
 } from "@/components/ui/sheet"
+import {UserButton} from "@/components/auth/UserButton"
 
 const navigation = [
     {name: 'Apps', href: '/'},
@@ -43,29 +44,34 @@ export default function Header() {
                     </nav>
                 </div>
 
-                {/* Mobile menu */}
-                <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                    <SheetTrigger asChild className="md:hidden">
-                        <Button variant="ghost" size="icon">
-                            <Menu className="h-5 w-5" />
-                            <span className="sr-only">Toggle menu</span>
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                        <nav className="flex flex-col gap-4 mt-8">
-                            {navigation.map((item) => (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-4 py-2 text-lg font-medium text-foreground hover:text-primary transition-colors rounded-md hover:bg-accent"
-                                >
-                                    {item.name}
-                                </Link>
-                            ))}
-                        </nav>
-                    </SheetContent>
-                </Sheet>
+                <div className="flex items-center gap-4">
+                    {/* User button - visible on all screen sizes */}
+                    <UserButton />
+
+                    {/* Mobile menu */}
+                    <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                        <SheetTrigger asChild className="md:hidden">
+                            <Button variant="ghost" size="icon">
+                                <Menu className="h-5 w-5" />
+                                <span className="sr-only">Toggle menu</span>
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                            <nav className="flex flex-col gap-4 mt-8">
+                                {navigation.map((item) => (
+                                    <Link
+                                        key={item.name}
+                                        href={item.href}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="block px-4 py-2 text-lg font-medium text-foreground hover:text-primary transition-colors rounded-md hover:bg-accent"
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ))}
+                            </nav>
+                        </SheetContent>
+                    </Sheet>
+                </div>
             </div>
         </header>
     )
