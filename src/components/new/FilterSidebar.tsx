@@ -29,12 +29,25 @@ export const FilterSidebar = ({
   const [tagSearch, setTagSearch] = useState("");
 
   const filteredTags = useMemo(() => {
-    if (!tagSearch) return availableTags;
-    return availableTags.filter(tag => 
-      tag.name.toLowerCase().includes(tagSearch.toLowerCase()) ||
-      (tag.description && tag.description.toLowerCase().includes(tagSearch.toLowerCase()))
-    );
-  }, [availableTags, tagSearch]);
+    let tags = tagSearch 
+      ? availableTags.filter(tag => 
+          tag.name.toLowerCase().includes(tagSearch.toLowerCase()) ||
+          (tag.description && tag.description.toLowerCase().includes(tagSearch.toLowerCase()))
+        )
+      : availableTags;
+    
+    // Sort: selected tags first, then by count descending
+    return [...tags].sort((a, b) => {
+      const aSelected = selectedTags.some(t => t.documentId === a.documentId);
+      const bSelected = selectedTags.some(t => t.documentId === b.documentId);
+      
+      if (aSelected && !bSelected) return -1;
+      if (!aSelected && bSelected) return 1;
+      
+      // If both selected or both not selected, sort by count
+      return b.count - a.count;
+    });
+  }, [availableTags, tagSearch, selectedTags]);
 
   const hasActiveFilters = selectedTags.length > 0;
 

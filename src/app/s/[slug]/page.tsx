@@ -1,4 +1,4 @@
-import {fetchServiceDetailBySlug} from '@/lib/strapi'
+import {fetchServiceDetailBySlug, fetchServiceReviews} from '@/lib/strapi'
 import ServiceDetail from '@/components/new/ServiceDetail'
 import {notFound} from 'next/navigation'
 import type {Metadata} from 'next'
@@ -45,5 +45,8 @@ export default async function Page({params}: {
         notFound() // 404 Seite
     }
 
-    return <ServiceDetail service={service} />
+    // Fetch reviews on the server
+    const reviews = await fetchServiceReviews(service.documentId)
+
+    return <ServiceDetail service={service} initialReviews={reviews} />
 }

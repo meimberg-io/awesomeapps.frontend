@@ -3,7 +3,7 @@ import {Service} from "./service";
 
 export interface Review {
     documentId: string;
-    reviewtext: string;
+    reviewtext: string | null;
     voting: number;
     member: Member;
     service?: Service;

@@ -1,40 +1,54 @@
 'use client';
 
-import { Star, ExternalLink, ArrowLeft, Globe, Heart } from "lucide-react";
+import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Service } from "@/types/service";
+import { Review } from "@/types/review";
 import { STRAPI_BASEURL } from "@/lib/constants";
 import Header from "@/components/Header";
 import DynamicZoneComponent from "@/components/strapicomponents/dynamiczone/DynamicZoneComponent";
 import MarkdownRenderer from "@/components/util/MarkdownRenderer";
 import { Screenshots } from "@/components/util/Screenshots";
 import Youtube from "@/components/Youtube";
+import { ReviewForm } from "@/components/reviews/ReviewForm";
+import { ReviewList } from "@/components/reviews/ReviewList";
 import { useRouter } from "next/navigation";
 import { useMember } from "@/contexts/MemberContext";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { renderIcon } from "@/components/util/renderIcon";
+import Link from "next/link";
 
 interface ServiceDetailProps {
   service: Service;
+  initialReviews: Review[];
 }
 
-export const ServiceDetail = ({ service }: ServiceDetailProps) => {
+export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) => {
   const router = useRouter();
   const { data: session } = useSession();
   const { addFavorite, removeFavorite, isFavorite } = useMember();
   const { toast } = useToast();
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const reviews = initialReviews;
   const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
-  
-  // Mock rating data (deterministic to avoid hydration errors)
-  const mockRating = 4.5;
-  const idHash = service.documentId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const mockReviews = (idHash * 37) % 150 + 50;
 
   const favorite = isFavorite(service.documentId);
+  
+  // Calculate real rating from reviews
+  const averageRating = reviews.length > 0
+    ? reviews.reduce((sum, review) => sum + review.voting, 0) / reviews.length
+    : 0;
+  const displayRating = averageRating > 0 ? averageRating.toFixed(1) : 'Keine';
+
+  const handleReviewSubmitted = () => {
+    // Trigger a page refresh to get updated reviews
+    router.refresh();
+  };
 
   const handleToggleFavorite = async () => {
     if (!session) {
@@ -75,19 +89,21 @@ export const ServiceDetail = ({ service }: ServiceDetailProps) => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto px-6 py-8 max-w-5xl">
-        <Button
-          variant="ghost"
-          onClick={() => router.back()}
-          className="mb-6"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Zurück zur Übersicht
-        </Button>
+      
+      {/* Colored Header Section */}
+      <div className="bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border-b border-border/50">
+        <div className="container mx-auto px-6 py-8 max-w-5xl">
+          <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            className="mb-6"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Zurück zur Übersicht
+          </Button>
 
-        <div className="space-y-8">
           {/* Header Section with Logo and Title */}
-          <div className="flex items-start gap-6">
+          <div className="flex items-start gap-6 pb-8">
             <div className="w-24 h-24 flex-shrink-0 rounded-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center shadow-lg border border-border/50">
               <img
                 src={iconurl}
@@ -100,11 +116,12 @@ export const ServiceDetail = ({ service }: ServiceDetailProps) => {
               <div className="flex items-center gap-3 mb-3">
                 <h1 className="text-4xl font-bold">{service.name}</h1>
                 <Button
-                  variant={favorite ? "default" : "outline"}
+                  variant="outline"
                   size="icon"
                   onClick={handleToggleFavorite}
                   disabled={isTogglingFavorite}
                   title={favorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
+                  className={favorite ? "bg-green-700 hover:bg-green-800 border-green-700 text-white" : ""}
                 >
                   <Heart className={`h-5 w-5 ${favorite ? 'fill-current' : ''}`} />
                 </Button>
@@ -112,129 +129,195 @@ export const ServiceDetail = ({ service }: ServiceDetailProps) => {
               <div className="flex items-center gap-4 flex-wrap mb-4">
                 <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
                   <Star className="h-5 w-5 fill-primary text-primary" />
-                  <span className="font-bold text-lg text-primary">{mockRating}</span>
+                  <span className="font-bold text-lg text-primary">{displayRating}</span>
                   <span className="text-sm text-muted-foreground">
-                    ({mockReviews} reviews)
+                    ({reviews.length} {reviews.length === 1 ? 'Bewertung' : 'Bewertungen'})
                   </span>
                 </div>
+                {reviews.length > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="text-sm"
+                  >
+                    <MessageSquare className="h-4 w-4 mr-1" />
+                    Bewertungen ansehen
+                  </Button>
+                )}
                 {service.top && (
                   <Badge variant="secondary" className="text-sm">Featured</Badge>
                 )}
               </div>
               
               {/* Tags */}
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 pt-8">
                 {service.tags.map((tag) => (
-                  <Badge key={tag.documentId} variant="outline" className="text-sm">
-                    {tag.icon} {tag.name}
-                  </Badge>
+                  <Link key={tag.documentId} href={`/t/${tag.name}`}>
+                    <Badge variant="outline" className="text-sm font-normal bg-background border-border/50 text-foreground/70 hover:bg-primary/5 hover:border-primary/30 transition-colors cursor-pointer">
+                      {tag.icon && renderIcon(tag.icon, 'inline-block mr-1', 14)}
+                      {tag.name}
+                    </Badge>
+                  </Link>
                 ))}
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* App URL Section */}
-          <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between gap-4 flex-wrap">
-              <div className="flex items-center gap-3 flex-1 min-w-[200px]">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Globe className="h-5 w-5 text-primary" />
+      {/* Main Content */}
+      <div className="container mx-auto px-6 py-8 max-w-5xl">
+        <div className="space-y-8">
+          {/* Rich Content Section */}
+          <div className="relative">
+            {/* Floating Info Card */}
+            {service.shortfacts && (
+              <div className="float-right w-80 ml-8 mb-8 bg-white dark:bg-slate-900 border border-border/50 rounded-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-primary/20 to-primary/15 px-6 py-3.5">
+                  <div className="flex items-center gap-2">
+                    <Star className="h-4 w-4 text-primary" />
+                    <h3 className="text-base font-semibold text-primary">Shortfacts</h3>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground font-medium mb-1">Website besuchen</p>
-                  <p className="text-lg font-semibold text-foreground break-all">{service.url}</p>
+                <div className="p-6 space-y-5">
+                  <div>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {service.shortfacts}
+                    </p>
+                  </div>
+                  <Separator />
+                  <div>
+               
+                    <a 
+                      href={service.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 font-medium transition-colors group"
+                    >
+                      <Globe className="h-4 w-4 text-muted-foreground" /><span className="break-all">{service.url}</span>
+                      <ExternalLink className="h-3.5 w-3.5 flex-shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </a>
+                  </div>
                 </div>
               </div>
-              <Button size="lg" className="px-8" asChild>
-                <a href={service.url} target="_blank" rel="noopener noreferrer">
-                  App öffnen
-                  <ExternalLink className="ml-2 h-4 w-4" />
-                </a>
-              </Button>
+            )}
+
+            <div className="prose prose-slate dark:prose-invert max-w-none">
+              {service.description && (
+                <div className="mb-10">
+                  <MarkdownRenderer content={service.description}/>
+                </div>
+              )}
+
+              {service.functionality && (
+                <div className="mb-10">
+                  <h2 className="text-2xl font-bold mb-4 text-foreground">Funktionen und Einsatzmöglichkeiten</h2>
+                  <MarkdownRenderer content={service.functionality}/>
+                </div>
+              )}
+              {service.pricing && (
+                <div className="mb-10">
+                  <h2 className="text-2xl font-bold mb-4 text-foreground">Preise</h2>
+                  <MarkdownRenderer content={service.pricing}/>
+                  <div className="mt-6 p-4 bg-muted/50 border-l-4 border-primary/40 rounded-r">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Die Preise können je nach Region variieren. Wir übernehmen keine Gewähr auf die Korrektheit der Preise. 
+                      Für aktuelle Informationen siehe: <a href={service.url} className="text-primary hover:underline font-medium">{service.url}</a>
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Article content */}
+              {service.articlecontent && (
+                <div className="mb-10">
+                  <DynamicZoneComponent blocks={service.articlecontent}/>
+                </div>
+              )}
+            </div>
+
+            {/* Clear float and add full-width media sections */}
+            <div className="clear-both pt-8">
+              {/* Screenshots */}
+              {(service.screenshots && service.screenshots.length > 0) && (
+                <div className="mb-12">
+                  <h2 className="text-2xl font-bold mb-6 text-foreground">Screenshots</h2>
+                  <Screenshots service={service}/>
+                </div>
+              )}
+
+              {/* Video Section */}
+              {service.youtube_video && (
+                <div className="mb-12">
+                  <h2 className="text-2xl font-bold mb-6 text-foreground">Video</h2>
+                  <Youtube video={service.youtube_video} title={service.youtube_title}/>
+                </div>
+              )}
             </div>
           </div>
 
-          <Separator />
+          <Separator className="my-16" />
 
-          {/* Rich Content Section */}
-          <div className="prose prose-slate dark:prose-invert max-w-none">
-            {service.abstract && (
+          {/* Reviews Section */}
+          <div id="reviews-section" className="scroll-mt-8">
+            <div className="mb-10">
+              <div className="flex items-center justify-between flex-wrap gap-4 mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <MessageSquare className="h-5 w-5 text-primary" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-foreground">Bewertungen</h2>
+                </div>
+                <Button 
+                  onClick={() => setShowReviewForm(!showReviewForm)}
+                  variant={showReviewForm ? "outline" : "default"}
+                  size="default"
+                >
+                  {showReviewForm ? "Abbrechen" : "Bewertung abgeben"}
+                </Button>
+              </div>
+              <p className="text-muted-foreground text-base">
+                Was sagen andere Nutzer über {service.name}?
+              </p>
+            </div>
+
+            {/* Review Form */}
+            {showReviewForm && (
               <div className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Über {service.name}</h2>
-                <p className="text-muted-foreground leading-relaxed text-base">
-                  {service.abstract}
-                </p>
+                <ReviewForm 
+                  serviceDocumentId={service.documentId}
+                  onReviewSubmitted={() => {
+                    handleReviewSubmitted();
+                    setShowReviewForm(false);
+                  }}
+                />
               </div>
             )}
 
-            {service.description && (
-              <div className="mb-8">
-                <MarkdownRenderer content={service.description}/>
-              </div>
-            )}
-
-            {service.functionality && (
-              <div className="mb-8">
-                <h3 className="text-xl font-bold mb-3">Funktionen und Einsatzmöglichkeiten</h3>
-                <MarkdownRenderer content={service.functionality}/>
-              </div>
-            )}
-
-            {service.shortfacts && (
-              <div className="bg-muted/50 border border-border rounded-lg p-6 my-6">
-                <h4 className="font-semibold mb-2 text-base">💡 Kurz & Knapp</h4>
-                <p className="text-sm text-muted-foreground">
-                  {service.shortfacts}
-                </p>
-              </div>
-            )}
-
-            {/* Screenshots */}
-            {(service.screenshots && service.screenshots.length > 0) && (
-              <div className="my-8">
-                <Screenshots service={service}/>
-              </div>
-            )}
-
-            {/* Video Section */}
-            {service.youtube_video && (
-              <div className="my-8">
-                <Youtube video={service.youtube_video} title={service.youtube_title}/>
-              </div>
-            )}
-
-            {service.pricing && (
-              <div className="mb-8">
-                <h3 className="text-xl font-bold mb-3">Preise</h3>
-                <MarkdownRenderer content={service.pricing}/>
-                <p className="mt-4 text-sm text-right italic text-muted-foreground">
-                  Die Preise können je nach Region variieren. Wir übernehmen keine Gewähr auf die Korrektheit der Preise. 
-                  Für aktuelle Informationen siehe: <a href={service.url} className="text-primary hover:underline">{service.url}</a>
-                </p>
-              </div>
-            )}
-
-            {/* Article content */}
-            {service.articlecontent && (
-              <div className="mb-8">
-                <DynamicZoneComponent blocks={service.articlecontent}/>
-              </div>
-            )}
+            {/* Reviews List */}
+            <div className="mb-8">
+              <ReviewList 
+                reviews={reviews}
+                onReviewsChange={handleReviewSubmitted}
+              />
+            </div>
           </div>
 
-          <Separator />
-
           {/* Action Buttons */}
-          <div className="flex gap-3 pb-8 flex-wrap">
-            <Button className="flex-1 min-w-[200px]" size="lg" asChild>
-              <a href={service.url} target="_blank" rel="noopener noreferrer">
-                Jetzt ausprobieren
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
-            <Button variant="outline" size="lg" onClick={() => router.back()}>
-              Zurück
-            </Button>
+          <div className="mt-12 pt-8 border-t border-border">
+            <div className="flex gap-4 flex-wrap justify-center">
+              <Button className="min-w-[200px]" size="lg" asChild>
+                <a href={service.url} target="_blank" rel="noopener noreferrer">
+                  Jetzt ausprobieren
+                  <ExternalLink className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
+              <Button variant="outline" size="lg" onClick={() => router.back()}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Zurück
+              </Button>
+            </div>
           </div>
         </div>
       </div>

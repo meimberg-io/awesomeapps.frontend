@@ -1,11 +1,13 @@
 import {Tag} from "@/types/tag";
 import {Service} from "@/types/service";
 import {Page} from "@/types/page";
+import {Review} from "@/types/review";
 import {ApolloClient, InMemoryCache} from "@apollo/client";
 import {STRAPI_BASEURL} from "@/lib/constants";
 import {GET_SERVICE_DETAIL, GET_SERVICE_DETAIL_BY_SLUG, GET_SERVICES, GET_SERVICES_NEWS, SEARCH_SERVICES} from "@/lib/graphql/service";
 import {GET_TAG_DETAIL_BY_NAME, GET_TAGS} from "@/lib/graphql/tag";
 import {GET_PAGES, GET_PAGES_BY_SLUG} from "@/lib/graphql/page";
+import {GET_SERVICE_REVIEWS} from "@/lib/graphql/review";
 
 const client = new ApolloClient({
     uri: STRAPI_BASEURL + "/graphql",
@@ -97,3 +99,12 @@ export const fetchPages = async (): Promise<Page[]> => {
     });
     return data.pages;
 }
+
+export const fetchServiceReviews = async (serviceDocumentId: string): Promise<Review[]> => {
+    const {data} = await client.query({
+        query: GET_SERVICE_REVIEWS,
+        variables: {serviceId: serviceDocumentId},
+        fetchPolicy: "no-cache",
+    });
+    return data.reviews || [];
+};
