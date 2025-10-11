@@ -13,6 +13,7 @@ export const GET_SERVICES = gql`
             tags {
                 documentId
                 name
+                icon
             }
             thumbnail {
                 url
@@ -35,7 +36,10 @@ export const GET_SERVICES_NEWS = gql`
             filters: { 
                 publishdate: { 
                     notNull:true 
-                } 
+                },
+                publishedAt: {
+                    notNull: true
+                }
             }
         ) {
             documentId
@@ -48,6 +52,7 @@ export const GET_SERVICES_NEWS = gql`
             tags {
                 documentId
                 name
+                icon
             }
             thumbnail {
                 url
@@ -67,6 +72,9 @@ export const SEARCH_SERVICES = gql`
             filters: {
                 name: {
                     containsi: $searchQuery
+                },
+                publishedAt: {
+                    notNull: true
                 }
             }
         ) {
@@ -137,6 +145,7 @@ export const GET_SERVICE_DETAIL = gql`
             tags {
                 documentId
                 name
+                icon
             }
             thumbnail {
                 url
@@ -175,7 +184,7 @@ export const GET_SERVICE_DETAIL = gql`
 
 export const GET_SERVICE_DETAIL_BY_SLUG = gql`
     query GetServiceDetailBySlug($slug: String!) {
-        services(filters: { slug: { eq: $slug } }) {
+        services(filters: { slug: { eq: $slug }, publishedAt: { notNull: true } }) {
             documentId
             name
             slug
@@ -218,6 +227,7 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
             tags {
                 documentId
                 name
+                icon
             }
             thumbnail {
                 url

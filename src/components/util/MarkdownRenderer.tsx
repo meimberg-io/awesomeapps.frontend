@@ -44,12 +44,18 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({content}) => {
                 ),
                 em: ({children}) => <em className="italic">{children}</em>,
                 hr: () => <hr className="border-t border-border my-8"/>,
-                table: ({children}) => <table className="w-full border-collapse border border-border rounded-lg overflow-hidden my-6">{children}</table>,
-                thead: ({children}) => <thead className="bg-muted">{children}</thead>,
-                tbody: ({children}) => <tbody className="divide-y divide-border">{children}</tbody>,
-                tr: ({children}) => <tr className="hover:bg-muted/50 transition-colors">{children}</tr>,
-                th: ({children}) => <th className="px-4 py-3 text-left font-semibold text-foreground border border-border">{children}</th>,
-                td: ({children}) => <td className="px-4 py-3 text-muted-foreground border border-border">{children}</td>
+                table: ({children}) => (
+                    <div className="overflow-x-auto my-8">
+                        <table className="w-full border-collapse border border-border rounded-lg overflow-hidden shadow-sm">
+                            {children}
+                        </table>
+                    </div>
+                ),
+                thead: ({children}) => <thead className="bg-primary/5">{children}</thead>,
+                tbody: ({children}) => <tbody className="bg-white dark:bg-slate-900 divide-y divide-border">{children}</tbody>,
+                tr: ({children}) => <tr className="hover:bg-muted/30 transition-colors">{children}</tr>,
+                th: ({children}) => <th className="px-6 py-4 text-left text-sm font-bold text-foreground border-b-2 border-border">{children}</th>,
+                td: ({children}) => <td className="px-6 py-4 text-sm text-muted-foreground">{children}</td>
             }}
         >
             {content}
