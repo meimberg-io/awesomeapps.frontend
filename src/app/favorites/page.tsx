@@ -98,7 +98,7 @@ export default function FavoritesPage() {
                   : null;
 
                 return (
-                  <Card key={service.documentId} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <Card key={service.documentId} className="overflow-hidden hover:shadow-xl hover:brightness-110 transition-all flex flex-col">
                     {/* Thumbnail */}
                     {thumbnailUrl && (
                       <div className="h-40 bg-gradient-to-br from-muted to-muted/50 relative overflow-hidden">
@@ -110,7 +110,7 @@ export default function FavoritesPage() {
                       </div>
                     )}
 
-                    <CardContent className="p-6">
+                    <CardContent className="p-6 flex flex-col flex-1">
                       {/* Logo and Title */}
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-12 h-12 flex-shrink-0 rounded-lg bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center border border-border/50">
@@ -155,8 +155,11 @@ export default function FavoritesPage() {
                         </div>
                       )}
 
+                      {/* Spacer to push actions to bottom */}
+                      <div className="flex-1"></div>
+
                       {/* Actions */}
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 mt-4">
                         <Button asChild className="flex-1" size="sm">
                           <Link href={`/s/${service.slug}`}>
                             Details
