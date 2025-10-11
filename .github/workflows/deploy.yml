@@ -61,7 +61,7 @@ jobs:
         username: ${{ vars.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "."
-        target: "/srv/awesomeapps-frontend/app"
+        target: "/opt/awesomeapps-frontend"
         rm: false
         strip_components: 0
 
@@ -72,7 +72,7 @@ jobs:
         username: ${{ vars.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /srv/awesomeapps-frontend/app
+          cd /opt/awesomeapps-frontend
           
           # Deploy using the unified docker-compose.yml with production profile
           docker-compose down || true
