@@ -29,6 +29,8 @@ jobs:
         NEXT_PUBLIC_STRAPI_BASEURL: ${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
         NEXT_PUBLIC_APP_BASEURL: ${{ vars.NEXT_PUBLIC_APP_BASEURL }}
         NEXT_PUBLIC_MATOMO_TRACKER: ${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
+        AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
       run: |
         npm run lint
         npm run build
@@ -52,6 +54,15 @@ jobs:
         NEXT_PUBLIC_APP_BASEURL=${{ vars.NEXT_PUBLIC_APP_BASEURL }}
         NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
         REVALIDATE_SECRET=${{ secrets.REVALIDATE_SECRET }}
+        AUTH_SECRET=${{ secrets.AUTH_SECRET }}
+        NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }}
+        OAUTH_GOOGLE_CLIENT_ID=${{ secrets.OAUTH_GOOGLE_CLIENT_ID }}
+        OAUTH_GOOGLE_CLIENT_SECRET=${{ secrets.OAUTH_GOOGLE_CLIENT_SECRET }}
+        OAUTH_GITHUB_CLIENT_ID=${{ secrets.OAUTH_GITHUB_CLIENT_ID }}
+        OAUTH_GITHUB_CLIENT_SECRET=${{ secrets.OAUTH_GITHUB_CLIENT_SECRET }}
+        OAUTH_AZURE_AD_CLIENT_ID=${{ secrets.OAUTH_AZURE_AD_CLIENT_ID }}
+        OAUTH_AZURE_AD_CLIENT_SECRET=${{ secrets.OAUTH_AZURE_AD_CLIENT_SECRET }}
+        OAUTH_AZURE_AD_TENANT_ID=${{ secrets.OAUTH_AZURE_AD_TENANT_ID }}
         EOF
 
     - name: Deploy files to server
@@ -84,9 +95,9 @@ jobs:
           # Verify deployment
           echo "Waiting for application to start..."
           sleep 120
-          if curl -f http://localhost:$APP_PORT/ > /dev/null 2>&1; then
-            echo "✅ AwesomeApps deployed successfully on port $APP_PORT!"
-            echo "🌐 Application is available at: http://${{ vars.HOST || secrets.HOST }}:$APP_PORT"
+          if curl -f http://localhost:${{ env.APP_PORT }}/ > /dev/null 2>&1; then
+            echo "✅ AwesomeApps deployed successfully on port ${{ env.APP_PORT }}!"
+            echo "🌐 Application is available at: http://${{ vars.HOST }}:${{ env.APP_PORT }}"
           else
             echo "❌ Deployment verification failed!"
             echo "📋 Container logs:"
