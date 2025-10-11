@@ -21,9 +21,10 @@ export const ServiceDetail = ({ service }: ServiceDetailProps) => {
   const router = useRouter();
   const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
   
-  // Mock rating data
+  // Mock rating data (deterministic to avoid hydration errors)
   const mockRating = 4.5;
-  const mockReviews = Math.floor(Math.random() * 200) + 50;
+  const idHash = service.documentId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const mockReviews = (idHash * 37) % 150 + 50;
 
   return (
     <div className="min-h-screen bg-background">

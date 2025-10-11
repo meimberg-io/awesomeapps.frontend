@@ -5,10 +5,10 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-    {ignores: ['dist', '.next', 'node_modules']},
+    {ignores: ['dist', '.next', 'node_modules', '*.config.js', '*.config.ts']},
     {
         extends: [js.configs.recommended, ...tseslint.configs.recommended],
-        files: ['**/*.{ts,tsx}'],
+        files: ['**/*.{ts,tsx,js,jsx}'],
         languageOptions: {
             ecmaVersion: 2020,
             globals: globals.browser,
@@ -32,7 +32,12 @@ export default tseslint.config(
             "@typescript-eslint/no-unused-vars": ["error", {
                 "argsIgnorePattern": "^_",
                 "varsIgnorePattern": "^_"
-            }]
+            }],
+            // Production-level strictness
+            "@typescript-eslint/no-explicit-any": "error",
+            "@typescript-eslint/explicit-module-boundary-types": "off",
+            "no-console": ["warn", { "allow": ["warn", "error"] }],
+            "no-debugger": "error",
         },
     },
 )

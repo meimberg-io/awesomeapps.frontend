@@ -11,8 +11,6 @@ export interface TagsAvailableProps {
 
 
 const TagsAvailable: React.FC<TagsAvailableProps> = ({tags}) => {
-    console.log('Rendering TagsAvailable', typeof window === 'undefined' ? 'on server' : 'on client');
-
     return (
         <header className="pt-6 pb-4 sm:pb-6 bg-gray-600">
             <div className="max-w-screen-2xl px-4 sm:px-6 lg:px-8 mx-auto ">

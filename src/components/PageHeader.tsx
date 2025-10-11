@@ -24,8 +24,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({title, subtitle, icon, iconname,
     let style_color_icon: string = "text-saprimary-200";
     let style_color_border: string = "border-saprimary-200";
 
-    console.log("PageHeader", style, iconname, title);
-
     switch (style) {
         case PageHeaderStyle.SERVICE:
             style_color_bg = "bg-sasecondary-300";

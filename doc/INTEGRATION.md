@@ -1,4 +1,4 @@
-# ServiceAtlas Integration Guide
+# AwesomeApps Integration Guide
 
 This guide explains how the frontend and Strapi backend work together.
 
@@ -36,11 +36,11 @@ This guide explains how the frontend and Strapi backend work together.
 
 **Frontend:**
 - PM2/Node: Port 5680
-- Public URL: `https://serviceatlas.example.com` (via Nginx)
+- Public URL: `https://awesomeapps.example.com` (via Nginx)
 
 **Backend:**
 - PM2/Node: Port 8202
-- Public URL: `https://api.serviceatlas.example.com` (via Nginx)
+- Public URL: `https://api.awesomeapps.example.com` (via Nginx)
 
 ## Environment Variables
 
@@ -52,8 +52,8 @@ NEXT_PUBLIC_STRAPI_BASEURL=http://localhost:8202
 NEXT_PUBLIC_APP_BASEURL=http://localhost:8203
 
 # For production with reverse proxy
-NEXT_PUBLIC_STRAPI_BASEURL=https://api.serviceatlas.example.com
-NEXT_PUBLIC_APP_BASEURL=https://serviceatlas.example.com
+NEXT_PUBLIC_STRAPI_BASEURL=https://api.awesomeapps.example.com
+NEXT_PUBLIC_APP_BASEURL=https://awesomeapps.example.com
 ```
 
 ### Strapi (.env)
@@ -63,7 +63,7 @@ NEXT_PUBLIC_APP_BASEURL=https://serviceatlas.example.com
 CLIENT_URL=http://localhost:8203
 
 # For production
-CLIENT_URL=https://serviceatlas.example.com
+CLIENT_URL=https://awesomeapps.example.com
 ```
 
 ## Running Both Services Locally
@@ -72,14 +72,14 @@ CLIENT_URL=https://serviceatlas.example.com
 
 **Terminal 1 - Strapi Backend:**
 ```bash
-cd ../serviceatlas.strapi
+cd ../awesomeapps.strapi
 npm run develop
 # Runs on http://localhost:8202
 ```
 
 **Terminal 2 - Frontend:**
 ```bash
-cd serviceatlas.frontend
+cd awesomeapps.frontend
 npm run dev
 # Runs on http://localhost:3000
 ```
@@ -88,14 +88,14 @@ npm run dev
 
 **Strapi Backend:**
 ```bash
-cd ../serviceatlas.strapi
+cd ../awesomeapps.strapi
 docker-compose --profile dev up
 # Accessible at http://localhost:8202
 ```
 
 **Frontend:**
 ```bash
-cd serviceatlas.frontend
+cd awesomeapps.frontend
 docker-compose --profile dev up
 # Accessible at http://localhost:8203
 ```
@@ -109,7 +109,7 @@ version: '3.8'
 services:
   strapi:
     build:
-      context: ./serviceatlas.strapi
+      context: ./awesomeapps.strapi
       dockerfile: Dockerfile
     ports:
       - "8202:1337"
@@ -118,11 +118,11 @@ services:
       - DATABASE_HOST=mysql
       # ... other Strapi env vars
     networks:
-      - serviceatlas
+      - awesomeapps
 
   frontend:
     build:
-      context: ./serviceatlas.frontend
+      context: ./awesomeapps.frontend
       dockerfile: Dockerfile
     ports:
       - "8203:5680"
@@ -132,7 +132,7 @@ services:
     depends_on:
       - strapi
     networks:
-      - serviceatlas
+      - awesomeapps
 
   mysql:
     image: mysql:8.0
@@ -144,10 +144,10 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - serviceatlas
+      - awesomeapps
 
 networks:
-  serviceatlas:
+  awesomeapps:
     driver: bridge
 
 volumes:
@@ -160,7 +160,7 @@ The frontend communicates with Strapi using **GraphQL**:
 
 ### GraphQL Endpoint
 - Development: `http://localhost:8202/graphql`
-- Production: `https://api.serviceatlas.example.com/graphql`
+- Production: `https://api.awesomeapps.example.com/graphql`
 
 ### Apollo Client Configuration
 
@@ -180,7 +180,7 @@ const client = new ApolloClient({
 
 Strapi needs to allow requests from the frontend URL.
 
-In `serviceatlas.strapi/config/middlewares.ts`:
+In `awesomeapps.strapi/config/middlewares.ts`:
 
 ```typescript
 export default [
@@ -191,7 +191,7 @@ export default [
       origin: [
         'http://localhost:3000',
         'http://localhost:8203',
-        'https://serviceatlas.example.com',
+        'https://awesomeapps.example.com',
       ],
     },
   },

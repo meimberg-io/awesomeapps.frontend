@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://serviceatlas.meimberg.io/api/sitemap.xml
+Sitemap: https://awesomeapps.meimberg.io/api/sitemap.xml
