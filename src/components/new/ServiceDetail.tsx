@@ -61,7 +61,7 @@ export const ServiceDetail = ({ service }: ServiceDetailProps) => {
           description: `${service.name} wurde zu deinen Favoriten hinzugefügt.`,
         });
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Fehler",
         description: "Es ist ein Fehler aufgetreten. Bitte versuche es erneut.",

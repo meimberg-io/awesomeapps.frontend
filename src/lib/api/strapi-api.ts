@@ -5,6 +5,7 @@ import { Service } from "@/types/service";
 /**
  * Authenticate member with Strapi and get JWT
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function authenticateMember(session: any) {
   const response = await fetch(`${STRAPI_BASEURL}/api/members/me`, {
     method: 'POST',
@@ -152,7 +153,7 @@ export async function checkFavorite(
 export async function getMemberProfile(
   memberId: number,
   jwt: string
-): Promise<{ data: Member & { statistics: any } }> {
+): Promise<{ data: Member & { statistics: { reviewCount: number; favoriteCount: number; memberSince: string; lastLogin: string | null } } }> {
   const response = await fetch(`${STRAPI_BASEURL}/api/members/${memberId}/profile`, {
     headers: {
       'Authorization': `Bearer ${jwt}`,
@@ -173,7 +174,7 @@ export async function getMemberProfile(
 export async function getMemberReviews(
   memberId: number,
   jwt: string
-): Promise<{ data: any[] }> {
+): Promise<{ data: unknown[] }> {
   const response = await fetch(`${STRAPI_BASEURL}/api/members/${memberId}/reviews`, {
     headers: {
       'Authorization': `Bearer ${jwt}`,

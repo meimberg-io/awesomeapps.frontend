@@ -15,7 +15,7 @@ import { STRAPI_BASEURL } from '@/lib/constants';
 import { useState } from 'react';
 
 export default function FavoritesPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const { favorites, loading, removeFavorite, refreshMember } = useMember();
   const { toast } = useToast();
@@ -37,7 +37,7 @@ export default function FavoritesPage() {
         title: 'Entfernt',
         description: `${serviceName} wurde aus deinen Favoriten entfernt.`,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Fehler',
         description: 'Es ist ein Fehler aufgetreten. Bitte versuche es erneut.',
