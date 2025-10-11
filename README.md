@@ -16,7 +16,7 @@ Visit `http://localhost:3000`
 cp env.example .env
 docker-compose --profile dev up --build
 ```
-Visit `http://localhost:8203`
+Visit `http://localhost:8204`
 
 ### Docker Production
 ```bash
@@ -33,7 +33,7 @@ Create `.env` file with these variables:
 NEXT_PUBLIC_STRAPI_BASEURL=http://localhost:8202
 
 # Required - Frontend URL
-NEXT_PUBLIC_APP_BASEURL=http://localhost:8203
+NEXT_PUBLIC_APP_BASEURL=http://localhost:8204
 
 # Required - Secret for revalidation API
 REVALIDATE_SECRET=your-random-secret-token
@@ -42,7 +42,7 @@ REVALIDATE_SECRET=your-random-secret-token
 NEXT_PUBLIC_MATOMO_TRACKER=false
 
 # Optional - Development port
-APP_PORT=8203
+APP_PORT=8204
 ```
 
 **Important:** 
