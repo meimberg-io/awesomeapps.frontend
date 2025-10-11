@@ -10,8 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, UserCircle, Heart } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export function UserButton() {
   const { data: session, status } = useSession();
@@ -68,6 +69,19 @@ export function UserButton() {
             </p>
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link href="/profile">
+            <UserCircle className="h-4 w-4 mr-2" />
+            Mein Profil
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link href="/favorites">
+            <Heart className="h-4 w-4 mr-2" />
+            Meine Favoriten
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
           <LogOut className="h-4 w-4 mr-2" />
