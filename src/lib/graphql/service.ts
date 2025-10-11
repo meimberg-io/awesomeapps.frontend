@@ -149,6 +149,25 @@ export const GET_SERVICE_DETAIL = gql`
                 url
             }
 
+            reviews(filters: { isPublished: { eq: true } }, sort: "createdAt:desc") {
+                documentId
+                reviewtext
+                voting
+                isPublished
+                helpfulCount
+                createdAt
+                updatedAt
+                member {
+                    documentId
+                    displayName
+                    username
+                    avatarUrl
+                    avatar {
+                        url
+                    }
+                }
+            }
+
         }
     }
 `;
@@ -214,6 +233,25 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
             }
             logo {
                 url
+            }
+
+            reviews(filters: { isPublished: { eq: true } }, sort: "createdAt:desc") {
+                documentId
+                reviewtext
+                voting
+                isPublished
+                helpfulCount
+                createdAt
+                updatedAt
+                member {
+                    documentId
+                    displayName
+                    username
+                    avatarUrl
+                    avatar {
+                        url
+                    }
+                }
             }
 
         }

@@ -137,13 +137,13 @@ After registration, you'll see the **Overview** page. This page shows MANY IDs -
 │ AwesomeApps                                             │
 │                                                         │
 │ Application (client) ID                                 │
-│ xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx                   │  ← COPY THIS
+│ xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx                    │  ← COPY THIS
 │                                                         │
 │ Directory (tenant) ID                                   │
-│ yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy                   │  ← COPY THIS
+│ yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy                    │  ← COPY THIS
 │                                                         │
 │ Object ID                                               │
-│ zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz                   │  ← IGNORE THIS
+│ zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz                    │  ← IGNORE THIS
 └─────────────────────────────────────────────────────────┘
 ```
 

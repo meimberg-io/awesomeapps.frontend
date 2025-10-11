@@ -1,6 +1,6 @@
 'use client';
 
-import { Star, ExternalLink, ArrowLeft, Globe } from "lucide-react";
+import { Star, ExternalLink, ArrowLeft, Globe, Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -12,6 +12,10 @@ import MarkdownRenderer from "@/components/util/MarkdownRenderer";
 import { Screenshots } from "@/components/util/Screenshots";
 import Youtube from "@/components/Youtube";
 import { useRouter } from "next/navigation";
+import { useMember } from "@/contexts/MemberContext";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface ServiceDetailProps {
   service: Service;
@@ -19,12 +23,54 @@ interface ServiceDetailProps {
 
 export const ServiceDetail = ({ service }: ServiceDetailProps) => {
   const router = useRouter();
+  const { data: session } = useSession();
+  const { addFavorite, removeFavorite, isFavorite } = useMember();
+  const { toast } = useToast();
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
   
   // Mock rating data (deterministic to avoid hydration errors)
   const mockRating = 4.5;
   const idHash = service.documentId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const mockReviews = (idHash * 37) % 150 + 50;
+
+  const favorite = isFavorite(service.documentId);
+
+  const handleToggleFavorite = async () => {
+    if (!session) {
+      toast({
+        title: "Anmeldung erforderlich",
+        description: "Bitte melden Sie sich an, um Favoriten zu speichern.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsTogglingFavorite(true);
+    try {
+      if (favorite) {
+        await removeFavorite(service.documentId);
+        toast({
+          title: "Entfernt",
+          description: `${service.name} wurde aus deinen Favoriten entfernt.`,
+        });
+      } else {
+        await addFavorite(service.documentId);
+        toast({
+          title: "Hinzugefügt",
+          description: `${service.name} wurde zu deinen Favoriten hinzugefügt.`,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Fehler",
+        description: "Es ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTogglingFavorite(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,7 +97,18 @@ export const ServiceDetail = ({ service }: ServiceDetailProps) => {
             </div>
             
             <div className="flex-1">
-              <h1 className="text-4xl font-bold mb-3">{service.name}</h1>
+              <div className="flex items-center gap-3 mb-3">
+                <h1 className="text-4xl font-bold">{service.name}</h1>
+                <Button
+                  variant={favorite ? "default" : "outline"}
+                  size="icon"
+                  onClick={handleToggleFavorite}
+                  disabled={isTogglingFavorite}
+                  title={favorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
+                >
+                  <Heart className={`h-5 w-5 ${favorite ? 'fill-current' : ''}`} />
+                </Button>
+              </div>
               <div className="flex items-center gap-4 flex-wrap mb-4">
                 <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
                   <Star className="h-5 w-5 fill-primary text-primary" />
