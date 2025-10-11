@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import { Hero } from "@/components/new/Hero";
@@ -8,7 +8,7 @@ import { ServiceCard } from "@/components/new/ServiceCard";
 import { FilterSidebar } from "@/components/new/FilterSidebar";
 import { Service } from "@/types/service";
 import { Tag } from "@/types/tag";
-import { fetchServices, fetchTags } from "@/lib/strapi";
+import { fetchServices, fetchTags, searchServices } from "@/lib/strapi";
 
 interface InteractiveServiceListProps {
   initialServices: Service[];
@@ -22,6 +22,15 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   const [selectedTags, setSelectedTags] = useState<Tag[]>(maintag ? [maintag] : []);
   const [services, setServices] = useState<Service[]>(initialServices);
   const [tags, setTags] = useState<Tag[]>(initialTags);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    // Clear tag filters when user starts searching
+    if (query.trim() !== "") {
+      setSelectedTags([]);
+    }
+  };
 
   const handleTagChange = (tagId: string) => {
     const tag = tags.find(t => t.documentId === tagId);
@@ -41,33 +50,42 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
     setSelectedTags([]);
   };
 
-  // Dynamic fetching based on selected tags (like old frontend)
-  // Only fetch when tags are selected, not on initial mount with empty tags
+  // Search effect with debouncing
   useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const debounceTimer = setTimeout(() => {
+      searchServices(searchQuery)
+        .then(setServices)
+        .catch(console.error)
+        .finally(() => setIsSearching(false));
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
+
+  // Dynamic fetching based on selected tags
+  useEffect(() => {
+    // Don't fetch if user is searching
+    if (searchQuery.trim() !== "") {
+      return;
+    }
+
     if (selectedTags.length > 0) {
       fetchServices(selectedTags).then(setServices).catch(console.error);
       fetchTags(selectedTags).then(setTags).catch(console.error);
     } else if (!maintag) {
-      // When no tags selected and no maintag, reset to initial featured services
+      // When no tags selected and no search, reset to initial featured services
       setServices(initialServices);
       setTags(initialTags);
     }
-  }, [selectedTags, maintag, initialServices, initialTags]);
+  }, [selectedTags, maintag, initialServices, initialTags, searchQuery]);
 
-  const filteredServices = useMemo(() => {
-    return services.filter((service) => {
-      const matchesSearch =
-        searchQuery === "" ||
-        service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (service.abstract && service.abstract.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (service.description && service.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        service.tags.some((tag) =>
-          tag.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
-      return matchesSearch;
-    });
-  }, [searchQuery, services]);
+  const filteredServices = services;
 
   const handleServiceClick = (service: Service) => {
     router.push(`/s/${service.slug}`);
@@ -76,7 +94,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Hero searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      <Hero searchQuery={searchQuery} onSearchChange={handleSearchChange} />
 
       <div className="container mx-auto px-6 py-12">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -91,10 +109,13 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
           <main className="flex-1">
             <div className="mb-6">
               <h2 className="text-2xl font-bold mb-2">
-                {filteredServices.length} Services gefunden
+                {isSearching ? "Suche läuft..." : `${filteredServices.length} Services gefunden`}
               </h2>
               <p className="text-muted-foreground">
-                Entdecken Sie die besten digitalen Dienste für Ihre Anforderungen
+                {searchQuery.trim() !== "" 
+                  ? `Suchergebnisse für "${searchQuery}"` 
+                  : "Entdecken Sie die besten digitalen Dienste für Ihre Anforderungen"
+                }
               </p>
             </div>
 

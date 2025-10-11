@@ -60,6 +60,38 @@ export const GET_SERVICES_NEWS = gql`
     }
 `;
 
+export const SEARCH_SERVICES = gql`
+    query SearchServices($searchQuery: String!) {
+        services(
+            sort: "name:asc",
+            filters: {
+                name: {
+                    containsi: $searchQuery
+                }
+            }
+        ) {
+            documentId
+            name
+            slug
+            abstract
+            updatedAt
+            top
+            publishdate
+            tags {
+                documentId
+                name
+                icon
+            }
+            thumbnail {
+                url
+            }
+            logo {
+                url
+            }
+        }
+    }
+`;
+
 
 export const GET_SERVICE_DETAIL = gql`
     query GetServiceDetail($id: ID!) {

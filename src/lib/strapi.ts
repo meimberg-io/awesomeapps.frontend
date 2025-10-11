@@ -3,7 +3,7 @@ import {Service} from "@/types/service";
 import {Page} from "@/types/page";
 import {ApolloClient, InMemoryCache} from "@apollo/client";
 import {STRAPI_BASEURL} from "@/lib/constants";
-import {GET_SERVICE_DETAIL, GET_SERVICE_DETAIL_BY_SLUG, GET_SERVICES, GET_SERVICES_NEWS} from "@/lib/graphql/service";
+import {GET_SERVICE_DETAIL, GET_SERVICE_DETAIL_BY_SLUG, GET_SERVICES, GET_SERVICES_NEWS, SEARCH_SERVICES} from "@/lib/graphql/service";
 import {GET_TAG_DETAIL_BY_NAME, GET_TAGS} from "@/lib/graphql/tag";
 import {GET_PAGES, GET_PAGES_BY_SLUG} from "@/lib/graphql/page";
 
@@ -27,6 +27,18 @@ export const fetchServicesNews = async (): Promise<Service[]> => {
     const {data} = await client.query({
         query: GET_SERVICES_NEWS,
         variables: {limit: 8},
+        fetchPolicy: "no-cache"
+    });
+    return data.services;
+};
+
+export const searchServices = async (searchQuery: string): Promise<Service[]> => {
+    if (!searchQuery || searchQuery.trim() === "") {
+        return [];
+    }
+    const {data} = await client.query({
+        query: SEARCH_SERVICES,
+        variables: {searchQuery: searchQuery.trim()},
         fetchPolicy: "no-cache"
     });
     return data.services;
