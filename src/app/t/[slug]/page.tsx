@@ -14,18 +14,39 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 
     if (!tag) {
         return {
-            title: 'Tag ' + tagname + ' nicht gefunden',
-            description: 'Das Tag ' + tagname + 'konnte nicht gefunden werden.',
+            title: `${tagname} nicht gefunden - AwesomeApps`,
+            description: `Die Kategorie ${tagname} konnte nicht gefunden werden.`,
         }
     }
 
+    const title = `${tag.name} - SaaS Tools & Apps | AwesomeApps`
+    const description = tag.description 
+        ? tag.description 
+        : `Entdecke die besten ${tag.name} SaaS-Tools und Online-Apps. Vergleiche Features, Preise und Bewertungen.`
+
     return {
-        title: tag.name,
-        description: tag.description ?? undefined,
+        title,
+        description,
+        keywords: `${tag.name}, SaaS, Software, Online Tools, Apps`,
         openGraph: {
-            title: tag.name,
-            description: tag.description ?? undefined,
-            url: `https://awesomeapps.meimberg.io/t/${tagname}`
+            title: `${tag.name} Tools`,
+            description,
+            url: `https://awesomeapps.meimberg.io/t/${tagname}`,
+            siteName: 'AwesomeApps',
+            type: 'website',
+            locale: 'de_DE',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${tag.name} Tools`,
+            description,
+        },
+        alternates: {
+            canonical: `/t/${tagname}`,
+        },
+        robots: {
+            index: true,
+            follow: true,
         },
     }
 }
