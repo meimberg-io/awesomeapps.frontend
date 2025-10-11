@@ -27,22 +27,20 @@ export function UserButton() {
 
   if (status === "unauthenticated") {
     return (
-      <Button 
-        variant="default" 
-        size="sm" 
+      <button 
         onClick={() => signIn()}
-        className="gap-2"
+        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
       >
-        <LogIn className="h-4 w-4" />
-        Anmelden
-      </Button>
+        <User className="h-4 w-4" />
+        <span className="hidden sm:inline">Anmelden</span>
+      </button>
     );
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
+        <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
           {session?.user?.image ? (
             <Image
               src={session.user.image}
@@ -54,10 +52,10 @@ export function UserButton() {
           ) : (
             <User className="h-4 w-4" />
           )}
-          <span className="hidden md:inline-block">
+          <span className="hidden sm:inline">
             {session?.user?.name || "Profil"}
           </span>
-        </Button>
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>

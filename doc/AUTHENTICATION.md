@@ -27,8 +27,8 @@ This application uses **NextAuth.js v5** for authentication with support for Goo
    - Production: `https://yourdomain.com/api/auth/callback/google`
 7. Copy Client ID and Client Secret to `.env`:
    ```env
-   GOOGLE_CLIENT_ID=your-client-id-here
-   GOOGLE_CLIENT_SECRET=your-client-secret-here
+   OAUTH_GOOGLE_CLIENT_ID=your-client-id-here
+   OAUTH_GOOGLE_CLIENT_SECRET=your-client-secret-here
    ```
 
 ### GitHub OAuth
@@ -44,8 +44,8 @@ This application uses **NextAuth.js v5** for authentication with support for Goo
 4. Copy Client ID and generate Client Secret
 5. Add to `.env`:
    ```env
-   GITHUB_CLIENT_ID=your-client-id-here
-   GITHUB_CLIENT_SECRET=your-client-secret-here
+   OAUTH_GITHUB_CLIENT_ID=your-client-id-here
+   OAUTH_GITHUB_CLIENT_SECRET=your-client-secret-here
    ```
 
 ### Microsoft 365 / Azure AD OAuth
@@ -65,9 +65,9 @@ This application uses **NextAuth.js v5** for authentication with support for Goo
 6. Copy the secret value immediately (it won't be shown again)
 7. Add to `.env`:
    ```env
-   AZURE_AD_CLIENT_ID=your-application-id-here
-   AZURE_AD_CLIENT_SECRET=your-client-secret-here
-   AZURE_AD_TENANT_ID=your-tenant-id-here
+   OAUTH_AZURE_AD_CLIENT_ID=your-application-id-here
+   OAUTH_AZURE_AD_CLIENT_SECRET=your-client-secret-here
+   OAUTH_AZURE_AD_TENANT_ID=your-tenant-id-here
    ```
 
 ## Required Environment Variables
@@ -78,15 +78,15 @@ AUTH_SECRET=your-nextauth-secret-here        # Generate with: openssl rand -base
 NEXTAUTH_URL=http://localhost:8204           # Must match your frontend URL
 
 # OAuth providers (at least one recommended)
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
+OAUTH_GOOGLE_CLIENT_ID=...
+OAUTH_GOOGLE_CLIENT_SECRET=...
 
-GITHUB_CLIENT_ID=...
-GITHUB_CLIENT_SECRET=...
+OAUTH_GITHUB_CLIENT_ID=...
+OAUTH_GITHUB_CLIENT_SECRET=...
 
-AZURE_AD_CLIENT_ID=...
-AZURE_AD_CLIENT_SECRET=...
-AZURE_AD_TENANT_ID=...
+OAUTH_AZURE_AD_CLIENT_ID=...
+OAUTH_AZURE_AD_CLIENT_SECRET=...
+OAUTH_AZURE_AD_TENANT_ID=...
 ```
 
 ## Testing Authentication

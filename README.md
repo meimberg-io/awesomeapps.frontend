@@ -43,8 +43,8 @@ AUTH_SECRET=your-nextauth-secret-here
 NEXTAUTH_URL=http://localhost:8204
 
 # Optional - OAuth providers (see doc/AUTHENTICATION.md for setup)
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
+OAUTH_GOOGLE_CLIENT_ID=your-google-client-id
+OAUTH_GOOGLE_CLIENT_SECRET=your-google-client-secret
 # ... (more providers in env.example)
 
 # Optional - Analytics

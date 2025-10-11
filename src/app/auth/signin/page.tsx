@@ -81,8 +81,3 @@ export default function SignInPage() {
   );
 }
 
-export const metadata = {
-  title: "Anmelden - AwesomeApps",
-  description: "Melden Sie sich an, um fortzufahren",
-};
-

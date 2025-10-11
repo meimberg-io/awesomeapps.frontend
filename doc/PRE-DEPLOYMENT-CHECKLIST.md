@@ -18,6 +18,7 @@ Prepare these values before deployment:
 | Variable | How to Generate | Example |
 |----------|-----------------|---------|
 | **REVALIDATE_SECRET** | Random token | Use: `openssl rand -hex 32` |
+| **AUTH_SECRET** | Base64 random | Use: `openssl rand -base64 32` |
 
 ### 3. Server Access
 
@@ -34,10 +35,21 @@ Create `.env` file with:
 NEXT_PUBLIC_STRAPI_BASEURL=https://api.yourdomain.com
 NEXT_PUBLIC_APP_BASEURL=https://yourdomain.com
 
-# Strong random secret
+# Strong random secrets
 REVALIDATE_SECRET=<generated-random-token>
+AUTH_SECRET=<generated-base64-token>
+NEXTAUTH_URL=https://yourdomain.com
 
-# Optional
+# Optional - OAuth (if using login functionality)
+OAUTH_GOOGLE_CLIENT_ID=<your-google-client-id>
+OAUTH_GOOGLE_CLIENT_SECRET=<your-google-secret>
+OAUTH_GITHUB_CLIENT_ID=<your-github-client-id>
+OAUTH_GITHUB_CLIENT_SECRET=<your-github-secret>
+OAUTH_AZURE_AD_CLIENT_ID=<your-azure-client-id>
+OAUTH_AZURE_AD_CLIENT_SECRET=<your-azure-secret>
+OAUTH_AZURE_AD_TENANT_ID=<your-azure-tenant-id>
+
+# Optional - Analytics
 NEXT_PUBLIC_MATOMO_TRACKER=true
 NODE_ENV=production
 APP_PORT=5680
@@ -127,6 +139,9 @@ Build should complete without errors:
 
 - [ ] `.env` file NOT in git repository
 - [ ] Strong random `REVALIDATE_SECRET` (32+ chars)
+- [ ] Strong random `AUTH_SECRET` (generated with openssl)
+- [ ] OAuth secrets properly configured and secured
+- [ ] OAuth redirect URIs updated for production domains
 - [ ] HTTPS enabled with valid SSL certificate
 - [ ] Firewall configured (only 22, 80, 443 open)
 - [ ] Application runs as non-root user

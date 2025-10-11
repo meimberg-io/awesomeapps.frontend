@@ -38,9 +38,22 @@ docker-compose --profile prod up -d --build
 NEXT_PUBLIC_STRAPI_BASEURL=http://localhost:8202
 NEXT_PUBLIC_APP_BASEURL=http://localhost:8204  
 REVALIDATE_SECRET=your-random-secret-token
+AUTH_SECRET=your-nextauth-secret  # Generate: openssl rand -base64 32
+NEXTAUTH_URL=http://localhost:8204
 ```
 
-**Optional:**
+**Optional (OAuth for login):**
+```env
+OAUTH_GOOGLE_CLIENT_ID=xxx
+OAUTH_GOOGLE_CLIENT_SECRET=xxx
+OAUTH_GITHUB_CLIENT_ID=xxx
+OAUTH_GITHUB_CLIENT_SECRET=xxx
+OAUTH_AZURE_AD_CLIENT_ID=xxx
+OAUTH_AZURE_AD_CLIENT_SECRET=xxx
+OAUTH_AZURE_AD_TENANT_ID=xxx
+```
+
+**Optional (other):**
 ```env
 NEXT_PUBLIC_MATOMO_TRACKER=false
 APP_PORT=8204
@@ -116,8 +129,11 @@ curl http://localhost:8202/_health
 ## 🔐 Production Checklist
 
 - [ ] Strong random `REVALIDATE_SECRET`
+- [ ] Strong random `AUTH_SECRET` (openssl rand -base64 32)
 - [ ] Correct `NEXT_PUBLIC_STRAPI_BASEURL` (production URL)
 - [ ] Correct `NEXT_PUBLIC_APP_BASEURL` (production URL)
+- [ ] Correct `NEXTAUTH_URL` (matches frontend URL)
+- [ ] OAuth redirect URIs updated for production
 - [ ] `.env` never committed to git
 - [ ] HTTPS enabled (Nginx + Let's Encrypt)
 - [ ] Strapi CORS configured for frontend URL
