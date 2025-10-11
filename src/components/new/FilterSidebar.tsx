@@ -29,7 +29,7 @@ export const FilterSidebar = ({
   const [tagSearch, setTagSearch] = useState("");
 
   const filteredTags = useMemo(() => {
-    let tags = tagSearch 
+    const tags = tagSearch 
       ? availableTags.filter(tag => 
           tag.name.toLowerCase().includes(tagSearch.toLowerCase()) ||
           (tag.description && tag.description.toLowerCase().includes(tagSearch.toLowerCase()))
