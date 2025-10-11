@@ -16,7 +16,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     AzureAD({
       clientId: process.env.OAUTH_AZURE_AD_CLIENT_ID,
       clientSecret: process.env.OAUTH_AZURE_AD_CLIENT_SECRET,
-      tenantId: process.env.OAUTH_AZURE_AD_TENANT_ID,
+      issuer: `https://login.microsoftonline.com/${process.env.OAUTH_AZURE_AD_TENANT_ID}/v2.0`,
     }),
   ],
   pages: {
