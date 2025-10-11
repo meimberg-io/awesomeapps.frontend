@@ -38,7 +38,7 @@ SSH to server
     ↓
 Create .env file with secrets
     ↓
-Deploy files to /srv/awesomeapps-frontend/app
+Deploy files to /opt/awesomeapps-frontend
     ↓
 docker-compose --profile prod up -d --build
     ↓
@@ -60,7 +60,7 @@ GitHub Actions can be manually triggered:
 
 ## Deployment Location
 
-- **Server Path**: `/srv/awesomeapps-frontend/app`
+- **Server Path**: `/opt/awesomeapps-frontend`
 - **Container Name**: `awesomeapps-frontend-app-prod-1`
 - **Port**: Internal 5680 → External as configured in `APP_PORT`
 
@@ -69,7 +69,7 @@ GitHub Actions can be manually triggered:
 ### Check Deployment Status
 ```bash
 ssh user@server
-cd /srv/awesomeapps-frontend/app
+cd /opt/awesomeapps-frontend
 docker-compose --profile prod ps
 docker-compose --profile prod logs
 ```
@@ -84,7 +84,7 @@ docker-compose --profile prod logs
 ### Manual Redeploy
 ```bash
 ssh user@server
-cd /srv/awesomeapps-frontend/app
+cd /opt/awesomeapps-frontend
 docker-compose --profile prod down
 docker-compose --profile prod up -d --build
 ```
