@@ -26,7 +26,7 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
 
   return (
     <Card 
-      className="group relative overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 p-6 bg-card"
+      className="group relative overflow-hidden hover:shadow-xl hover:brightness-110 transition-all duration-300 cursor-pointer border-border/50 p-6 bg-card"
       onClick={() => onServiceClick(service)}
     >
       {service.top && (

@@ -26,7 +26,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, selectedTags, toggleT
         <div 
             key={service.documentId} 
             onClick={handleCardClick}
-            className="card shadow-xl overflow-hidden group cursor-pointer hover:scale-[1.02] transition-transform duration-300"
+            className="card shadow-xl overflow-hidden group cursor-pointer hover:shadow-2xl hover:brightness-110 transition-all duration-300"
         >
             <div className="flex flex-col h-full ">
 
@@ -42,7 +42,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, selectedTags, toggleT
 
                 {/* Card Body */}
                 <div className="card-body bg-gray-700 overflow-hidden transition-colors duration-300 group-hover:bg-gray-650">
-                    <p className="text-md text-gray-300 transition-colors duration-300 group-hover:text-gray-100">{service.abstract}</p>
+                    <p className="text-md text-gray-300 transition-colors duration-300">{service.abstract}</p>
 
                     <div className="card-actions text-md">
                         {service.tags.map((tag) => (
@@ -52,10 +52,10 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, selectedTags, toggleT
                                     toggleTag(tag.documentId);
                                 }} 
                                 key={tag.documentId} 
-                                className={`cursor-pointer badge badge-lg border-0  
+                                className={`cursor-pointer badge badge-lg border-0 transition-all
                                 ${selectedTags.some(selectedTag => selectedTag.documentId === tag.documentId) ?
-                                'bg-saprimary-200 text-saprimary-950 hover:bg-red-700 hover:text-red-100' :
-                                'bg-gray-500 text-white hover:bg-saprimary-200 hover:text-saprimary-950'
+                                'bg-saprimary-200 text-saprimary-950 hover:brightness-125' :
+                                'bg-gray-500 text-white hover:brightness-125'
                             }`}>
                                 {tag.name}
                             </div>

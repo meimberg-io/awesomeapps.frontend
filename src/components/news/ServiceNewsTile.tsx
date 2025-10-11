@@ -16,7 +16,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service}) => {
 
     return (
         <Link href={`/s/${service.slug}`} className="block">
-            <Card className="group relative overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-border/50 bg-card h-full flex flex-col">
+            <Card className="group relative overflow-hidden hover:shadow-xl hover:brightness-110 transition-all duration-300 cursor-pointer border-border/50 bg-card h-full flex flex-col">
                 {/* Logo Header */}
                 <div className="bg-muted/50 px-7 py-4 flex items-center justify-center border-b border-border/50 group-hover:bg-primary/10 transition-colors duration-300">
                     <img 

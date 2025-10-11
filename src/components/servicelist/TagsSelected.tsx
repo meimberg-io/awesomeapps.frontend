@@ -18,7 +18,7 @@ const TagsSelected: React.FC<TagsSelectedProps> = ({selectedTags, toggleTag}) =>
 
                 {selectedTags.map((tag: Tag) => (
                     <button key={tag.documentId}
-                            className="btn btn-sm text-saprimary-950 bg-saprimary-200 border-0 hover:bg-sasecondary-950 hover:text-sasecondary-100 "
+                            className="btn btn-sm text-saprimary-950 bg-saprimary-200 border-0 hover:brightness-125 transition-all"
                             onClick={() => toggleTag(tag.documentId)}>
                         {tag.name}
                     </button>
