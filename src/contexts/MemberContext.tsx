@@ -10,9 +10,9 @@ interface MemberContextType {
   member: Member | null;
   favorites: Service[];
   loading: boolean;
-  addFavorite: (serviceId: number) => Promise<void>;
-  removeFavorite: (serviceId: number) => Promise<void>;
-  isFavorite: (serviceId: number) => boolean;
+  addFavorite: (serviceDocumentId: string) => Promise<void>;
+  removeFavorite: (serviceDocumentId: string) => Promise<void>;
+  isFavorite: (serviceDocumentId: string) => boolean;
   updateProfile: (data: { username?: string; displayName?: string; bio?: string }) => Promise<void>;
   refreshMember: () => Promise<void>;
 }
@@ -25,12 +25,12 @@ export function MemberProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchMemberData = async () => {
+  const fetchMemberData = React.useCallback(async () => {
     if (status === 'authenticated' && session?.strapiJwt && session?.memberId) {
       try {
         setLoading(true);
         const profileData = await StrapiAPI.getMemberProfile(session.memberId, session.strapiJwt);
-        setMember(profileData.data as any);
+        setMember(profileData.data);
         
         const favoritesData = await StrapiAPI.getFavorites(session.memberId, session.strapiJwt);
         setFavorites(favoritesData.data);
@@ -44,11 +44,11 @@ export function MemberProvider({ children }: { children: ReactNode }) {
       setFavorites([]);
       setLoading(false);
     }
-  };
+  }, [status, session?.strapiJwt, session?.memberId]);
 
   useEffect(() => {
     fetchMemberData();
-  }, [status, session?.memberId]);
+  }, [fetchMemberData]);
 
   const addFavorite = async (serviceDocumentId: string) => {
     if (!session?.strapiJwt || !session?.memberId) {

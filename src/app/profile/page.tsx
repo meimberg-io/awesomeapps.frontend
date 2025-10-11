@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useMember } from '@/contexts/MemberContext';
+import { Member } from '@/types/member';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,13 +13,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Mail, Calendar, Star, Heart } from 'lucide-react';
+import { Loader2, Mail, Calendar, Star, Heart } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
-  const { member, loading, updateProfile, refreshMember } = useMember();
+  const { member, favorites, loading, updateProfile, refreshMember } = useMember();
   const { toast } = useToast();
   
   const [isEditing, setIsEditing] = useState(false);
@@ -55,10 +56,10 @@ export default function ProfilePage() {
         title: 'Profil aktualisiert',
         description: 'Deine Änderungen wurden erfolgreich gespeichert.',
       });
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: 'Fehler',
-        description: error.message || 'Profil konnte nicht aktualisiert werden.',
+        description: error instanceof Error ? error.message : 'Profil konnte nicht aktualisiert werden.',
         variant: 'destructive',
       });
     } finally {
@@ -193,7 +194,7 @@ export default function ProfilePage() {
                     <Heart className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold">{member.favorites?.length || 0}</p>
+                    <p className="text-2xl font-bold">{favorites.length}</p>
                     <p className="text-sm text-muted-foreground">Favoriten</p>
                   </div>
                 </div>
@@ -205,7 +206,7 @@ export default function ProfilePage() {
                     <Star className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold">{member.reviews?.length || 0}</p>
+                    <p className="text-2xl font-bold">{(member as Member & { statistics?: { reviewCount: number } }).statistics?.reviewCount || 0}</p>
                     <p className="text-sm text-muted-foreground">Bewertungen</p>
                   </div>
                 </div>
@@ -240,51 +241,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Reviews Section */}
-        {member.reviews && member.reviews.length > 0 && (
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Meine Bewertungen</CardTitle>
-              <CardDescription>
-                Du hast {member.reviews.length} Bewertung(en) geschrieben
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {member.reviews.map((review: any) => (
-                  <div key={review.id} className="border rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <Link
-                          href={`/s/${review.service?.slug}`}
-                          className="font-semibold hover:text-primary"
-                        >
-                          {review.service?.name || 'Service'}
-                        </Link>
-                        <div className="flex items-center gap-1 mt-1">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-4 w-4 ${
-                                i < review.voting
-                                  ? 'fill-primary text-primary'
-                                  : 'text-muted-foreground'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(review.createdAt).toLocaleDateString('de-DE')}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{review.reviewtext}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {/* Reviews Section - TODO: Implement reviews fetching and display */}
       </div>
     </div>
   );

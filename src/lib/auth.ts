@@ -42,7 +42,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             body: JSON.stringify({
               email: profile.email || user.email,
               name: profile.name || user.name,
-              picture: (profile as any).picture || (profile as any).avatar_url || user.image,
+              picture: (profile as Record<string, unknown>).picture || (profile as Record<string, unknown>).avatar_url || user.image,
               provider: providerMap[account.provider] || 'google',
               sub: account.providerAccountId,
             }),
@@ -65,7 +65,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.strapiJwt) {
         session.strapiJwt = token.strapiJwt as string;
         session.memberId = token.memberId as number;
-        session.memberData = token.memberData as any;
+        session.memberData = token.memberData as Record<string, unknown>;
       }
       return session;
     },
