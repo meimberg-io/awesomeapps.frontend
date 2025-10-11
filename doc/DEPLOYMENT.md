@@ -12,12 +12,28 @@ Simple production deployment guide for AwesomeApps Frontend.
 
 Before deployment, prepare these values:
 
+### Essential Variables
+
 | Variable | Example | Description |
 |----------|---------|-------------|
 | `NEXT_PUBLIC_STRAPI_BASEURL` | `https://api.yourdomain.com` | Strapi backend URL (public) |
 | `NEXT_PUBLIC_APP_BASEURL` | `https://yourdomain.com` | Frontend URL (public) |
 | `REVALIDATE_SECRET` | `random-token-xyz` | Secret for cache revalidation API |
+| `AUTH_SECRET` | `base64-string` | NextAuth.js session encryption secret |
+| `NEXTAUTH_URL` | `https://yourdomain.com` | Frontend URL for NextAuth.js |
+
+### Optional Variables
+
+| Variable | Example | Description |
+|----------|---------|-------------|
 | `NEXT_PUBLIC_MATOMO_TRACKER` | `true` or `false` | Enable/disable analytics |
+| `OAUTH_GOOGLE_CLIENT_ID` | `xxx.apps.googleusercontent.com` | Google OAuth Client ID |
+| `OAUTH_GOOGLE_CLIENT_SECRET` | `GOCSPX-xxx` | Google OAuth Client Secret |
+| `OAUTH_GITHUB_CLIENT_ID` | `Ov23xxx` | GitHub OAuth Client ID |
+| `OAUTH_GITHUB_CLIENT_SECRET` | `xxx` | GitHub OAuth Client Secret |
+| `OAUTH_AZURE_AD_CLIENT_ID` | `guid` | Azure AD Client ID |
+| `OAUTH_AZURE_AD_CLIENT_SECRET` | `xxx` | Azure AD Client Secret |
+| `OAUTH_AZURE_AD_TENANT_ID` | `guid` | Azure AD Tenant ID |
 
 **⚠️ Important:** `NEXT_PUBLIC_*` variables are embedded during build - changing them requires rebuild!
 
@@ -82,10 +98,21 @@ APP_PORT=5680
 NEXT_PUBLIC_STRAPI_BASEURL=https://api.yourdomain.com
 NEXT_PUBLIC_APP_BASEURL=https://yourdomain.com
 
-# Generate strong random token
+# Generate strong random tokens
 REVALIDATE_SECRET=your-strong-random-token-here
+AUTH_SECRET=your-nextauth-secret-here  # Generate: openssl rand -base64 32
+NEXTAUTH_URL=https://yourdomain.com
 
-# Optional
+# Optional - OAuth Providers (for login functionality)
+OAUTH_GOOGLE_CLIENT_ID=your-google-client-id
+OAUTH_GOOGLE_CLIENT_SECRET=your-google-client-secret
+OAUTH_GITHUB_CLIENT_ID=your-github-client-id
+OAUTH_GITHUB_CLIENT_SECRET=your-github-client-secret
+OAUTH_AZURE_AD_CLIENT_ID=your-azure-client-id
+OAUTH_AZURE_AD_CLIENT_SECRET=your-azure-client-secret
+OAUTH_AZURE_AD_TENANT_ID=your-azure-tenant-id
+
+# Optional - Analytics
 NEXT_PUBLIC_MATOMO_TRACKER=true
 ```
 
@@ -259,7 +286,10 @@ cat .env
 ## Security Checklist
 
 - [ ] Strong random `REVALIDATE_SECRET` token
+- [ ] Strong random `AUTH_SECRET` token (generated with openssl)
 - [ ] Production URLs in `NEXT_PUBLIC_*` variables
+- [ ] Production `NEXTAUTH_URL` matches frontend domain
+- [ ] OAuth redirect URIs configured for production domains
 - [ ] `.env` file never committed to git
 - [ ] HTTPS enabled with valid SSL certificate
 - [ ] Firewall configured (only ports 22, 80, 443)

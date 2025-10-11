@@ -6,17 +6,17 @@ import AzureAD from "next-auth/providers/azure-ad"
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.OAUTH_GOOGLE_CLIENT_ID,
+      clientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET,
     }),
     GitHub({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: process.env.OAUTH_GITHUB_CLIENT_ID,
+      clientSecret: process.env.OAUTH_GITHUB_CLIENT_SECRET,
     }),
     AzureAD({
-      clientId: process.env.AZURE_AD_CLIENT_ID,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
-      tenantId: process.env.AZURE_AD_TENANT_ID,
+      clientId: process.env.OAUTH_AZURE_AD_CLIENT_ID,
+      clientSecret: process.env.OAUTH_AZURE_AD_CLIENT_SECRET,
+      tenantId: process.env.OAUTH_AZURE_AD_TENANT_ID,
     }),
   ],
   pages: {
