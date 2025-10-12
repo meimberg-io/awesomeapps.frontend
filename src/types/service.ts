@@ -25,6 +25,8 @@ export interface Service {
     youtube_title: string;
     tags: Tag[];
     reviews?: Review[];
+    reviewCount?: number;
+    averageRating?: number;
     updatedAt: string;
     publishdate: string;
     top: boolean;
