@@ -11,7 +11,7 @@ import { Service } from "@/types/service";
 import { Tag } from "@/types/tag";
 import { fetchServices, fetchTags, searchServices } from "@/lib/strapi";
 import { Badge } from "@/components/ui/badge";
-import { X, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { renderIcon } from "@/components/util/renderIcon";
 
 interface InteractiveServiceListProps {
