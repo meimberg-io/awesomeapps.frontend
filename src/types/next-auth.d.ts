@@ -4,7 +4,7 @@ declare module "next-auth" {
   interface Session {
     strapiJwt?: string
     memberId?: number
-    memberData?: Record<string, unknown>
+    memberDocumentId?: string
     user: {
       id?: string
       name?: string | null
@@ -18,7 +18,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     strapiJwt?: string
     memberId?: number
-    memberData?: Record<string, unknown>
+    memberDocumentId?: string
   }
 }
 
