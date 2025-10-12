@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import { Hero } from "@/components/new/Hero";
 import { ServiceCard } from "@/components/new/ServiceCard";
@@ -129,7 +130,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
               {searchQuery.trim() !== "" ? (
                 <>
                   <h2 className="text-2xl font-bold mb-2">
-                    {isSearching ? "Suche läuft..." : `${filteredServices.length} Services gefunden`}
+                    {isSearching ? "Suche Apps..." : `${filteredServices.length} Apps gefunden`}
                   </h2>
                   <p className="text-muted-foreground">
                     Suchergebnisse für "{searchQuery}"
@@ -138,18 +139,31 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
               ) : selectedTags.length > 0 ? (
                 <>
                   <div className="flex items-center gap-2 mb-4 flex-wrap">
-                    {selectedTags.map((tag) => (
-                      <Badge
-                        key={tag.documentId}
-                        variant="default"
-                        className="text-sm px-3 py-1.5 cursor-pointer transition-all hover:bg-destructive hover:text-destructive-foreground group flex items-center gap-2"
-                        onClick={() => handleTagChange(tag.documentId)}
-                      >
-                        {tag.icon && renderIcon(tag.icon, 'text-primary-foreground group-hover:text-destructive-foreground', 16)}
-                        <span>{tag.name}</span>
-                        <Trash2 className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </Badge>
-                    ))}
+                    <AnimatePresence mode="popLayout">
+                      {selectedTags.map((tag) => (
+                        <motion.div
+                          key={tag.documentId}
+                          layout
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0, scale: 0.8, x: -10 }}
+                          transition={{ 
+                            duration: 0.15,
+                            ease: "easeOut"
+                          }}
+                        >
+                          <Badge
+                            variant="default"
+                            className="text-sm px-3 py-1.5 cursor-pointer transition-all hover:bg-destructive hover:text-destructive-foreground group flex items-center gap-2"
+                            onClick={() => handleTagChange(tag.documentId)}
+                          >
+                            {tag.icon && renderIcon(tag.icon, 'text-primary-foreground group-hover:text-destructive-foreground', 16)}
+                            <span>{tag.name}</span>
+                            <Trash2 className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </Badge>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
                   </div>
                   {isLoadingFiltered ? (
                     <div className="flex items-center gap-2 h-[20px]">
@@ -158,11 +172,11 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                         <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                         <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                       </div>
-                      <span className="text-sm text-muted-foreground">Lade Services...</span>
+                      <span className="text-sm text-muted-foreground">Suche Apps...</span>
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground h-[20px]">
-                      {filteredServices.length} {filteredServices.length === 1 ? 'Service' : 'Services'} gefunden
+                      {filteredServices.length} {filteredServices.length === 1 ? 'Apps' : 'Apps'} gefunden
                     </p>
                   )}
                 </>

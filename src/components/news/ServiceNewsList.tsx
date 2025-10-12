@@ -19,7 +19,7 @@ export default function ServiceNewsList({services}: Props) {
                 <div className="container mx-auto max-w-6xl relative z-10">
                     <div className="text-center">
                         <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
-                            Vorgestellte Services
+                            Vorgestellte Apps
                         </h1>
                         <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto">
                             Aktuelle Websites und Internetservices - frisch vorgestellt
@@ -32,7 +32,7 @@ export default function ServiceNewsList({services}: Props) {
             <main className="container mx-auto px-6 py-12">
                 <div className="mb-6">
                     <h2 className="text-2xl font-bold mb-2">
-                        {services.length} Services gefunden
+                        {services.length} Apps gefunden
                     </h2>
                 </div>
                 
