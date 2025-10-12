@@ -79,7 +79,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
       fetchServices(selectedTags).then(setServices).catch(console.error);
       fetchTags(selectedTags).then(setTags).catch(console.error);
     } else if (!maintag) {
-      // When no tags selected and no search, reset to initial featured services
+      // When no tags selected and no search, reset to initial services
       setServices(initialServices);
       setTags(initialTags);
     }
