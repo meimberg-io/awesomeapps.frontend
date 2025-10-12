@@ -29,6 +29,7 @@
     "@strapi/blocks-react-renderer": "^1.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.23.24",
     "graphql": "^16.10.0",
     "lucide-react": "^0.484.0",
     "lucide-static": "^0.487.0",

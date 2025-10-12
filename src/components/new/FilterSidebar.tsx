@@ -60,7 +60,7 @@ export const FilterSidebar = ({
     <aside className="w-full lg:w-80 space-y-6">
       <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-lg">Kategorien & Tags</h3>
+          <h3 className="font-semibold text-lg">Kategorien</h3>
           {hasActiveFilters && (
             <Button
               variant="ghost"
@@ -109,7 +109,7 @@ export const FilterSidebar = ({
       <div className="bg-muted/50 rounded-xl p-6">
         <h4 className="font-medium mb-2">💡 Tipp</h4>
         <p className="text-sm text-muted-foreground">
-          Nutzen Sie die Filter, um schnell die passenden Services für Ihre Anforderungen zu finden.
+          Nutzen Sie die Filter, um schnell die passenden Service für Ihre Anforderungen zu finden.
         </p>
       </div>
     </aside>

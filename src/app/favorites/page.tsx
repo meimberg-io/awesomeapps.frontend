@@ -74,18 +74,18 @@ export default function FavoritesPage() {
               <Heart className="h-16 w-16 text-muted-foreground mb-4" />
               <h2 className="text-2xl font-semibold mb-2">Noch keine Favoriten</h2>
               <p className="text-muted-foreground mb-6 max-w-md">
-                Du hast noch keine Services als Favoriten gespeichert. Durchstöbere unsere
+                Du hast noch keine Apps als Favoriten gespeichert. Durchstöbere unsere
                 Sammlung und markiere deine Lieblings-Apps!
               </p>
               <Button asChild>
-                <Link href="/">Services entdecken</Link>
+                <Link href="/">Apps entdecken</Link>
               </Button>
             </CardContent>
           </Card>
         ) : (
           <>
             <p className="text-muted-foreground mb-6">
-              Du hast {favorites.length} Service{favorites.length !== 1 ? 's' : ''} als Favoriten gespeichert
+              Du hast {favorites.length} App{favorites.length !== 1 ? 's' : ''} als Favoriten gespeichert
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
