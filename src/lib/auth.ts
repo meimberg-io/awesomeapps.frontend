@@ -69,7 +69,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             token.strapiJwt = data.jwt;
             token.memberId = data.member.id;
             token.memberDocumentId = data.member.documentId;
-            console.log('✅ Strapi JWT obtained successfully');
           } else {
             console.error('❌ Strapi authentication failed:', response.status, await response.text());
           }
@@ -85,8 +84,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.strapiJwt = token.strapiJwt as string;
         session.memberId = token.memberId as number;
         session.memberDocumentId = token.memberDocumentId as string;
-      } else {
-        console.warn('⚠️ No Strapi JWT found in token during session creation');
       }
       return session;
     },
