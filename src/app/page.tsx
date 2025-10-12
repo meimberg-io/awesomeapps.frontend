@@ -25,13 +25,14 @@ export const metadata: Metadata = {
 
 
 export default async function HomePage() {
-    // Load all published services
+    // Initially load only featured (top) services
     const allServices = await fetchServices([])
+    const featuredServices = allServices.filter(service => service.top)
     const initialTags = await fetchTags([])
 
     return (
         <InteractiveServiceList
-            initialServices={allServices}
+            initialServices={featuredServices}
             initialTags={initialTags}
         />
     )

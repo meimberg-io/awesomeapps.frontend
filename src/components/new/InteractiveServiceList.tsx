@@ -9,6 +9,9 @@ import { FilterSidebar } from "@/components/new/FilterSidebar";
 import { Service } from "@/types/service";
 import { Tag } from "@/types/tag";
 import { fetchServices, fetchTags, searchServices } from "@/lib/strapi";
+import { Badge } from "@/components/ui/badge";
+import { X, Trash2 } from "lucide-react";
+import { renderIcon } from "@/components/util/renderIcon";
 
 interface InteractiveServiceListProps {
   initialServices: Service[];
@@ -23,6 +26,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   const [services, setServices] = useState<Service[]>(initialServices);
   const [tags, setTags] = useState<Tag[]>(initialTags);
   const [isSearching, setIsSearching] = useState(false);
+  const [isLoadingFiltered, setIsLoadingFiltered] = useState(false);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -36,6 +40,9 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
     const tag = tags.find(t => t.documentId === tagId);
     if (!tag) return;
 
+    // Show loader immediately
+    setIsLoadingFiltered(true);
+
     setSelectedTags((prev) => {
       const isSelected = prev.some(t => t.documentId === tagId);
       if (isSelected) {
@@ -47,6 +54,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   };
 
   const handleClearFilters = () => {
+    setIsLoadingFiltered(true);
     setSelectedTags([]);
   };
 
@@ -76,12 +84,22 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
     }
 
     if (selectedTags.length > 0) {
-      fetchServices(selectedTags).then(setServices).catch(console.error);
-      fetchTags(selectedTags).then(setTags).catch(console.error);
+      setIsLoadingFiltered(true);
+      Promise.all([
+        fetchServices(selectedTags),
+        fetchTags(selectedTags)
+      ])
+        .then(([newServices, newTags]) => {
+          setServices(newServices);
+          setTags(newTags);
+        })
+        .catch(console.error)
+        .finally(() => setIsLoadingFiltered(false));
     } else if (!maintag) {
       // When no tags selected and no search, reset to initial services
       setServices(initialServices);
       setTags(initialTags);
+      setIsLoadingFiltered(false);
     }
   }, [selectedTags, maintag, initialServices, initialTags, searchQuery]);
 
@@ -108,15 +126,49 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
 
           <main className="flex-1">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-2">
-                {isSearching ? "Suche läuft..." : `${filteredServices.length} Services gefunden`}
-              </h2>
-              <p className="text-muted-foreground">
-                {searchQuery.trim() !== "" 
-                  ? `Suchergebnisse für "${searchQuery}"` 
-                  : "Entdecken Sie die besten digitalen Dienste für Ihre Anforderungen"
-                }
-              </p>
+              {searchQuery.trim() !== "" ? (
+                <>
+                  <h2 className="text-2xl font-bold mb-2">
+                    {isSearching ? "Suche läuft..." : `${filteredServices.length} Services gefunden`}
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Suchergebnisse für "{searchQuery}"
+                  </p>
+                </>
+              ) : selectedTags.length > 0 ? (
+                <>
+                  <div className="flex items-center gap-2 mb-4 flex-wrap">
+                    {selectedTags.map((tag) => (
+                      <Badge
+                        key={tag.documentId}
+                        variant="default"
+                        className="text-sm px-3 py-1.5 cursor-pointer transition-all hover:bg-destructive hover:text-destructive-foreground group flex items-center gap-2"
+                        onClick={() => handleTagChange(tag.documentId)}
+                      >
+                        {tag.icon && renderIcon(tag.icon, 'text-primary-foreground group-hover:text-destructive-foreground', 16)}
+                        <span>{tag.name}</span>
+                        <Trash2 className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </Badge>
+                    ))}
+                  </div>
+                  {isLoadingFiltered ? (
+                    <div className="flex items-center gap-2 h-[20px]">
+                      <div className="flex gap-1">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      </div>
+                      <span className="text-sm text-muted-foreground">Lade Services...</span>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground h-[20px]">
+                      {filteredServices.length} {filteredServices.length === 1 ? 'Service' : 'Services'} gefunden
+                    </p>
+                  )}
+                </>
+              ) : (
+                <h2 className="text-2xl font-bold mb-6">Featured Apps</h2>
+              )}
             </div>
 
             {filteredServices.length === 0 ? (

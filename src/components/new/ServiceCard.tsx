@@ -17,12 +17,9 @@ interface ServiceCardProps {
 export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: ServiceCardProps) => {
   const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
   
-  // Mock rating data (will be replaced with real data when backend supports it)
-  // Using deterministic values based on service ID to avoid hydration errors
-  const mockRating = 4.5;
-  // Convert documentId string to a number for deterministic but varied mock data
-  const idHash = service.documentId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const mockReviews = (idHash * 37) % 150 + 50; // Deterministic but varied
+  // Use cached review statistics from backend
+  const reviewCount = service.reviewCount || 0;
+  const averageRating = service.averageRating || 0;
 
   return (
     <Card 
@@ -51,15 +48,19 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
           <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors line-clamp-1">
             {service.name}
           </h3>
-          <div className="flex items-center gap-1.5">
-            <div className="flex items-center gap-1 bg-primary/10 px-2 py-0.5 rounded-full">
-              <Star className="h-3.5 w-3.5 fill-primary text-primary" />
-              <span className="text-sm font-semibold text-primary">{mockRating}</span>
+          {reviewCount > 0 ? (
+            <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1 bg-primary/10 px-2 py-0.5 rounded-full">
+                <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                <span className="text-sm font-semibold text-primary">{averageRating.toFixed(1)}</span>
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
+              </span>
             </div>
-            <span className="text-xs text-muted-foreground">
-              {mockReviews} reviews
-            </span>
-          </div>
+          ) : (
+            <span className="text-xs text-muted-foreground">No reviews yet</span>
+          )}
         </div>
       </div>
 

@@ -28,6 +28,11 @@ export const FilterSidebar = ({
 }: FilterSidebarProps) => {
   const [tagSearch, setTagSearch] = useState("");
 
+  // Create a Set for faster lookups
+  const selectedTagIds = useMemo(() => {
+    return new Set(selectedTags.map(t => t.documentId));
+  }, [selectedTags]);
+
   const filteredTags = useMemo(() => {
     const tags = tagSearch 
       ? availableTags.filter(tag => 
@@ -38,8 +43,8 @@ export const FilterSidebar = ({
     
     // Sort: selected tags first, then by count descending
     return [...tags].sort((a, b) => {
-      const aSelected = selectedTags.some(t => t.documentId === a.documentId);
-      const bSelected = selectedTags.some(t => t.documentId === b.documentId);
+      const aSelected = selectedTagIds.has(a.documentId);
+      const bSelected = selectedTagIds.has(b.documentId);
       
       if (aSelected && !bSelected) return -1;
       if (!aSelected && bSelected) return 1;
@@ -47,7 +52,7 @@ export const FilterSidebar = ({
       // If both selected or both not selected, sort by count
       return b.count - a.count;
     });
-  }, [availableTags, tagSearch, selectedTags]);
+  }, [availableTags, tagSearch, selectedTagIds]);
 
   const hasActiveFilters = selectedTags.length > 0;
 
@@ -80,7 +85,7 @@ export const FilterSidebar = ({
               <div key={tag.documentId} className="flex items-center space-x-2">
                 <Checkbox
                   id={tag.documentId}
-                  checked={selectedTags.some(t => t.documentId === tag.documentId)}
+                  checked={selectedTagIds.has(tag.documentId)}
                   onCheckedChange={() => onTagChange(tag.documentId)}
                 />
                 <Label

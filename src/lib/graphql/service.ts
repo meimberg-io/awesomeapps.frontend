@@ -10,6 +10,8 @@ export const GET_SERVICES = gql`
             updatedAt
             top
             publishdate
+            reviewCount
+            averageRating
             tags {
                 documentId
                 name
