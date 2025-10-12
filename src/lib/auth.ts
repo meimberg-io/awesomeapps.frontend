@@ -20,6 +20,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       issuer: `https://login.microsoftonline.com/${process.env.OAUTH_AZURE_AD_TENANT_ID}/v2.0`,
     }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      }
+    }
+  },
   pages: {
     signIn: "/auth/signin",
   },
@@ -50,22 +65,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (response.ok) {
             const data = await response.json();
+            // Store ONLY the JWT and member ID - not the entire member object
             token.strapiJwt = data.jwt;
             token.memberId = data.member.id;
-            token.memberData = data.member;
+            token.memberDocumentId = data.member.documentId;
+            console.log('✅ Strapi JWT obtained successfully');
+          } else {
+            console.error('❌ Strapi authentication failed:', response.status, await response.text());
           }
         } catch (error) {
-          console.error('Failed to authenticate with Strapi:', error);
+          console.error('❌ Failed to authenticate with Strapi:', error);
         }
       }
       return token;
     },
     async session({ session, token }) {
-      // Add Strapi data to session
+      // Add only essential Strapi data to session
       if (token.strapiJwt) {
         session.strapiJwt = token.strapiJwt as string;
         session.memberId = token.memberId as number;
-        session.memberData = token.memberData as Record<string, unknown>;
+        session.memberDocumentId = token.memberDocumentId as string;
+      } else {
+        console.warn('⚠️ No Strapi JWT found in token during session creation');
       }
       return session;
     },
