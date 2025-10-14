@@ -2,6 +2,7 @@ import {fetchServiceDetailBySlug, fetchServiceReviews} from '@/lib/strapi'
 import ServiceDetail from '@/components/new/ServiceDetail'
 import {notFound} from 'next/navigation'
 import type {Metadata} from 'next'
+import { getBrandfetchLogoUrl } from '@/lib/utils'
 
 // Dynamische Metadaten für SEO, SSR-kompatibel
 type Props = {
@@ -22,6 +23,8 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
     const description = service.abstract 
         ? `${service.abstract.substring(0, 155)}...`
         : `Erfahre mehr über ${service.name}. Detaillierte Bewertungen, Features, Screenshots und Preisinformationen.`
+    
+    const logoUrl = getBrandfetchLogoUrl(service.url);
 
     return {
         title,
@@ -35,18 +38,18 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
             siteName: 'AwesomeApps',
             type: 'website',
             locale: 'de_DE',
-            images: service.logo?.url ? [{
-                url: service.logo.url.startsWith('http') ? service.logo.url : `https://awesomeapps.meimberg.io${service.logo.url}`,
-                width: service.logo.width ? Number(service.logo.width) : 800,
-                height: service.logo.height ? Number(service.logo.height) : 600,
+            images: [{
+                url: logoUrl,
+                width: 800,
+                height: 600,
                 alt: `${service.name} Logo`,
-            }] : [],
+            }],
         },
         twitter: {
             card: 'summary_large_image',
             title: `${service.name}`,
             description: service.abstract ?? description,
-            images: service.logo?.url ? [service.logo.url.startsWith('http') ? service.logo.url : `https://awesomeapps.meimberg.io${service.logo.url}`] : [],
+            images: [logoUrl],
         },
         alternates: {
             canonical: `/s/${(await params).slug}`,
@@ -76,6 +79,8 @@ export default async function Page({params}: {
         ? reviews.reduce((sum, review) => sum + review.voting, 0) / reviews.length
         : 0
 
+    const logoUrl = getBrandfetchLogoUrl(service.url);
+
     // Structured data (JSON-LD) for SEO
     const structuredData = {
         "@context": "https://schema.org",
@@ -91,9 +96,7 @@ export default async function Page({params}: {
             "priceCurrency": "EUR",
             "availability": "https://schema.org/InStock"
         },
-        ...(service.logo?.url && {
-            "image": service.logo.url.startsWith('http') ? service.logo.url : `https://awesomeapps.meimberg.io${service.logo.url}`
-        }),
+        "image": logoUrl,
         ...(reviews.length > 0 && {
             "aggregateRating": {
                 "@type": "AggregateRating",

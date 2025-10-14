@@ -4,9 +4,10 @@ import { Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Service } from "@/types/service";
-import { STRAPI_BASEURL } from "@/lib/constants";
 import { renderIcon } from "@/components/util/renderIcon";
 import { Tag } from "@/types/tag";
+import { getBrandfetchLogoUrl } from "@/lib/utils";
+import { STRAPI_BASEURL } from "@/lib/constants";
 
 interface ServiceCardProps {
   service: Service;
@@ -15,7 +16,9 @@ interface ServiceCardProps {
 }
 
 export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: ServiceCardProps) => {
-  const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
+  const iconurl = service.logo?.url 
+    ? `${STRAPI_BASEURL}${service.logo.url}` 
+    : getBrandfetchLogoUrl(service.url);
   
   // Use cached review statistics from backend
   const reviewCount = service.reviewCount || 0;
@@ -36,11 +39,11 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
       )}
 
       <div className="flex items-start gap-4 mb-4">
-        <div className="w-16 h-16 flex-shrink-0 rounded-lg bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center shadow-sm border border-border/50">
+        <div className="w-16 h-16 flex-shrink-0">
           <img
             src={iconurl}
             alt={`${service.name} logo`}
-            className="w-12 h-12 object-contain"
+            className="w-full h-full object-contain"
           />
         </div>
         

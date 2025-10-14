@@ -6,6 +6,7 @@ export const GET_SERVICES = gql`
             documentId
             name
             slug
+            url
             abstract
             updatedAt
             top
@@ -47,6 +48,7 @@ export const GET_SERVICES_NEWS = gql`
             documentId
             name
             slug
+            url
             abstract
             updatedAt
             top
@@ -83,6 +85,7 @@ export const SEARCH_SERVICES = gql`
             documentId
             name
             slug
+            url
             abstract
             updatedAt
             top

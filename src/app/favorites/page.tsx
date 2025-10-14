@@ -13,6 +13,7 @@ import { Loader2, Heart, ExternalLink, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { STRAPI_BASEURL } from '@/lib/constants';
 import { useState } from 'react';
+import { getBrandfetchLogoUrl } from '@/lib/utils';
 
 export default function FavoritesPage() {
   const { status } = useSession();
@@ -90,9 +91,9 @@ export default function FavoritesPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {favorites.map((service) => {
-                const iconUrl = service.logo?.url
-                  ? `${STRAPI_BASEURL}${service.logo.url}`
-                  : '/dummy.svg';
+                const iconUrl = service.logo?.url 
+                  ? `${STRAPI_BASEURL}${service.logo.url}` 
+                  : getBrandfetchLogoUrl(service.url);
                 const thumbnailUrl = service.thumbnail?.url
                   ? `${STRAPI_BASEURL}${service.thumbnail.url}`
                   : null;
@@ -113,11 +114,11 @@ export default function FavoritesPage() {
                     <CardContent className="p-6 flex flex-col flex-1">
                       {/* Logo and Title */}
                       <div className="flex items-start gap-4 mb-4">
-                        <div className="w-12 h-12 flex-shrink-0 rounded-lg bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center border border-border/50">
+                        <div className="w-12 h-12 flex-shrink-0 border border-gray-300">
                           <img
                             src={iconUrl}
                             alt={`${service.name} logo`}
-                            className="w-8 h-8 object-contain"
+                            className="w-full h-full object-contain"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
