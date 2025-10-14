@@ -25,14 +25,13 @@ export const metadata: Metadata = {
 
 
 export default async function HomePage() {
-    // Initially load only featured (top) services
+    // Load all services for tab switching
     const allServices = await fetchServices([])
-    const featuredServices = allServices.filter(service => service.top)
     const initialTags = await fetchTags([])
 
     return (
         <InteractiveServiceList
-            initialServices={featuredServices}
+            initialServices={allServices}
             initialTags={initialTags}
         />
     )

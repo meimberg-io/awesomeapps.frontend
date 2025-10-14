@@ -2,28 +2,33 @@
 import React from "react";
 import Link from "next/link";
 import {Service} from "@/types/service";
-import {STRAPI_BASEURL} from "@/lib/constants";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
+import { getBrandfetchLogoUrl } from "@/lib/utils";
+import { STRAPI_BASEURL } from "@/lib/constants";
 
 interface ServiceTileProps {
     service: Service,
 }
 
 const ServiceTile: React.FC<ServiceTileProps> = ({service}) => {
-    const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
+    const iconurl = service.logo?.url 
+        ? `${STRAPI_BASEURL}${service.logo.url}` 
+        : getBrandfetchLogoUrl(service.url);
 
     return (
         <Link href={`/s/${service.slug}`} className="block">
             <Card className="group relative overflow-hidden hover:shadow-xl hover:brightness-110 transition-all duration-300 cursor-pointer border-border/50 bg-card h-full flex flex-col">
                 {/* Logo Header */}
-                <div className="bg-muted/50 px-7 py-4 flex items-center justify-center border-b border-border/50 group-hover:bg-primary/10 transition-colors duration-300">
-                    <img 
-                        src={iconurl} 
-                        alt={service.name} 
-                        className="max-h-12 w-auto object-contain"
-                    />
+                <div className="px-7 py-4 flex items-center justify-center border-b border-border/50">
+                    <div className="w-16 h-16 border border-gray-300">
+                        <img 
+                            src={iconurl} 
+                            alt={service.name} 
+                            className="w-full h-full object-contain"
+                        />
+                    </div>
                 </div>
 
                 {/* Content */}

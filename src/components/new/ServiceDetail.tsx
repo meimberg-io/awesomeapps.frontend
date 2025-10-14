@@ -1,12 +1,11 @@
 'use client';
 
-import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare } from "lucide-react";
+import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Service } from "@/types/service";
 import { Review } from "@/types/review";
-import { STRAPI_BASEURL } from "@/lib/constants";
 import Header from "@/components/Header";
 import DynamicZoneComponent from "@/components/strapicomponents/dynamiczone/DynamicZoneComponent";
 import MarkdownRenderer from "@/components/util/MarkdownRenderer";
@@ -21,6 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { renderIcon } from "@/components/util/renderIcon";
 import Link from "next/link";
+import { getBrandfetchLogoUrl } from "@/lib/utils";
+import { STRAPI_BASEURL } from "@/lib/constants";
 
 interface ServiceDetailProps {
   service: Service;
@@ -34,10 +35,14 @@ export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) =
   const { toast } = useToast();
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [regenerateStatus, setRegenerateStatus] = useState<'idle' | 'loading' | 'requested'>('idle');
   const reviews = initialReviews;
-  const iconurl = service.logo?.url ? `${STRAPI_BASEURL}${service.logo.url}` : "/dummy.svg";
+  const iconurl = service.logo?.url 
+    ? `${STRAPI_BASEURL}${service.logo.url}` 
+    : getBrandfetchLogoUrl(service.url);
 
   const favorite = isFavorite(service.documentId);
+  const isAdmin = session?.user?.email === 'oli@meimberg.io';
   
   // Calculate real rating from reviews
   const averageRating = reviews.length > 0
@@ -86,6 +91,32 @@ export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) =
     }
   };
 
+  const handleRegenerate = async () => {
+    setRegenerateStatus('loading');
+    try {
+      const response = await fetch(
+        `https://n8n.meimberg.io/webhook/559994f0-0fb1-4a0f-83b7-1c2b7c10563d?service=${encodeURIComponent(service.name)}`
+      );
+      
+      if (response.ok) {
+        setRegenerateStatus('requested');
+        toast({
+          title: "Erfolg",
+          description: "Service-Regenerierung wurde angefordert.",
+        });
+      } else {
+        throw new Error('Request failed');
+      }
+    } catch {
+      setRegenerateStatus('idle');
+      toast({
+        title: "Fehler",
+        description: "Die Anfrage konnte nicht verarbeitet werden.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -104,17 +135,29 @@ export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) =
 
           {/* Header Section with Logo and Title */}
           <div className="flex items-start gap-6 pb-8">
-            <div className="w-24 h-24 flex-shrink-0 rounded-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center shadow-lg border border-border/50">
+            <div className="w-24 h-24 flex-shrink-0 border border-gray-300">
               <img
                 src={iconurl}
                 alt={`${service.name} logo`}
-                className="w-12 h-12 object-contain"
+                className="w-full h-full object-contain"
               />
             </div>
             
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
                 <h1 className="text-4xl font-bold">{service.name}</h1>
+                {isAdmin && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleRegenerate}
+                    disabled={regenerateStatus === 'loading' || regenerateStatus === 'requested'}
+                    title={regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'Service regenerieren'}
+                    className={regenerateStatus === 'requested' ? 'bg-green-600 hover:bg-green-700 border-green-600 text-white' : ''}
+                  >
+                    <RefreshCw className={`h-5 w-5 ${regenerateStatus === 'loading' ? 'animate-spin' : ''}`} />
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   size="icon"

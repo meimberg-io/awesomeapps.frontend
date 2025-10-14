@@ -28,6 +28,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   const [tags, setTags] = useState<Tag[]>(initialTags);
   const [isSearching, setIsSearching] = useState(false);
   const [isLoadingFiltered, setIsLoadingFiltered] = useState(false);
+  const [activeTab, setActiveTab] = useState<'featured' | 'all'>('featured');
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -104,7 +105,10 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
     }
   }, [selectedTags, maintag, initialServices, initialTags, searchQuery]);
 
-  const filteredServices = services;
+  // Filter services based on active tab when no tags/search are active
+  const filteredServices = (selectedTags.length === 0 && searchQuery.trim() === "" && activeTab === 'featured') 
+    ? services.filter(service => service.top)
+    : services;
 
   const handleServiceClick = (service: Service) => {
     router.push(`/s/${service.slug}`);
@@ -181,7 +185,47 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                   )}
                 </>
               ) : (
-                <h2 className="text-2xl font-bold mb-6">Featured Apps</h2>
+                <div className="mb-6">
+                  <div className="flex items-center gap-4 border-b border-border">
+                    <button
+                      onClick={() => setActiveTab('featured')}
+                      className={`pb-3 px-1 text-lg font-semibold transition-colors relative ${
+                        activeTab === 'featured'
+                          ? 'text-primary'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      Featured Apps
+                      {activeTab === 'featured' && (
+                        <motion.div
+                          layoutId="activeTab"
+                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('all')}
+                      className={`pb-3 px-1 text-lg font-semibold transition-colors relative ${
+                        activeTab === 'all'
+                          ? 'text-primary'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      Alle Apps
+                      {activeTab === 'all' && (
+                        <motion.div
+                          layoutId="activeTab"
+                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-4">
+                    {filteredServices.length} {filteredServices.length === 1 ? 'App' : 'Apps'}
+                  </p>
+                </div>
               )}
             </div>
 
