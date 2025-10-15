@@ -3,6 +3,7 @@ import ServiceDetail from '@/components/new/ServiceDetail'
 import {notFound} from 'next/navigation'
 import type {Metadata} from 'next'
 import { getBrandfetchLogoUrl } from '@/lib/utils'
+import { STRAPI_BASEURL } from '@/lib/constants'
 
 // Dynamische Metadaten für SEO, SSR-kompatibel
 type Props = {
@@ -24,7 +25,10 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         ? `${service.abstract.substring(0, 155)}...`
         : `Erfahre mehr über ${service.name}. Detaillierte Bewertungen, Features, Screenshots und Preisinformationen.`
     
-    const logoUrl = getBrandfetchLogoUrl(service.url);
+    // Prefer Strapi logo, fallback to Brandfetch
+    const logoUrl = service.logo?.url 
+        ? `${STRAPI_BASEURL}${service.logo.url}` 
+        : getBrandfetchLogoUrl(service.url);
 
     return {
         title,
@@ -42,7 +46,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
                 url: logoUrl,
                 width: 800,
                 height: 600,
-                alt: `${service.name} Logo`,
+                alt: `${service.name} Logo - ${service.tags[0]?.name || 'SaaS'} Tool`,
             }],
         },
         twitter: {
@@ -82,17 +86,23 @@ export default async function Page({params}: {
         ? reviews.reduce((sum, review) => sum + review.voting, 0) / reviews.length
         : 0
 
-    const logoUrl = getBrandfetchLogoUrl(service.url);
+    // Prefer Strapi logo, fallback to Brandfetch
+    const logoUrl = service.logo?.url 
+        ? `${STRAPI_BASEURL}${service.logo.url}` 
+        : getBrandfetchLogoUrl(service.url);
 
     // Structured data (JSON-LD) for SEO
-    const structuredData = {
+    const softwareApplicationSchema = {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": service.name,
         "description": service.abstract || service.description || `${service.name} - Software-as-a-Service`,
-        "url": service.url,
+        "url": `https://awesomeapps.meimberg.io/s/${service.slug}`,
         "applicationCategory": "WebApplication",
         "operatingSystem": "Web-based",
+        ...(service.tags.length > 0 && {
+            "applicationSubCategory": service.tags[0].name
+        }),
         "offers": {
             "@type": "Offer",
             "price": "0",
@@ -100,6 +110,16 @@ export default async function Page({params}: {
             "availability": "https://schema.org/InStock"
         },
         "image": logoUrl,
+        "softwareHelp": {
+            "@type": "WebPage",
+            "url": service.url
+        },
+        ...(service.publishdate && {
+            "datePublished": service.publishdate
+        }),
+        ...(service.updatedAt && {
+            "dateModified": service.updatedAt
+        }),
         ...(reviews.length > 0 && {
             "aggregateRating": {
                 "@type": "AggregateRating",
@@ -110,6 +130,34 @@ export default async function Page({params}: {
             }
         }),
     }
+
+    // BreadcrumbList schema
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://awesomeapps.meimberg.io"
+            },
+            ...(service.tags.length > 0 ? [{
+                "@type": "ListItem",
+                "position": 2,
+                "name": service.tags[0].name,
+                "item": `https://awesomeapps.meimberg.io/t/${service.tags[0].name}`
+            }] : []),
+            {
+                "@type": "ListItem",
+                "position": service.tags.length > 0 ? 3 : 2,
+                "name": service.name,
+                "item": `https://awesomeapps.meimberg.io/s/${service.slug}`
+            }
+        ]
+    }
+
+    const structuredData = [softwareApplicationSchema, breadcrumbSchema]
 
     return (
         <>

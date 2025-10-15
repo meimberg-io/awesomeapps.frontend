@@ -38,12 +38,12 @@ export function Screenshots({service}: { service: Service }) {
                         modules={[Autoplay, Pagination, EffectCoverflow, Navigation]}
                         className="mySwiper"
                     >
-                        {service.screenshots.map((shot) => (
+                        {service.screenshots.map((shot, index) => (
 
                             <SwiperSlide key={shot.documentId}>
                                 <img
                                     src={STRAPI_BASEURL + shot.url}
-                                    alt={shot.caption || `Screenshot ${shot.documentId}`}
+                                    alt={shot.caption || `${service.name} Screenshot ${index + 1}`}
                                     style={{width: '100%', height: 'auto'}}
                                 />
                                 {shot.caption && (

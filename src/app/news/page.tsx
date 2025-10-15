@@ -5,8 +5,28 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-    title: 'AwesomeApps',
-    description: 'AwesomeApps ist eine Sammlung von Software-as-a-Service (SaaS) Lösungen.',
+    title: 'Neu vorgestellte Apps | AwesomeApps',
+    description: 'Aktuelle Websites und Internetservices - frisch vorgestellt. Entdecke die neuesten SaaS-Tools und Online-Apps mit ausführlichen Bewertungen und Screenshots.',
+    openGraph: {
+        title: 'Neu vorgestellte Apps',
+        description: 'Aktuelle Websites und Internetservices - frisch vorgestellt',
+        url: 'https://awesomeapps.meimberg.io/news',
+        siteName: 'AwesomeApps',
+        type: 'website',
+        locale: 'de_DE',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Neu vorgestellte Apps',
+        description: 'Aktuelle Websites und Internetservices - frisch vorgestellt',
+    },
+    alternates: {
+        canonical: '/news',
+    },
+    robots: {
+        index: true,
+        follow: true,
+    },
 }
 
 

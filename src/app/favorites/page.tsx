@@ -119,7 +119,7 @@ export default function FavoritesPage() {
                         <div className="w-12 h-12 flex-shrink-0 border border-gray-300">
                           <img
                             src={iconUrl}
-                            alt={`${service.name} logo`}
+                            alt={`${service.name} Logo - ${service.tags?.[0]?.name || 'SaaS'} Tool`}
                             className="w-full h-full object-contain"
                           />
                         </div>
