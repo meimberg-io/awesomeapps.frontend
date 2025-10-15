@@ -1,4 +1,4 @@
-import {fetchServiceDetailBySlug, fetchServiceReviews} from '@/lib/strapi'
+import {fetchServiceDetailBySlug, fetchServiceReviews, fetchNewServiceBySlug} from '@/lib/strapi'
 import ServiceDetail from '@/components/new/ServiceDetail'
 import {notFound} from 'next/navigation'
 import type {Metadata} from 'next'
@@ -73,6 +73,9 @@ export default async function Page({params}: {
 
     // Fetch reviews on the server
     const reviews = await fetchServiceReviews(service.documentId)
+    
+    // Fetch newService status
+    const newService = await fetchNewServiceBySlug(service.slug)
 
     // Calculate average rating
     const averageRating = reviews.length > 0
@@ -114,7 +117,7 @@ export default async function Page({params}: {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
             />
-            <ServiceDetail service={service} initialReviews={reviews} />
+            <ServiceDetail service={service} initialReviews={reviews} newService={newService} />
         </>
     )
 }

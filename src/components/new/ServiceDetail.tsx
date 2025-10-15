@@ -1,11 +1,12 @@
 'use client';
 
-import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare, RefreshCw } from "lucide-react";
+import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare, RefreshCw, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Service } from "@/types/service";
 import { Review } from "@/types/review";
+import { NewService } from "@/types/newService";
 import Header from "@/components/Header";
 import DynamicZoneComponent from "@/components/strapicomponents/dynamiczone/DynamicZoneComponent";
 import MarkdownRenderer from "@/components/util/MarkdownRenderer";
@@ -17,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { useMember } from "@/contexts/MemberContext";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { renderIcon } from "@/components/util/renderIcon";
 import Link from "next/link";
 import { getBrandfetchLogoUrl } from "@/lib/utils";
@@ -26,9 +27,10 @@ import { STRAPI_BASEURL } from "@/lib/constants";
 interface ServiceDetailProps {
   service: Service;
   initialReviews: Review[];
+  newService?: NewService;
 }
 
-export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) => {
+export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDetailProps) => {
   const router = useRouter();
   const { data: session } = useSession();
   const { addFavorite, removeFavorite, isFavorite } = useMember();
@@ -36,6 +38,7 @@ export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) =
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [regenerateStatus, setRegenerateStatus] = useState<'idle' | 'loading' | 'requested'>('idle');
+  const [currentNewService, setCurrentNewService] = useState(newService);
   const reviews = initialReviews;
   const iconurl = service.logo?.url 
     ? `${STRAPI_BASEURL}${service.logo.url}` 
@@ -49,6 +52,111 @@ export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) =
     ? reviews.reduce((sum, review) => sum + review.voting, 0) / reviews.length
     : 0;
   const displayRating = averageRating > 0 ? averageRating.toFixed(1) : 'Keine';
+
+  // Sync currentNewService with prop changes
+  useEffect(() => {
+    if (newService) {
+      console.log('Setting currentNewService from prop:', newService);
+    }
+    setCurrentNewService(newService);
+  }, [newService]);
+
+  // Poll for newService status updates
+  useEffect(() => {
+    if (!isAdmin) {
+      console.log('Not admin, skipping poll');
+      return;
+    }
+
+    const shouldPoll = currentNewService && 
+      (currentNewService.n8nstatus === 'new' || currentNewService.n8nstatus === 'pending');
+    
+    console.log('Poll check:', { currentNewService, shouldPoll });
+    
+    if (!shouldPoll) return;
+
+    console.log('Starting poll for service:', service.slug);
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/new-service/${service.slug}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Poll response:', data);
+          if (data.newService) {
+            setCurrentNewService(data.newService);
+            // Stop polling if status is finished or error
+            if (data.newService.n8nstatus === 'finished' || data.newService.n8nstatus === 'error') {
+              console.log('Stopping poll, status:', data.newService.n8nstatus);
+              clearInterval(pollInterval);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error polling newService status:', error);
+      }
+    }, 1000);
+
+    return () => {
+      console.log('Cleaning up poll interval');
+      clearInterval(pollInterval);
+    };
+  }, [isAdmin, currentNewService, service.slug]);
+
+  // Determine button state based on newService status
+  const getRegenerateButtonState = () => {
+    console.log('Getting button state for:', { currentNewService, regenerateStatus });
+    
+    if (!currentNewService) {
+      return {
+        icon: RefreshCw,
+        className: '',
+        disabled: regenerateStatus === 'loading' || regenerateStatus === 'requested',
+        title: regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'Service regenerieren'
+      };
+    }
+
+    switch (currentNewService.n8nstatus) {
+      case 'new':
+        return {
+          icon: CheckCircle,
+          className: 'bg-green-600 hover:bg-green-700 border-green-600 text-white',
+          disabled: true,
+          title: 'Neu - Wird verarbeitet'
+        };
+      case 'pending':
+        return {
+          icon: Clock,
+          className: 'bg-yellow-600 hover:bg-yellow-700 border-yellow-600 text-white',
+          disabled: true,
+          title: 'In Bearbeitung'
+        };
+      case 'error':
+        return {
+          icon: AlertCircle,
+          className: 'bg-red-600 hover:bg-red-700 border-red-600 text-white',
+          disabled: true,
+          title: 'Fehler bei der Verarbeitung'
+        };
+      case 'finished':
+        return {
+          icon: RefreshCw,
+          className: '',
+          disabled: regenerateStatus === 'loading' || regenerateStatus === 'requested',
+          title: regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'Service regenerieren'
+        };
+      default:
+        return {
+          icon: RefreshCw,
+          className: '',
+          disabled: regenerateStatus === 'loading' || regenerateStatus === 'requested',
+          title: 'Service regenerieren'
+        };
+    }
+  };
+
+  const buttonState = getRegenerateButtonState();
+  const RegenerateIcon = buttonState.icon;
 
   const handleReviewSubmitted = () => {
     // Trigger a page refresh to get updated reviews
@@ -95,7 +203,7 @@ export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) =
     setRegenerateStatus('loading');
     try {
       const response = await fetch(
-        `https://n8n.meimberg.io/webhook/559994f0-0fb1-4a0f-83b7-1c2b7c10563d?service=${encodeURIComponent(service.name)}`
+        `https://n8n.meimberg.io/webhook/a2e23025-297f-4b92-8473-8db6b8cfd2aa?service=${encodeURIComponent(service.name)}`
       );
       
       if (response.ok) {
@@ -104,6 +212,8 @@ export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) =
           title: "Erfolg",
           description: "Service-Regenerierung wurde angefordert.",
         });
+        // Start polling for status by refreshing to get initial newService entry
+        setTimeout(() => router.refresh(), 1000);
       } else {
         throw new Error('Request failed');
       }
@@ -151,11 +261,11 @@ export const ServiceDetail = ({ service, initialReviews }: ServiceDetailProps) =
                     variant="outline"
                     size="icon"
                     onClick={handleRegenerate}
-                    disabled={regenerateStatus === 'loading' || regenerateStatus === 'requested'}
-                    title={regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'Service regenerieren'}
-                    className={regenerateStatus === 'requested' ? 'bg-green-600 hover:bg-green-700 border-green-600 text-white' : ''}
+                    disabled={buttonState.disabled}
+                    title={buttonState.title}
+                    className={buttonState.className}
                   >
-                    <RefreshCw className={`h-5 w-5 ${regenerateStatus === 'loading' ? 'animate-spin' : ''}`} />
+                    <RegenerateIcon className={`h-5 w-5 ${regenerateStatus === 'loading' ? 'animate-spin' : ''}`} />
                   </Button>
                 )}
                 <Button

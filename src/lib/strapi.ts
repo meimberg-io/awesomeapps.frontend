@@ -2,12 +2,14 @@ import {Tag} from "@/types/tag";
 import {Service} from "@/types/service";
 import {Page} from "@/types/page";
 import {Review} from "@/types/review";
+import {NewService} from "@/types/newService";
 import {ApolloClient, InMemoryCache} from "@apollo/client";
 import {STRAPI_BASEURL} from "@/lib/constants";
 import {GET_SERVICE_DETAIL, GET_SERVICE_DETAIL_BY_SLUG, GET_SERVICES, GET_SERVICES_NEWS, SEARCH_SERVICES} from "@/lib/graphql/service";
 import {GET_TAG_DETAIL_BY_NAME, GET_TAGS} from "@/lib/graphql/tag";
 import {GET_PAGES, GET_PAGES_BY_SLUG} from "@/lib/graphql/page";
 import {GET_SERVICE_REVIEWS} from "@/lib/graphql/review";
+import {GET_NEW_SERVICE_BY_SLUG} from "@/lib/graphql/newService";
 
 const client = new ApolloClient({
     uri: STRAPI_BASEURL + "/graphql",
@@ -107,4 +109,18 @@ export const fetchServiceReviews = async (serviceDocumentId: string): Promise<Re
         fetchPolicy: "no-cache",
     });
     return data.reviews || [];
+};
+
+export const fetchNewServiceBySlug = async (slug: string): Promise<NewService | undefined> => {
+    try {
+        const {data} = await client.query({
+            query: GET_NEW_SERVICE_BY_SLUG,
+            variables: {slug},
+            fetchPolicy: "no-cache",
+        });
+        return data["newServices"] && data["newServices"].length > 0 ? data["newServices"][0] : undefined;
+    } catch (error) {
+        console.error("Error fetching NewService:", error);
+        return undefined;
+    }
 };

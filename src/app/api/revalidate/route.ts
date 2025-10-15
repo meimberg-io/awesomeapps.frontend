@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     const expectedToken = process.env.REVALIDATE_SECRET;
 
     if (!token || token !== expectedToken) {
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        return new Response(JSON.stringify({ error: 'Unauthorized' +token}), {
             status: 401,
             headers: { 'Content-Type': 'application/json' },
         });
