@@ -1,6 +1,6 @@
 'use client';
 
-import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare, RefreshCw, CheckCircle, Clock, AlertCircle, ChevronDown } from "lucide-react";
+import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare, RefreshCw, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -90,7 +90,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
             }
           }
         }
-      } catch (error) {
+      } catch {
         // Silently handle polling errors
       }
     }, 1000);
