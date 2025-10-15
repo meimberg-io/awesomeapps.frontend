@@ -63,58 +63,45 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
 
   // Sync currentNewService with prop changes
   useEffect(() => {
-    if (newService) {
-      console.log('Setting currentNewService from prop:', newService);
-    }
     setCurrentNewService(newService);
   }, [newService]);
 
   // Poll for newService status updates
   useEffect(() => {
     if (!isAdmin) {
-      console.log('Not admin, skipping poll');
       return;
     }
 
     const shouldPoll = currentNewService && 
       (currentNewService.n8nstatus === 'new' || currentNewService.n8nstatus === 'pending');
     
-    console.log('Poll check:', { currentNewService, shouldPoll });
-    
     if (!shouldPoll) return;
-
-    console.log('Starting poll for service:', service.slug);
 
     const pollInterval = setInterval(async () => {
       try {
         const response = await fetch(`/api/new-service/${service.slug}`);
         if (response.ok) {
           const data = await response.json();
-          console.log('Poll response:', data);
           if (data.newService) {
             setCurrentNewService(data.newService);
             // Stop polling if status is finished or error
             if (data.newService.n8nstatus === 'finished' || data.newService.n8nstatus === 'error') {
-              console.log('Stopping poll, status:', data.newService.n8nstatus);
               clearInterval(pollInterval);
             }
           }
         }
       } catch (error) {
-        console.error('Error polling newService status:', error);
+        // Silently handle polling errors
       }
     }, 1000);
 
     return () => {
-      console.log('Cleaning up poll interval');
       clearInterval(pollInterval);
     };
   }, [isAdmin, currentNewService, service.slug]);
 
   // Determine button state based on newService status
   const getRegenerateButtonState = () => {
-    console.log('Getting button state for:', { currentNewService, regenerateStatus });
-    
     if (!currentNewService) {
       return {
         icon: RefreshCw,
@@ -255,7 +242,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
             <div className="w-24 h-24 flex-shrink-0 border border-gray-300">
               <img
                 src={iconurl}
-                alt={`${service.name} logo`}
+                alt={`${service.name} Logo - ${service.tags[0]?.name || 'SaaS'} Tool`}
                 className="w-full h-full object-contain"
               />
             </div>

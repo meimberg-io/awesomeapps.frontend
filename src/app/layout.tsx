@@ -43,9 +43,22 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({children}: { children: ReactNode }) {
+    const organizationSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "AwesomeApps",
+        "url": "https://awesomeapps.meimberg.io",
+        "logo": "https://awesomeapps.meimberg.io/logo-full.svg",
+        "description": "Best of Breed der Apps & Online Tools - Die beste Auswahl an SaaS-Tools und Online-Apps"
+    }
+
     return (
         <html lang="de" className={manrope.variable}>
         <body className={`h-full ${manrope.className}`}>
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
         <Providers>
             {children}
             <MatomoTracker />

@@ -29,7 +29,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service}) => {
                     <div className="w-16 h-16 border border-gray-300">
                         <img 
                             src={iconurl} 
-                            alt={service.name} 
+                            alt={`${service.name} Logo - ${service.tags[0]?.name || 'SaaS'} Tool`}
                             className="w-full h-full object-contain"
                         />
                     </div>

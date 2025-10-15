@@ -4,6 +4,56 @@ import Footer from '@/components/Footer'
 import DynamicZoneComponent from '@/components/strapicomponents/dynamiczone/DynamicZoneComponent'
 import {notFound} from 'next/navigation'
 import {STRAPI_BASEURL} from '@/lib/constants'
+import type {Metadata} from 'next'
+
+type Props = {
+    params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({params}: Props): Promise<Metadata> {
+    const page = await fetchPage((await params).slug)
+
+    if (!page) {
+        return {
+            title: 'Seite nicht gefunden - AwesomeApps',
+            description: 'Die angeforderte Seite konnte nicht gefunden werden.',
+        }
+    }
+
+    const keyvisualUrl = page.keyvisual?.url ? `${STRAPI_BASEURL}${page.keyvisual.url}` : null
+
+    return {
+        title: `${page.title} | AwesomeApps`,
+        description: page.subtitle || page.title,
+        openGraph: {
+            title: page.title,
+            description: page.subtitle || page.title,
+            url: `https://awesomeapps.meimberg.io/p/${(await params).slug}`,
+            siteName: 'AwesomeApps',
+            type: 'website',
+            locale: 'de_DE',
+            ...(keyvisualUrl && {
+                images: [{
+                    url: keyvisualUrl,
+                    alt: page.title,
+                }],
+            }),
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: page.title,
+            description: page.subtitle || page.title,
+            ...(keyvisualUrl && { images: [keyvisualUrl] }),
+        },
+        alternates: {
+            canonical: `/p/${(await params).slug}`,
+        },
+        robots: {
+            index: true,
+            follow: true,
+        },
+    }
+}
 
 export default async function Page({params}: {
     params: Promise<{ slug: string }>

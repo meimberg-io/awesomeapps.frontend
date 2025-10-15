@@ -66,12 +66,38 @@ export default async function Page({params}: {
     const initialServices = await fetchServices([tag])
     const initialTags = await fetchTags([tag])
 
+    // BreadcrumbList schema for tag pages
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://awesomeapps.meimberg.io"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": tag.name,
+                "item": `https://awesomeapps.meimberg.io/t/${tagname}`
+            }
+        ]
+    }
+
     return (
-        <InteractiveServiceList
-            initialServices={initialServices}
-            initialTags={initialTags}
-            maintag={tag}
-        />
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            />
+            <InteractiveServiceList
+                initialServices={initialServices}
+                initialTags={initialTags}
+                maintag={tag}
+            />
+        </>
     )
 }
 
