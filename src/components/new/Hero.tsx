@@ -2,7 +2,6 @@
 
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import heroBackground from "@/assets/header_01.jpg";
 
@@ -40,8 +39,8 @@ export const Hero = ({ searchQuery, onSearchChange }: HeroProps) => {
         </div>
 
         <div className="max-w-2xl mx-auto">
-          <div className="flex gap-2 bg-card/95 backdrop-blur-sm p-2 rounded-xl shadow-lg">
-            <div className="relative flex-1">
+          <div className="bg-card/95 backdrop-blur-sm p-2 rounded-xl shadow-lg">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
@@ -51,9 +50,6 @@ export const Hero = ({ searchQuery, onSearchChange }: HeroProps) => {
                 className="pl-10 border-0 focus-visible:ring-0 bg-transparent"
               />
             </div>
-            <Button size="lg" className="px-8">
-              Suchen
-            </Button>
           </div>
         </div>
       </div>

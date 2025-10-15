@@ -32,14 +32,11 @@ export const GET_SERVICES = gql`
 export const GET_SERVICES_NEWS = gql`
     query GetServicesNews($limit: Int) {
         services(
-            sort: "publishdate:desc", 
+            sort: "updatedAt:desc", 
             pagination: {
                 limit: $limit
             },
             filters: { 
-                publishdate: { 
-                    notNull:true 
-                },
                 publishedAt: {
                     notNull: true
                 }

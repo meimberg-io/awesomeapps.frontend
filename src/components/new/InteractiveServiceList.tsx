@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Hero } from "@/components/new/Hero";
 import { ServiceCard } from "@/components/new/ServiceCard";
 import { FilterSidebar } from "@/components/new/FilterSidebar";
@@ -250,6 +251,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
           </main>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

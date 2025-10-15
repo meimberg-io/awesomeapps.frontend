@@ -2,6 +2,7 @@ import {fetchServicesNews} from '@/lib/strapi'
 import {Metadata} from "next";
 import ServiceNewsList from "@/components/news/ServiceNewsList";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
     title: 'AwesomeApps',
@@ -14,11 +15,8 @@ export default async function NewsPage() {
     return (
         <div>
             <Header/>
-            <main>
-                <div className="relative isolate overflow-hidden pt-16">
-                   <ServiceNewsList services={services}/>
-                </div>
-            </main>
+            <ServiceNewsList services={services}/>
+            <Footer/>
         </div>
     )
 }
