@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useMember } from '@/contexts/MemberContext';
 import { Member } from '@/types/member';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -74,6 +75,7 @@ export default function ProfilePage() {
         <div className="container mx-auto px-6 py-8 flex items-center justify-center min-h-[50vh]">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
+        <Footer />
       </div>
     );
   }
@@ -243,6 +245,7 @@ export default function ProfilePage() {
 
         {/* Reviews Section - TODO: Implement reviews fetching and display */}
       </div>
+      <Footer />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useMember } from '@/contexts/MemberContext';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -56,6 +57,7 @@ export default function FavoritesPage() {
         <div className="container mx-auto px-6 py-8 flex items-center justify-center min-h-[50vh]">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
+        <Footer />
       </div>
     );
   }
@@ -127,7 +129,7 @@ export default function FavoritesPage() {
                           </h3>
                           {service.top && (
                             <Badge variant="secondary" className="text-xs">
-                              Featured
+                              Top
                             </Badge>
                           )}
                         </div>
@@ -196,6 +198,7 @@ export default function FavoritesPage() {
           </>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

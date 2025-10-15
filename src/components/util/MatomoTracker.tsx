@@ -23,7 +23,7 @@ export function MatomoTracker() {
         _paq.push(["disableCookies"])
         _paq.push(["enableLinkTracking"])
         _paq.push(["setTrackerUrl", "https://matomo.meimberg.io/matomo.php"])
-        _paq.push(["setSiteId", "1"]) // deine Site-ID
+        _paq.push(["setSiteId", "4"]) // deine Site-ID
 
         const d = document, g = d.createElement("script"), s = d.getElementsByTagName("script")[0]
         g.async = true

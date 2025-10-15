@@ -4,7 +4,7 @@ import Link from "next/link";
 import {Service} from "@/types/service";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { getBrandfetchLogoUrl } from "@/lib/utils";
 import { STRAPI_BASEURL } from "@/lib/constants";
 
@@ -16,6 +16,10 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service}) => {
     const iconurl = service.logo?.url 
         ? `${STRAPI_BASEURL}${service.logo.url}` 
         : getBrandfetchLogoUrl(service.url);
+    
+    const publishDate = service.publishdate 
+        ? new Date(service.publishdate).toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' })
+        : new Date(service.updatedAt).toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' });
 
     return (
         <Link href={`/s/${service.slug}`} className="block">
@@ -57,12 +61,12 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service}) => {
                         ))}
                     </div>
 
-                    {/* View Details Footer */}
-                    <div className="flex items-center justify-between pt-4 mt-4 border-t border-border/50">
-                        <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                            Details anzeigen
+                    {/* Publish Date */}
+                    <div className="flex items-center gap-2 pt-4 mt-4 border-t border-border/50">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                            {publishDate}
                         </span>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                     </div>
                 </div>
             </Card>

@@ -30,7 +30,7 @@ export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
 export const fetchServicesNews = async (): Promise<Service[]> => {
     const {data} = await client.query({
         query: GET_SERVICES_NEWS,
-        variables: {limit: 8},
+        variables: {limit: 4},
         fetchPolicy: "no-cache"
     });
     return data.services;

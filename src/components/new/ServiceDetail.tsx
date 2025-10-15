@@ -1,13 +1,21 @@
 'use client';
 
-import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare, RefreshCw, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare, RefreshCw, CheckCircle, Clock, AlertCircle, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { Service } from "@/types/service";
 import { Review } from "@/types/review";
 import { NewService } from "@/types/newService";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import DynamicZoneComponent from "@/components/strapicomponents/dynamiczone/DynamicZoneComponent";
 import MarkdownRenderer from "@/components/util/MarkdownRenderer";
 import { Screenshots } from "@/components/util/Screenshots";
@@ -199,18 +207,17 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
     }
   };
 
-  const handleRegenerate = async () => {
+  const handleRegenerate = async (field: string) => {
     setRegenerateStatus('loading');
     try {
-      const response = await fetch(
-        `https://n8n.meimberg.io/webhook/a2e23025-297f-4b92-8473-8db6b8cfd2aa?service=${encodeURIComponent(service.name)}`
-      );
+      const url = `https://n8n.meimberg.io/webhook/a2e23025-297f-4b92-8473-8db6b8cfd2aa?service=${encodeURIComponent(service.name)}&fields=${encodeURIComponent(field)}`;
+      const response = await fetch(url);
       
       if (response.ok) {
         setRegenerateStatus('requested');
         toast({
           title: "Erfolg",
-          description: "Service-Regenerierung wurde angefordert.",
+          description: `Service-Regenerierung wurde angefordert${field !== 'all' ? ` (Feld: ${field})` : ''}.`,
         });
         // Start polling for status by refreshing to get initial newService entry
         setTimeout(() => router.refresh(), 1000);
@@ -257,16 +264,49 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
               <div className="flex items-center gap-3 mb-3">
                 <h1 className="text-4xl font-bold">{service.name}</h1>
                 {isAdmin && (
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={handleRegenerate}
-                    disabled={buttonState.disabled}
-                    title={buttonState.title}
-                    className={buttonState.className}
-                  >
-                    <RegenerateIcon className={`h-5 w-5 ${regenerateStatus === 'loading' ? 'animate-spin' : ''}`} />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        disabled={buttonState.disabled}
+                        title={buttonState.title}
+                        className={buttonState.className}
+                      >
+                        <RegenerateIcon className={`h-5 w-5 ${regenerateStatus === 'loading' ? 'animate-spin' : ''}`} />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuItem onClick={() => handleRegenerate('all')}>
+                        All
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handleRegenerate('url')}>
+                        URL
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRegenerate('description')}>
+                        Description
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRegenerate('functionality')}>
+                        Functionality
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRegenerate('abstract')}>
+                        Abstract
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRegenerate('pricing')}>
+                        Pricing
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRegenerate('tags')}>
+                        Tags
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRegenerate('video')}>
+                        Video
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRegenerate('shortfacts')}>
+                        Shortfacts
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
                 <Button
                   variant="outline"
@@ -299,7 +339,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
                   </Button>
                 )}
                 {service.top && (
-                  <Badge variant="secondary" className="text-sm">Featured</Badge>
+                  <Badge variant="secondary" className="text-sm">Top</Badge>
                 )}
               </div>
               
@@ -474,6 +514,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
