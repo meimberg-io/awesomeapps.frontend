@@ -34,6 +34,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   const [isSearching, setIsSearching] = useState(false);
   const [isLoadingFiltered, setIsLoadingFiltered] = useState(false);
   const [activeTab, setActiveTab] = useState<'featured' | 'all'>('featured');
+  const [displayServices, setDisplayServices] = useState<Service[]>(initialServices.filter(s => s.top));
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -53,8 +54,15 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
     setSelectedTags((prev) => {
       const isSelected = prev.some(t => t.documentId === tagId);
       if (isSelected) {
-        return prev.filter((t) => t.documentId !== tagId);
+        const newTags = prev.filter((t) => t.documentId !== tagId);
+        // If removing the last tag, go back to featured
+        if (newTags.length === 0) {
+          setActiveTab('featured');
+        }
+        return newTags;
       } else {
+        // Switch to "all" tab when adding a tag (removes featured filter atomically)
+        setActiveTab('all');
         return [...prev, tag];
       }
     });
@@ -62,6 +70,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
 
   const handleClearFilters = () => {
     setIsLoadingFiltered(true);
+    setActiveTab('featured'); // Reset to featured when clearing all filters
     setSelectedTags([]);
   };
 
@@ -75,7 +84,10 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
     setIsSearching(true);
     const debounceTimer = setTimeout(() => {
       searchServices(searchQuery, locale)
-        .then(setServices)
+        .then((results) => {
+          setServices(results);
+          setDisplayServices(results); // Update display immediately after search
+        })
         .catch(console.error)
         .finally(() => setIsSearching(false));
     }, 300); // 300ms debounce
@@ -99,6 +111,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
         .then(([newServices, newTags]) => {
           setServices(newServices);
           setTags(newTags);
+          setDisplayServices(newServices); // Update display immediately after fetch
         })
         .catch(console.error)
         .finally(() => setIsLoadingFiltered(false));
@@ -106,14 +119,18 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
       // When no tags selected and no search, reset to initial services
       setServices(initialServices);
       setTags(initialTags);
+      setDisplayServices(activeTab === 'featured' ? initialServices.filter(s => s.top) : initialServices);
       setIsLoadingFiltered(false);
     }
-  }, [selectedTags, maintag, initialServices, initialTags, searchQuery, locale]);
+  }, [selectedTags, maintag, initialServices, initialTags, searchQuery, locale, activeTab]);
 
-  // Filter services based on active tab when no tags/search are active
-  const filteredServices = (selectedTags.length === 0 && searchQuery.trim() === "" && activeTab === 'featured') 
-    ? services.filter(service => service.top)
-    : services;
+  // Update display when tab changes (without tags/search active)
+  useEffect(() => {
+    if (selectedTags.length === 0 && searchQuery.trim() === "") {
+      const filtered = activeTab === 'featured' ? services.filter(s => s.top) : services;
+      setDisplayServices(filtered);
+    }
+  }, [activeTab, services, selectedTags.length, searchQuery]);
 
   const handleServiceClick = (service: Service) => {
     router.push(`/s/${service.slug}`);
@@ -139,7 +156,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
               {searchQuery.trim() !== "" ? (
                 <>
                   <h2 className="text-2xl font-bold mb-2">
-                    {isSearching ? t('searchingApps') : t('appsFound', {count: filteredServices.length})}
+                    {isSearching ? t('searchingApps') : t('appsFound', {count: displayServices.length})}
                   </h2>
                   <p className="text-muted-foreground">
                     {t('searchResultsFor')} "{searchQuery}"
@@ -185,7 +202,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground h-[20px]">
-                      {t('appsFound', {count: filteredServices.length})}
+                      {t('appsFound', {count: displayServices.length})}
                     </p>
                   )}
                 </>
@@ -228,13 +245,13 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                     </button>
                   </div>
                   <p className="text-sm text-muted-foreground mt-4">
-                    {filteredServices.length} {filteredServices.length === 1 ? t('app') : t('apps')}
+                    {displayServices.length} {displayServices.length === 1 ? t('app') : t('apps')}
                   </p>
                 </div>
               )}
             </div>
 
-            {filteredServices.length === 0 ? (
+            {displayServices.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   {t('noServicesFound')}
@@ -242,7 +259,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredServices.map((service) => (
+                {displayServices.map((service) => (
                   <ServiceCard
                     key={service.documentId}
                     service={service}
