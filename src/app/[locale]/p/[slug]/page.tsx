@@ -5,13 +5,15 @@ import DynamicZoneComponent from '@/components/strapicomponents/dynamiczone/Dyna
 import {notFound} from 'next/navigation'
 import {STRAPI_BASEURL} from '@/lib/constants'
 import type {Metadata} from 'next'
+import {Locale} from '@/types/locale'
 
 type Props = {
-    params: Promise<{ slug: string }>
+    params: Promise<{ slug: string; locale: Locale }>
 }
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
-    const page = await fetchPage((await params).slug)
+    const {slug, locale} = await params;
+    const page = await fetchPage(slug, locale)
 
     if (!page) {
         return {
@@ -21,6 +23,8 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
     }
 
     const keyvisualUrl = page.keyvisual?.url ? `${STRAPI_BASEURL}${page.keyvisual.url}` : null
+    const ogLocale = locale === 'de' ? 'de_DE' : 'en_US';
+    const canonicalPath = `/${locale}/p/${slug}`;
 
     return {
         title: `${page.title} | AwesomeApps`,
@@ -28,10 +32,10 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         openGraph: {
             title: page.title,
             description: page.subtitle || page.title,
-            url: `https://awesomeapps.meimberg.io/p/${(await params).slug}`,
+            url: `https://awesomeapps.meimberg.io${canonicalPath}`,
             siteName: 'AwesomeApps',
             type: 'website',
-            locale: 'de_DE',
+            locale: ogLocale,
             ...(keyvisualUrl && {
                 images: [{
                     url: keyvisualUrl,
@@ -46,7 +50,11 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
             ...(keyvisualUrl && { images: [keyvisualUrl] }),
         },
         alternates: {
-            canonical: `/p/${(await params).slug}`,
+            canonical: canonicalPath,
+            languages: {
+                'en': `/en/p/${slug}`,
+                'de': `/de/p/${slug}`,
+            },
         },
         robots: {
             index: true,
@@ -55,10 +63,9 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
     }
 }
 
-export default async function Page({params}: {
-    params: Promise<{ slug: string }>
-}) {
-    const page = await fetchPage((await params).slug)
+export default async function Page({params}: Props) {
+    const {slug, locale} = await params;
+    const page = await fetchPage(slug, locale)
 
     if (!page) {
         notFound()

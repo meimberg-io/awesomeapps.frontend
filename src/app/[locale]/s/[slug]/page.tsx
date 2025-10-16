@@ -4,14 +4,15 @@ import {notFound} from 'next/navigation'
 import type {Metadata} from 'next'
 import { getBrandfetchLogoUrl } from '@/lib/utils'
 import { STRAPI_BASEURL } from '@/lib/constants'
+import {Locale} from '@/types/locale'
 
-// Dynamische Metadaten für SEO, SSR-kompatibel
 type Props = {
-    params: Promise<{ slug: string }>
+    params: Promise<{ slug: string; locale: Locale }>
 }
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
-    const service = await fetchServiceDetailBySlug((await params).slug)
+    const {slug, locale} = await params;
+    const service = await fetchServiceDetailBySlug(slug, locale)
 
     if (!service) {
         return {
@@ -25,10 +26,12 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         ? `${service.abstract.substring(0, 155)}...`
         : `Erfahre mehr über ${service.name}. Detaillierte Bewertungen, Features, Screenshots und Preisinformationen.`
     
-    // Prefer Strapi logo, fallback to Brandfetch
     const logoUrl = service.logo?.url 
         ? `${STRAPI_BASEURL}${service.logo.url}` 
         : getBrandfetchLogoUrl(service.url);
+
+    const ogLocale = locale === 'de' ? 'de_DE' : 'en_US';
+    const canonicalPath = `/${locale}/s/${slug}`;
 
     return {
         title,
@@ -38,10 +41,10 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         openGraph: {
             title: `${service.name} - SaaS Tool`,
             description: service.abstract ?? description,
-            url: `https://awesomeapps.meimberg.io/s/${(await params).slug}`,
+            url: `https://awesomeapps.meimberg.io${canonicalPath}`,
             siteName: 'AwesomeApps',
             type: 'website',
-            locale: 'de_DE',
+            locale: ogLocale,
             images: [{
                 url: logoUrl,
                 width: 800,
@@ -56,7 +59,11 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
             images: [logoUrl],
         },
         alternates: {
-            canonical: `/s/${(await params).slug}`,
+            canonical: canonicalPath,
+            languages: {
+                'en': `/en/s/${slug}`,
+                'de': `/de/s/${slug}`,
+            },
         },
         robots: {
             index: true,
@@ -65,11 +72,9 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
     }
 }
 
-// Hauptseite für Service-Detail
-export default async function Page({params}: {
-    params: Promise<{ slug: string }>
-}) {
-    const service = await fetchServiceDetailBySlug((await params).slug)
+export default async function Page({params}: Props) {
+    const {slug, locale} = await params;
+    const service = await fetchServiceDetailBySlug(slug, locale)
 
     if (!service) {
         notFound() // 404 Seite

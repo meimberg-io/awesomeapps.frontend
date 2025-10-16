@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import heroBackground from "@/assets/header_01.jpg";
+import {useTranslations} from 'next-intl';
 
 interface HeroProps {
   searchQuery: string;
@@ -11,6 +12,8 @@ interface HeroProps {
 }
 
 export const Hero = ({ searchQuery, onSearchChange }: HeroProps) => {
+  const t = useTranslations('hero');
+  
   return (
     <section className="relative overflow-hidden py-20 px-6">
       {/* Background Image */}
@@ -34,7 +37,7 @@ export const Hero = ({ searchQuery, onSearchChange }: HeroProps) => {
             AwesomeApps
           </h1>
           <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto">
-          The fine selection of truly awesome apps and services
+            {t('subtitle')}
           </p>
         </div>
 
@@ -44,7 +47,7 @@ export const Hero = ({ searchQuery, onSearchChange }: HeroProps) => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Suche nach Services, Tags oder Kategorien..."
+                placeholder={t('searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 className="pl-10 border-0 focus-visible:ring-0 bg-transparent"

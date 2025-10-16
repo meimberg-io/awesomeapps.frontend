@@ -40,4 +40,11 @@ export default tseslint.config(
             "no-debugger": "error",
         },
     },
+    // Allow standard patterns in UI components and contexts
+    {
+        files: ['src/components/ui/**/*.{ts,tsx}', 'src/contexts/**/*.{ts,tsx}'],
+        rules: {
+            'react-refresh/only-export-components': 'off',
+        },
+    },
 )

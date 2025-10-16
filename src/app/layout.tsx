@@ -4,6 +4,7 @@ import {MatomoTracker} from "@/components/util/MatomoTracker";
 import Providers from "@/components/Providers";
 import { Manrope } from 'next/font/google'
 import type { Metadata } from 'next'
+import {Locale} from '@/types/locale';
 
 const manrope = Manrope({ 
     subsets: ['latin'],
@@ -42,7 +43,13 @@ export const metadata: Metadata = {
     manifest: '/site.webmanifest',
 }
 
-export default function RootLayout({children}: { children: ReactNode }) {
+type Props = {
+    children: ReactNode;
+    params: Promise<{locale: Locale}>;
+};
+
+export default async function RootLayout({children, params}: Props) {
+    const {locale} = await params;
     const organizationSchema = {
         "@context": "https://schema.org",
         "@type": "Organization",
@@ -53,7 +60,7 @@ export default function RootLayout({children}: { children: ReactNode }) {
     }
 
     return (
-        <html lang="de" className={manrope.variable}>
+        <html lang={locale} className={manrope.variable}>
         <body className={`h-full ${manrope.className}`}>
         <script
             type="application/ld+json"
