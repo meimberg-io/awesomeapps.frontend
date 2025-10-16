@@ -58,8 +58,8 @@ export function LanguageSelector() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button 
-          variant="ghost" 
-          className="h-10 gap-2 px-3"
+          variant="link"  
+          className="h-10 gap-2 px-3 hover:brightness-110 transition-all cursor-pointer" 
         >
           <CircleFlag locale={locale} />
           <span className="text-sm font-medium">{languageConfig[locale].name}</span>

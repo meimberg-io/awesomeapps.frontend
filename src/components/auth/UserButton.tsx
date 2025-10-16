@@ -41,7 +41,7 @@ export function UserButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 text-sm text-muted-foreground hover:brightness-150 transition-all cursor-pointer">
+        <button className="flex items-center gap-2 text-sm text-muted-foreground hover:brightness-110 transition-all cursor-pointer">
           {session?.user?.image ? (
             <Image
               src={session.user.image}
