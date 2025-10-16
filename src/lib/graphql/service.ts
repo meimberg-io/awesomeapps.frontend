@@ -1,8 +1,8 @@
 import {gql} from "@apollo/client";
 
 export const GET_SERVICES = gql`
-    query GetServices($tags: [ID]!) {
-        servicesbytags(sort: "slug:asc", tags: $tags) {
+    query GetServices($tags: [ID]!, $locale: I18NLocaleCode = "en") {
+        servicesbytags(sort: "slug:asc", tags: $tags, locale: $locale) {
             documentId
             name
             slug
@@ -30,7 +30,7 @@ export const GET_SERVICES = gql`
 `;
 
 export const GET_SERVICES_NEWS = gql`
-    query GetServicesNews($limit: Int) {
+    query GetServicesNews($limit: Int, $locale: I18NLocaleCode = "en") {
         services(
             sort: "updatedAt:desc",
             pagination: {
@@ -40,7 +40,8 @@ export const GET_SERVICES_NEWS = gql`
                 publishedAt: {
                     notNull: true
                 }
-            }
+            },
+            locale: $locale
         ) {
             documentId
             name
@@ -67,7 +68,7 @@ export const GET_SERVICES_NEWS = gql`
 `;
 
 export const SEARCH_SERVICES = gql`
-    query SearchServices($searchQuery: String!) {
+    query SearchServices($searchQuery: String!, $locale: I18NLocaleCode = "en") {
         services(
             sort: "name:asc",
             filters: {
@@ -77,7 +78,8 @@ export const SEARCH_SERVICES = gql`
                 publishedAt: {
                     notNull: true
                 }
-            }
+            },
+            locale: $locale
         ) {
             documentId
             name
@@ -104,8 +106,8 @@ export const SEARCH_SERVICES = gql`
 
 
 export const GET_SERVICE_DETAIL = gql`
-    query GetServiceDetail($id: ID!) {
-        service(documentId: $id) {
+    query GetServiceDetail($id: ID!, $locale: I18NLocaleCode = "en") {
+        service(documentId: $id, locale: $locale) {
             documentId
             name
             abstract
@@ -185,8 +187,8 @@ export const GET_SERVICE_DETAIL = gql`
 
 
 export const GET_SERVICE_DETAIL_BY_SLUG = gql`
-    query GetServiceDetailBySlug($slug: String!) {
-        services(filters: { slug: { eq: $slug }, publishedAt: { notNull: true } }) {
+    query GetServiceDetailBySlug($slug: String!, $locale: I18NLocaleCode = "en") {
+        services(filters: { slug: { eq: $slug }, publishedAt: { notNull: true } }, locale: $locale) {
             documentId
             name
             slug

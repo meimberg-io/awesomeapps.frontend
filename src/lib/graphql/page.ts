@@ -1,9 +1,9 @@
 import {gql} from "@apollo/client";
 
 export const GET_PAGES_BY_SLUG = gql`
-    query GetPages($slug: String!) {
+    query GetPages($slug: String!, $locale: I18NLocaleCode = "en") {
 
-        pages(filters: { slug: { eq: $slug } }) {
+        pages(filters: { slug: { eq: $slug } }, locale: $locale) {
             documentId
             title
             subtitle
@@ -42,8 +42,8 @@ export const GET_PAGES_BY_SLUG = gql`
 `;
 
 export const GET_PAGES = gql`
-    query GetPages {
-        pages{
+    query GetPages($locale: I18NLocaleCode = "en") {
+        pages(locale: $locale) {
             documentId
             slug
             title

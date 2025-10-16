@@ -18,49 +18,49 @@ const client = new ApolloClient({
 });
 
 
-export const fetchServices = async (tags?: Tag[], _locale?: Locale): Promise<Service[]> => {
+export const fetchServices = async (tags?: Tag[], locale: Locale = 'en'): Promise<Service[]> => {
     const tagIds = tags?.map(tag => tag.documentId) || [];
     
     try {
         const {data} = await client.query({
             query: GET_SERVICES,
-            variables: {tags: tagIds},
+            variables: {tags: tagIds, locale},
             fetchPolicy: "no-cache"
         });
         return data.servicesbytags || [];
     } catch (error) {
-        console.error(`Error fetching services:`, error);
+        console.error(`Error fetching services (${locale}):`, error);
         return [];
     }
 };
 
-export const fetchServicesNews = async (_locale?: Locale): Promise<Service[]> => {
+export const fetchServicesNews = async (locale: Locale = 'en'): Promise<Service[]> => {
     try {
         const {data} = await client.query({
             query: GET_SERVICES_NEWS,
-            variables: {limit: 4},
+            variables: {limit: 4, locale},
             fetchPolicy: "no-cache"
         });
         return data.services || [];
     } catch (error) {
-        console.error(`Error fetching services news:`, error);
+        console.error(`Error fetching services news (${locale}):`, error);
         return [];
     }
 };
 
-export const searchServices = async (searchQuery: string, _locale?: Locale): Promise<Service[]> => {
+export const searchServices = async (searchQuery: string, locale: Locale = 'en'): Promise<Service[]> => {
     if (!searchQuery || searchQuery.trim() === "") {
         return [];
     }
     try {
         const {data} = await client.query({
             query: SEARCH_SERVICES,
-            variables: {searchQuery: searchQuery.trim()},
+            variables: {searchQuery: searchQuery.trim(), locale},
             fetchPolicy: "no-cache"
         });
         return data.services || [];
     } catch (error) {
-        console.error(`Error searching services:`, error);
+        console.error(`Error searching services (${locale}):`, error);
         return [];
     }
 };
@@ -76,21 +76,61 @@ export const fetchTags = async (tags?: Tag[]): Promise<Tag[]> => {
     return tagsResult.filter(tag => tag.count > 0);
 };
 
-export const fetchServiceDetail = async (id: string, _locale?: Locale): Promise<Service> => {
+export const fetchServiceDetail = async (id: string, locale: Locale = 'en'): Promise<Service> => {
     const {data} = await client.query({
         query: GET_SERVICE_DETAIL,
-        variables: {id},
+        variables: {id, locale},
     });
     return data.service;
 };
 
-export const fetchServiceDetailBySlug = async (slug: string, _locale?: Locale): Promise<Service | undefined> => {
-    const {data} = await client.query({
-        query: GET_SERVICE_DETAIL_BY_SLUG,
-        variables: {slug},
-        fetchPolicy: "no-cache",
-    });
-    return data["services"] && data["services"].length > 0 ? data["services"][0] : undefined;
+export const fetchServiceDetailBySlug = async (slug: string, locale: Locale = 'en'): Promise<Service | undefined> => {
+    try {
+        const {data} = await client.query({
+            query: GET_SERVICE_DETAIL_BY_SLUG,
+            variables: {slug, locale},
+            fetchPolicy: "no-cache",
+        });
+        
+        // If service found, return it
+        if (data["services"] && data["services"].length > 0) {
+            return data["services"][0];
+        }
+        
+        // Entity-level fallback: if requested locale has no content, try 'en'
+        if (locale !== 'en') {
+            console.log(`Service "${slug}" not found for locale "${locale}", falling back to "en"`);
+            const fallbackData = await client.query({
+                query: GET_SERVICE_DETAIL_BY_SLUG,
+                variables: {slug, locale: 'en'},
+                fetchPolicy: "no-cache",
+            });
+            return fallbackData.data["services"] && fallbackData.data["services"].length > 0 
+                ? fallbackData.data["services"][0] 
+                : undefined;
+        }
+        
+        return undefined;
+    } catch (error) {
+        console.error(`Error fetching service detail by slug (${slug}, ${locale}):`, error);
+        // Try fallback on error
+        if (locale !== 'en') {
+            try {
+                const fallbackData = await client.query({
+                    query: GET_SERVICE_DETAIL_BY_SLUG,
+                    variables: {slug, locale: 'en'},
+                    fetchPolicy: "no-cache",
+                });
+                return fallbackData.data["services"] && fallbackData.data["services"].length > 0 
+                    ? fallbackData.data["services"][0] 
+                    : undefined;
+            } catch (fallbackError) {
+                console.error(`Fallback fetch also failed:`, fallbackError);
+                return undefined;
+            }
+        }
+        return undefined;
+    }
 };
 
 export const fetchTagDetailByName = async (name: string): Promise<Tag | undefined> => {
@@ -102,21 +142,67 @@ export const fetchTagDetailByName = async (name: string): Promise<Tag | undefine
     return data["tags"] && data["tags"].length > 0 ? data["tags"][0] : undefined;
 };
 
-export const fetchPage = async (slug: string, _locale?: Locale): Promise<Page | undefined> => {
-    const {data} = await client.query({
-        query: GET_PAGES_BY_SLUG,
-        variables: {slug},
-        fetchPolicy: "no-cache",
-    });
-    return data["pages"] && data["pages"].length > 0 ? data["pages"][0] : undefined;
+export const fetchPage = async (slug: string, locale: Locale = 'en'): Promise<Page | undefined> => {
+    try {
+        const {data} = await client.query({
+            query: GET_PAGES_BY_SLUG,
+            variables: {slug, locale},
+            fetchPolicy: "no-cache",
+        });
+        
+        // If page found, return it
+        if (data["pages"] && data["pages"].length > 0) {
+            return data["pages"][0];
+        }
+        
+        // Entity-level fallback: if requested locale has no content, try 'en'
+        if (locale !== 'en') {
+            console.log(`Page "${slug}" not found for locale "${locale}", falling back to "en"`);
+            const fallbackData = await client.query({
+                query: GET_PAGES_BY_SLUG,
+                variables: {slug, locale: 'en'},
+                fetchPolicy: "no-cache",
+            });
+            return fallbackData.data["pages"] && fallbackData.data["pages"].length > 0 
+                ? fallbackData.data["pages"][0] 
+                : undefined;
+        }
+        
+        return undefined;
+    } catch (error) {
+        console.error(`Error fetching page (${slug}, ${locale}):`, error);
+        // Try fallback on error
+        if (locale !== 'en') {
+            try {
+                const fallbackData = await client.query({
+                    query: GET_PAGES_BY_SLUG,
+                    variables: {slug, locale: 'en'},
+                    fetchPolicy: "no-cache",
+                });
+                return fallbackData.data["pages"] && fallbackData.data["pages"].length > 0 
+                    ? fallbackData.data["pages"][0] 
+                    : undefined;
+            } catch (fallbackError) {
+                console.error(`Fallback fetch also failed:`, fallbackError);
+                return undefined;
+            }
+        }
+        return undefined;
+    }
 }
 
-export const fetchPages = async (_locale?: Locale): Promise<Page[]> => {
-    const {data} = await client.query({
-        query: GET_PAGES,
-        fetchPolicy: "no-cache",
-    });
-    return data.pages || [];
+export const fetchPages = async (locale: Locale = 'en'): Promise<Page[]> => {
+    try {
+        const {data} = await client.query({
+            query: GET_PAGES,
+            variables: {locale},
+            fetchPolicy: "no-cache",
+        });
+        return data.pages || [];
+    } catch (error) {
+        console.error(`Error fetching pages (${locale}):`, error);
+        return [];
+    }
 }
 
 export const fetchServiceReviews = async (serviceDocumentId: string): Promise<Review[]> => {
