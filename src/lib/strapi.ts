@@ -99,7 +99,7 @@ export const fetchServiceDetailBySlug = async (slug: string, locale: Locale = 'e
         
         // Entity-level fallback: if requested locale has no content, try 'en'
         if (locale !== 'en') {
-            console.log(`Service "${slug}" not found for locale "${locale}", falling back to "en"`);
+            console.warn(`Service "${slug}" not found for locale "${locale}", falling back to "en"`);
             const fallbackData = await client.query({
                 query: GET_SERVICE_DETAIL_BY_SLUG,
                 variables: {slug, locale: 'en'},
@@ -157,7 +157,7 @@ export const fetchPage = async (slug: string, locale: Locale = 'en'): Promise<Pa
         
         // Entity-level fallback: if requested locale has no content, try 'en'
         if (locale !== 'en') {
-            console.log(`Page "${slug}" not found for locale "${locale}", falling back to "en"`);
+            console.warn(`Page "${slug}" not found for locale "${locale}", falling back to "en"`);
             const fallbackData = await client.query({
                 query: GET_PAGES_BY_SLUG,
                 variables: {slug, locale: 'en'},
