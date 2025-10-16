@@ -11,6 +11,7 @@ import { Service } from "@/types/service";
 import { useMemo, useState } from "react";
 import { renderIcon } from "@/components/util/renderIcon";
 import { X } from "lucide-react";
+import {useTranslations} from 'next-intl';
 
 interface FilterSidebarProps {
   selectedTags: Tag[];
@@ -26,6 +27,7 @@ export const FilterSidebar = ({
   availableTags,
   onClearFilters,
 }: FilterSidebarProps) => {
+  const t = useTranslations('filter');
   const [tagSearch, setTagSearch] = useState("");
 
   // Create a Set for faster lookups
@@ -60,21 +62,21 @@ export const FilterSidebar = ({
     <aside className="w-full lg:w-80 space-y-6">
       <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-lg">Kategorien</h3>
+          <h3 className="font-semibold text-lg">{t('filterByTags')}</h3>
           {hasActiveFilters && (
             <Button
               variant="ghost"
               size="icon"
               onClick={onClearFilters}
               className="h-8 w-8 text-muted-foreground hover:text-foreground"
-              title="Filter zurücksetzen"
+              title={t('clearFilters')}
             >
               <X className="h-4 w-4" />
             </Button>
           )}
         </div>
         <Input
-          placeholder="Tag suchen..."
+          placeholder={t('allTags')}
           value={tagSearch}
           onChange={(e) => setTagSearch(e.target.value)}
           className="mb-4"
@@ -107,9 +109,9 @@ export const FilterSidebar = ({
       <Separator />
 
       <div className="bg-muted/50 rounded-xl p-6">
-        <h4 className="font-medium mb-2">💡 Tipp</h4>
+        <h4 className="font-medium mb-2">💡 {t('tippHeadline')}</h4>
         <p className="text-sm text-muted-foreground">
-          Nutzen Sie die Filter, um schnell die passenden Service für Ihre Anforderungen zu finden.
+          {t('tippText')}
         </p>
       </div>
     </aside>

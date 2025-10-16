@@ -14,6 +14,8 @@ import { fetchServices, fetchTags, searchServices } from "@/lib/strapi";
 import { Badge } from "@/components/ui/badge";
 import { Trash2 } from "lucide-react";
 import { renderIcon } from "@/components/util/renderIcon";
+import {useTranslations, useLocale} from 'next-intl';
+import {Locale} from '@/types/locale';
 
 interface InteractiveServiceListProps {
   initialServices: Service[];
@@ -23,6 +25,8 @@ interface InteractiveServiceListProps {
 
 const InteractiveServiceList = ({ initialServices, initialTags, maintag }: InteractiveServiceListProps) => {
   const router = useRouter();
+  const t = useTranslations('filter');
+  const locale = useLocale() as Locale;
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<Tag[]>(maintag ? [maintag] : []);
   const [services, setServices] = useState<Service[]>(initialServices);
@@ -70,14 +74,14 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
 
     setIsSearching(true);
     const debounceTimer = setTimeout(() => {
-      searchServices(searchQuery)
+      searchServices(searchQuery, locale)
         .then(setServices)
         .catch(console.error)
         .finally(() => setIsSearching(false));
     }, 300); // 300ms debounce
 
     return () => clearTimeout(debounceTimer);
-  }, [searchQuery]);
+  }, [searchQuery, locale]);
 
   // Dynamic fetching based on selected tags
   useEffect(() => {
@@ -89,7 +93,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
     if (selectedTags.length > 0) {
       setIsLoadingFiltered(true);
       Promise.all([
-        fetchServices(selectedTags),
+        fetchServices(selectedTags, locale),
         fetchTags(selectedTags)
       ])
         .then(([newServices, newTags]) => {
@@ -104,7 +108,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
       setTags(initialTags);
       setIsLoadingFiltered(false);
     }
-  }, [selectedTags, maintag, initialServices, initialTags, searchQuery]);
+  }, [selectedTags, maintag, initialServices, initialTags, searchQuery, locale]);
 
   // Filter services based on active tab when no tags/search are active
   const filteredServices = (selectedTags.length === 0 && searchQuery.trim() === "" && activeTab === 'featured') 
@@ -135,10 +139,10 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
               {searchQuery.trim() !== "" ? (
                 <>
                   <h2 className="text-2xl font-bold mb-2">
-                    {isSearching ? "Suche Apps..." : `${filteredServices.length} Apps gefunden`}
+                    {isSearching ? t('searchingApps') : t('appsFound', {count: filteredServices.length})}
                   </h2>
                   <p className="text-muted-foreground">
-                    Suchergebnisse für "{searchQuery}"
+                    {t('searchResultsFor')} "{searchQuery}"
                   </p>
                 </>
               ) : selectedTags.length > 0 ? (
@@ -177,11 +181,11 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                         <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                         <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                       </div>
-                      <span className="text-sm text-muted-foreground">Suche Apps...</span>
+                      <span className="text-sm text-muted-foreground">{t('searchingApps')}</span>
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground h-[20px]">
-                      {filteredServices.length} {filteredServices.length === 1 ? 'Apps' : 'Apps'} gefunden
+                      {t('appsFound', {count: filteredServices.length})}
                     </p>
                   )}
                 </>
@@ -196,7 +200,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                           : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      Featured Apps
+                      {t('featuredApps')}
                       {activeTab === 'featured' && (
                         <motion.div
                           layoutId="activeTab"
@@ -213,7 +217,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                           : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      Alle Apps
+                      {t('allApps')}
                       {activeTab === 'all' && (
                         <motion.div
                           layoutId="activeTab"
@@ -224,7 +228,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                     </button>
                   </div>
                   <p className="text-sm text-muted-foreground mt-4">
-                    {filteredServices.length} {filteredServices.length === 1 ? 'App' : 'Apps'}
+                    {filteredServices.length} {filteredServices.length === 1 ? t('app') : t('apps')}
                   </p>
                 </div>
               )}
@@ -233,7 +237,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
             {filteredServices.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
-                  Keine Services gefunden. Versuchen Sie andere Filter oder Suchbegriffe.
+                  {t('noServicesFound')}
                 </p>
               </div>
             ) : (

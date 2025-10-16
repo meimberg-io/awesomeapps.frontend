@@ -3,6 +3,7 @@
 import {useState} from 'react'
 import {Menu} from 'lucide-react'
 import Link from "next/link"
+import {useTranslations, useLocale} from 'next-intl'
 import {Button} from "@/components/ui/button"
 import {
     Sheet,
@@ -10,21 +11,25 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import {UserButton} from "@/components/auth/UserButton"
-
-const navigation = [
-    {name: 'Apps', href: '/'},
-    {name: 'Neu vorgestellt', href: '/news'},
-    {name: 'Über dieses Projekt', href: '/p/about'},
-]
+import {LanguageSelector} from "@/components/LanguageSelector"
+import {Locale} from '@/types/locale'
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const t = useTranslations('nav')
+    const locale = useLocale() as Locale
+
+    const navigation = [
+        {name: t('apps'), href: `/${locale}`},
+        {name: t('newlyPresented'), href: `/${locale}/news`},
+        {name: t('aboutProject'), href: `/${locale}/p/about`},
+    ]
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-16 items-center justify-between px-6">
                 <div className="flex items-center gap-6">
-                    <Link href="/" className="flex items-center space-x-2">
+                    <Link href={`/${locale}`} className="flex items-center space-x-2">
                         <img
                             alt="AwesomeApps"
                             src="/logo-full.svg"
@@ -44,8 +49,8 @@ export default function Header() {
                     </nav>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    {/* User button - visible on all screen sizes */}
+                <div className="flex items-center gap-2">
+                    <LanguageSelector />
                     <UserButton />
 
                     {/* Mobile menu */}

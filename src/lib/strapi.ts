@@ -10,6 +10,7 @@ import {GET_TAG_DETAIL_BY_NAME, GET_TAGS} from "@/lib/graphql/tag";
 import {GET_PAGES, GET_PAGES_BY_SLUG} from "@/lib/graphql/page";
 import {GET_SERVICE_REVIEWS} from "@/lib/graphql/review";
 import {GET_NEW_SERVICE_BY_SLUG} from "@/lib/graphql/newService";
+import {Locale} from "@/types/locale";
 
 const client = new ApolloClient({
     uri: STRAPI_BASEURL + "/graphql",
@@ -17,35 +18,51 @@ const client = new ApolloClient({
 });
 
 
-export const fetchServices = async (tags?: Tag[]): Promise<Service[]> => {
+export const fetchServices = async (tags?: Tag[], _locale?: Locale): Promise<Service[]> => {
     const tagIds = tags?.map(tag => tag.documentId) || [];
-    const {data} = await client.query({
-        query: GET_SERVICES,
-        variables: {tags: tagIds},
-        fetchPolicy: "no-cache"
-    });
-    return data.servicesbytags;
+    
+    try {
+        const {data} = await client.query({
+            query: GET_SERVICES,
+            variables: {tags: tagIds},
+            fetchPolicy: "no-cache"
+        });
+        return data.servicesbytags || [];
+    } catch (error) {
+        console.error(`Error fetching services:`, error);
+        return [];
+    }
 };
 
-export const fetchServicesNews = async (): Promise<Service[]> => {
-    const {data} = await client.query({
-        query: GET_SERVICES_NEWS,
-        variables: {limit: 4},
-        fetchPolicy: "no-cache"
-    });
-    return data.services;
+export const fetchServicesNews = async (_locale?: Locale): Promise<Service[]> => {
+    try {
+        const {data} = await client.query({
+            query: GET_SERVICES_NEWS,
+            variables: {limit: 4},
+            fetchPolicy: "no-cache"
+        });
+        return data.services || [];
+    } catch (error) {
+        console.error(`Error fetching services news:`, error);
+        return [];
+    }
 };
 
-export const searchServices = async (searchQuery: string): Promise<Service[]> => {
+export const searchServices = async (searchQuery: string, _locale?: Locale): Promise<Service[]> => {
     if (!searchQuery || searchQuery.trim() === "") {
         return [];
     }
-    const {data} = await client.query({
-        query: SEARCH_SERVICES,
-        variables: {searchQuery: searchQuery.trim()},
-        fetchPolicy: "no-cache"
-    });
-    return data.services;
+    try {
+        const {data} = await client.query({
+            query: SEARCH_SERVICES,
+            variables: {searchQuery: searchQuery.trim()},
+            fetchPolicy: "no-cache"
+        });
+        return data.services || [];
+    } catch (error) {
+        console.error(`Error searching services:`, error);
+        return [];
+    }
 };
 
 export const fetchTags = async (tags?: Tag[]): Promise<Tag[]> => {
@@ -59,7 +76,7 @@ export const fetchTags = async (tags?: Tag[]): Promise<Tag[]> => {
     return tagsResult.filter(tag => tag.count > 0);
 };
 
-export const fetchServiceDetail = async (id: string): Promise<Service> => {
+export const fetchServiceDetail = async (id: string, _locale?: Locale): Promise<Service> => {
     const {data} = await client.query({
         query: GET_SERVICE_DETAIL,
         variables: {id},
@@ -67,7 +84,7 @@ export const fetchServiceDetail = async (id: string): Promise<Service> => {
     return data.service;
 };
 
-export const fetchServiceDetailBySlug = async (slug: string): Promise<Service | undefined> => {
+export const fetchServiceDetailBySlug = async (slug: string, _locale?: Locale): Promise<Service | undefined> => {
     const {data} = await client.query({
         query: GET_SERVICE_DETAIL_BY_SLUG,
         variables: {slug},
@@ -85,7 +102,7 @@ export const fetchTagDetailByName = async (name: string): Promise<Tag | undefine
     return data["tags"] && data["tags"].length > 0 ? data["tags"][0] : undefined;
 };
 
-export const fetchPage = async (slug: string): Promise<Page | undefined> => {
+export const fetchPage = async (slug: string, _locale?: Locale): Promise<Page | undefined> => {
     const {data} = await client.query({
         query: GET_PAGES_BY_SLUG,
         variables: {slug},
@@ -94,12 +111,12 @@ export const fetchPage = async (slug: string): Promise<Page | undefined> => {
     return data["pages"] && data["pages"].length > 0 ? data["pages"][0] : undefined;
 }
 
-export const fetchPages = async (): Promise<Page[]> => {
+export const fetchPages = async (_locale?: Locale): Promise<Page[]> => {
     const {data} = await client.query({
         query: GET_PAGES,
         fetchPolicy: "no-cache",
     });
-    return data.pages;
+    return data.pages || [];
 }
 
 export const fetchServiceReviews = async (serviceDocumentId: string): Promise<Review[]> => {
