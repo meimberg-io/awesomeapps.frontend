@@ -9,6 +9,7 @@ import { STRAPI_BASEURL } from '@/lib/constants';
 import { useState } from 'react';
 import * as ReviewAPI from '@/lib/api/review-api';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslations } from 'next-intl';
 
 interface ReviewListProps {
   reviews: Review[];
@@ -16,6 +17,7 @@ interface ReviewListProps {
 }
 
 export function ReviewList({ reviews, onReviewsChange }: ReviewListProps) {
+  const t = useTranslations('review');
   const { toast } = useToast();
   const [helpfulLoading, setHelpfulLoading] = useState<string | null>(null);
 
@@ -26,14 +28,14 @@ export function ReviewList({ reviews, onReviewsChange }: ReviewListProps) {
     try {
       await ReviewAPI.markReviewHelpful(review.documentId, review.helpfulCount);
       toast({
-        title: 'Danke',
-        description: 'Du hast diese Bewertung als hilfreich markiert.',
+        title: t('thanks'),
+        description: t('markedHelpful'),
       });
       onReviewsChange?.();
     } catch {
       toast({
-        title: 'Fehler',
-        description: 'Die Bewertung konnte nicht markiert werden.',
+        title: t('common.error'),
+        description: t('couldNotMark'),
         variant: 'destructive',
       });
     } finally {

@@ -4,15 +4,18 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Github } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 export default function SignInPage() {
+  const t = useTranslations('auth');
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <Card className="w-full max-w-md p-8 space-y-6">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Willkommen</h1>
+          <h1 className="text-3xl font-bold">{t('welcome')}</h1>
           <p className="text-muted-foreground">
-            Melden Sie sich an, um fortzufahren
+            {t('signInToContinue')}
           </p>
         </div>
 
@@ -40,7 +43,7 @@ export default function SignInPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Mit Google anmelden
+            {t('signInGoogle')}
           </Button>
 
           <Button
@@ -49,7 +52,7 @@ export default function SignInPage() {
             onClick={() => signIn("github", { callbackUrl: "/" })}
           >
             <Github className="h-5 w-5" />
-            Mit GitHub anmelden
+            {t('signInGithub')}
           </Button>
 
           <Button
@@ -63,17 +66,19 @@ export default function SignInPage() {
               <path d="M0 12.125h10.875V23H0z" fill="#00a4ef" />
               <path d="M12.125 12.125H23V23H12.125z" fill="#ffb900" />
             </svg>
-            Mit Microsoft 365 anmelden
+            {t('signInMicrosoft')}
           </Button>
         </div>
 
         <div className="text-center text-sm text-muted-foreground">
           <p>
-            Durch die Anmeldung stimmen Sie unseren{" "}
-            <a href="/p/terms" className="underline hover:text-primary">
-              Nutzungsbedingungen
-            </a>{" "}
-            zu.
+            {t.rich('termsAgreement', { 
+              terms: (chunks) => (
+                <Link href="/p/terms" className="underline hover:text-primary">
+                  {chunks}
+                </Link>
+              )
+            })}
           </p>
         </div>
       </Card>

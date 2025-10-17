@@ -16,8 +16,10 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Calendar, Star, Heart } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function ProfilePage() {
+  const t = useTranslations();
   const { status } = useSession();
   const router = useRouter();
   const { member, favorites, loading, updateProfile, refreshMember } = useMember();
@@ -54,13 +56,13 @@ export default function ProfilePage() {
       await refreshMember();
       setIsEditing(false);
       toast({
-        title: 'Profil aktualisiert',
-        description: 'Deine Änderungen wurden erfolgreich gespeichert.',
+        title: t('profile.updated'),
+        description: t('profile.updatedDescription'),
       });
     } catch (error) {
       toast({
-        title: 'Fehler',
-        description: error instanceof Error ? error.message : 'Profil konnte nicht aktualisiert werden.',
+        title: t('common.error'),
+        description: error instanceof Error ? error.message : t('profile.updateError'),
         variant: 'destructive',
       });
     } finally {
@@ -84,39 +86,39 @@ export default function ProfilePage() {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }) : 'Unbekannt';
+  }) : t('profile.unknown');
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-6 py-8 max-w-4xl">
-        <h1 className="text-4xl font-bold mb-8">Mein Profil</h1>
+        <h1 className="text-4xl font-bold mb-8">{t('profile.myProfile')}</h1>
 
         <div className="grid gap-6 md:grid-cols-3">
           {/* Profile Info Card */}
           <Card className="md:col-span-2">
             <CardHeader>
-              <CardTitle>Persönliche Informationen</CardTitle>
+              <CardTitle>{t('profile.personalInfo')}</CardTitle>
               <CardDescription>
-                Verwalte deine Profil-Informationen
+                {t('profile.manageInfo')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">E-Mail</Label>
+                <Label htmlFor="email">{t('profile.email')}</Label>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Mail className="h-4 w-4" />
                   <span>{member.email}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  E-Mail-Adresse kann nicht geändert werden
+                  {t('profile.emailCannotChange')}
                 </p>
               </div>
 
               <Separator />
 
               <div className="space-y-2">
-                <Label htmlFor="username">Benutzername</Label>
+                <Label htmlFor="username">{t('profile.username')}</Label>
                 <Input
                   id="username"
                   value={formData.username}
@@ -126,7 +128,7 @@ export default function ProfilePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="displayName">Anzeigename</Label>
+                <Label htmlFor="displayName">{t('profile.displayName')}</Label>
                 <Input
                   id="displayName"
                   value={formData.displayName}
@@ -136,7 +138,7 @@ export default function ProfilePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bio">Über mich</Label>
+                <Label htmlFor="bio">{t('profile.aboutMe')}</Label>
                 <Textarea
                   id="bio"
                   value={formData.bio}
@@ -144,21 +146,21 @@ export default function ProfilePage() {
                   disabled={!isEditing}
                   rows={4}
                   maxLength={500}
-                  placeholder="Erzähle etwas über dich..."
+                  placeholder={t('profile.tellAboutYourself')}
                 />
                 <p className="text-xs text-muted-foreground text-right">
-                  {formData.bio.length}/500 Zeichen
+                  {formData.bio.length}/500 {t('profile.characters')}
                 </p>
               </div>
 
               <div className="flex gap-2 pt-4">
                 {!isEditing ? (
-                  <Button onClick={() => setIsEditing(true)}>Profil bearbeiten</Button>
+                  <Button onClick={() => setIsEditing(true)}>{t('profile.editProfile')}</Button>
                 ) : (
                   <>
                     <Button onClick={handleSave} disabled={isSaving}>
                       {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Speichern
+                      {t('common.save')}
                     </Button>
                     <Button
                       variant="outline"
@@ -172,7 +174,7 @@ export default function ProfilePage() {
                       }}
                       disabled={isSaving}
                     >
-                      Abbrechen
+                      {t('common.cancel')}
                     </Button>
                   </>
                 )}
@@ -184,7 +186,7 @@ export default function ProfilePage() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Statistiken</CardTitle>
+                <CardTitle className="text-lg">{t('profile.statistics')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
@@ -193,7 +195,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{favorites.length}</p>
-                    <p className="text-sm text-muted-foreground">Favoriten</p>
+                    <p className="text-sm text-muted-foreground">{t('nav.favorites')}</p>
                   </div>
                 </div>
 
@@ -205,7 +207,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{(member as Member & { statistics?: { reviewCount: number } }).statistics?.reviewCount || 0}</p>
-                    <p className="text-sm text-muted-foreground">Bewertungen</p>
+                    <p className="text-sm text-muted-foreground">{t('service.reviews')}</p>
                   </div>
                 </div>
 
@@ -216,7 +218,7 @@ export default function ProfilePage() {
                     <Calendar className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">Mitglied seit</p>
+                    <p className="text-sm font-medium">{t('profile.memberSince')}</p>
                     <p className="text-xs text-muted-foreground">{memberSince}</p>
                   </div>
                 </div>
@@ -225,13 +227,13 @@ export default function ProfilePage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Schnellzugriff</CardTitle>
+                <CardTitle className="text-lg">{t('profile.quickAccess')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Button variant="outline" className="w-full justify-start" asChild>
                   <Link href="/favorites">
                     <Heart className="mr-2 h-4 w-4" />
-                    Meine Favoriten
+                    {t('auth.myFavorites')}
                   </Link>
                 </Button>
               </CardContent>
