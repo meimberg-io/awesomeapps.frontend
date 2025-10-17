@@ -3,7 +3,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import DynamicZoneComponent from '@/components/strapicomponents/dynamiczone/DynamicZoneComponent'
 import {notFound} from 'next/navigation'
-import {STRAPI_BASEURL} from '@/lib/constants'
+import {STRAPI_BASEURL, APP_BASEURL} from '@/lib/constants'
 import type {Metadata} from 'next'
 import {Locale} from '@/types/locale'
 
@@ -32,7 +32,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         openGraph: {
             title: page.title,
             description: page.subtitle || page.title,
-            url: `https://awesomeapps.meimberg.io${canonicalPath}`,
+            url: `${APP_BASEURL}${canonicalPath}`,
             siteName: 'AwesomeApps',
             type: 'website',
             locale: ogLocale,

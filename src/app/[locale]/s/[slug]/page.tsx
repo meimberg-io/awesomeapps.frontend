@@ -3,7 +3,7 @@ import ServiceDetail from '@/components/new/ServiceDetail'
 import {notFound} from 'next/navigation'
 import type {Metadata} from 'next'
 import { getBrandfetchLogoUrl } from '@/lib/utils'
-import { STRAPI_BASEURL } from '@/lib/constants'
+import { STRAPI_BASEURL, APP_BASEURL } from '@/lib/constants'
 import {Locale} from '@/types/locale'
 
 type Props = {
@@ -41,7 +41,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         openGraph: {
             title: `${service.name} - SaaS Tool`,
             description: service.abstract ?? description,
-            url: `https://awesomeapps.meimberg.io${canonicalPath}`,
+            url: `${APP_BASEURL}${canonicalPath}`,
             siteName: 'AwesomeApps',
             type: 'website',
             locale: ogLocale,
@@ -102,7 +102,7 @@ export default async function Page({params}: Props) {
         "@type": "SoftwareApplication",
         "name": service.name,
         "description": service.abstract || service.description || `${service.name} - Software-as-a-Service`,
-        "url": `https://awesomeapps.meimberg.io/s/${service.slug}`,
+        "url": `${APP_BASEURL}/s/${service.slug}`,
         "applicationCategory": "WebApplication",
         "operatingSystem": "Web-based",
         ...(service.tags.length > 0 && {
@@ -145,19 +145,19 @@ export default async function Page({params}: Props) {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://awesomeapps.meimberg.io"
+                "item": APP_BASEURL
             },
             ...(service.tags.length > 0 ? [{
                 "@type": "ListItem",
                 "position": 2,
                 "name": service.tags[0].name,
-                "item": `https://awesomeapps.meimberg.io/t/${service.tags[0].name}`
+                "item": `${APP_BASEURL}/t/${service.tags[0].name}`
             }] : []),
             {
                 "@type": "ListItem",
                 "position": service.tags.length > 0 ? 3 : 2,
                 "name": service.name,
-                "item": `https://awesomeapps.meimberg.io/s/${service.slug}`
+                "item": `${APP_BASEURL}/s/${service.slug}`
             }
         ]
     }

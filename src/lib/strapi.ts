@@ -34,11 +34,11 @@ export const fetchServices = async (tags?: Tag[], locale: Locale = 'en'): Promis
     }
 };
 
-export const fetchServicesNews = async (locale: Locale = 'en'): Promise<Service[]> => {
+export const fetchServicesNews = async (locale: Locale = 'en', limit: number = 4): Promise<Service[]> => {
     try {
         const {data} = await client.query({
             query: GET_SERVICES_NEWS,
-            variables: {limit: 4, locale},
+            variables: {limit, locale},
             fetchPolicy: "no-cache"
         });
         return data.services || [];

@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {Locale} from '@/types/locale';
 import {getTranslations} from 'next-intl/server';
+import {APP_BASEURL} from '@/lib/constants';
 
 type Props = {
     params: Promise<{locale: Locale}>;
@@ -23,7 +24,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
             openGraph: {
                 title: t('newsTitle'),
                 description: t('newsDescription'),
-                url: `https://awesomeapps.meimberg.io${canonicalPath}`,
+                url: `${APP_BASEURL}${canonicalPath}`,
                 siteName: 'AwesomeApps',
                 type: 'website',
                 locale: ogLocale,
