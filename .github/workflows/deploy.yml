@@ -18,7 +18,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'npm'
 
     - name: Install dependencies
@@ -87,7 +87,8 @@ jobs:
           
           # Deploy using the unified docker-compose.yml with production profile
           docker-compose down || true
-          docker-compose --profile prod up -d --build
+          docker-compose --profile prod build --no-cache
+          docker-compose --profile prod up -d
           
           # Clean up
           docker image prune -f
