@@ -4,7 +4,7 @@ import {MatomoTracker} from "@/components/util/MatomoTracker";
 import Providers from "@/components/Providers";
 import { Manrope } from 'next/font/google'
 import type { Metadata } from 'next'
-import {Locale} from '@/types/locale';
+import {Locale, defaultLocale} from '@/types/locale';
 import {APP_BASEURL} from '@/lib/constants';
 
 const manrope = Manrope({ 
@@ -51,6 +51,7 @@ type Props = {
 
 export default async function RootLayout({children, params}: Props) {
     const {locale} = await params;
+    const htmlLang = locale || defaultLocale;
     const organizationSchema = {
         "@context": "https://schema.org",
         "@type": "Organization",
@@ -61,7 +62,7 @@ export default async function RootLayout({children, params}: Props) {
     }
 
     return (
-        <html lang={locale} className={manrope.variable}>
+        <html lang={htmlLang} className={manrope.variable}>
         <body className={`h-full ${manrope.className}`}>
         <script
             type="application/ld+json"
