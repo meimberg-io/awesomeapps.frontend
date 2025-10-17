@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Star, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import * as ReviewAPI from '@/lib/api/review-api';
+import { useTranslations } from 'next-intl';
 
 interface ReviewFormProps {
   serviceDocumentId: string;
@@ -15,6 +16,7 @@ interface ReviewFormProps {
 }
 
 export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormProps) {
+  const t = useTranslations('review');
   const { data: session } = useSession();
   const { toast } = useToast();
   const [rating, setRating] = useState(0);
@@ -27,8 +29,8 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
 
     if (rating === 0) {
       toast({
-        title: 'Fehler',
-        description: 'Bitte wähle eine Bewertung aus.',
+        title: t('error'),
+        description: t('selectRating'),
         variant: 'destructive',
       });
       return;
@@ -36,8 +38,8 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
 
     if (!session?.strapiJwt) {
       toast({
-        title: 'Nicht angemeldet',
-        description: 'Du musst angemeldet sein, um eine Bewertung abzugeben.',
+        title: t('notLoggedIn'),
+        description: t('mustBeLoggedIn'),
         variant: 'destructive',
       });
       return;
@@ -53,8 +55,8 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
       );
 
       toast({
-        title: 'Bewertung abgegeben',
-        description: 'Deine Bewertung wurde erfolgreich gespeichert.',
+        title: t('reviewSubmitted'),
+        description: t('reviewSaved'),
       });
 
       // Reset form
@@ -63,8 +65,8 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
       onReviewSubmitted();
     } catch (error) {
       toast({
-        title: 'Fehler',
-        description: error instanceof Error ? error.message : 'Bewertung konnte nicht gespeichert werden.',
+        title: t('error'),
+        description: error instanceof Error ? error.message : t('reviewSaveError'),
         variant: 'destructive',
       });
     } finally {
@@ -76,9 +78,7 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
     return (
       <Card>
         <CardContent className="py-8 text-center">
-          <p className="text-muted-foreground">
-            Bitte <a href="/auth/signin" className="text-primary hover:underline">melde dich an</a>, um eine Bewertung abzugeben.
-          </p>
+          <p className="text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('pleaseSignIn').replace('/auth/signin', '<a href="/auth/signin" class="text-primary hover:underline">') + '</a>' }} />
         </CardContent>
       </Card>
     );
@@ -87,9 +87,9 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bewertung abgeben</CardTitle>
+        <CardTitle>{t('giveReview')}</CardTitle>
         <CardDescription>
-          Teile deine Erfahrungen mit diesem Service
+          {t('shareExperience')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -97,7 +97,7 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
           {/* Star Rating */}
           <div>
             <label className="block text-sm font-medium mb-2">
-              Deine Bewertung *
+              {t('yourRating')}
             </label>
             <div className="flex items-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -120,7 +120,7 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
               ))}
               {rating > 0 && (
                 <span className="text-sm text-muted-foreground ml-2">
-                  {rating} von 5 Sternen
+                  {t('starsOf', { rating })}
                 </span>
               )}
             </div>
@@ -129,20 +129,20 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
           {/* Review Text */}
           <div>
             <label htmlFor="reviewText" className="block text-sm font-medium mb-2">
-              Dein Kommentar (optional)
+              {t('yourComment')}
             </label>
             <Textarea
               id="reviewText"
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
-              placeholder="Schreibe etwas über deine Erfahrungen mit diesem Service..."
+              placeholder={t('experiencePlaceholder')}
               rows={5}
               maxLength={2000}
               disabled={isSubmitting}
             />
             {reviewText.length > 0 && (
               <p className="text-xs text-muted-foreground mt-1">
-                {reviewText.length} / 2000 Zeichen
+                {reviewText.length} / 2000 {t('characters')}
               </p>
             )}
           </div>
@@ -156,10 +156,10 @@ export function ReviewForm({ serviceDocumentId, onReviewSubmitted }: ReviewFormP
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Wird gespeichert...
+                {t('saving')}
               </>
             ) : (
-              'Bewertung absenden'
+              t('submitReview')
             )}
           </Button>
         </form>

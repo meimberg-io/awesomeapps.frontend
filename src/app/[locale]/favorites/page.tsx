@@ -15,8 +15,10 @@ import Link from 'next/link';
 import { STRAPI_BASEURL } from '@/lib/constants';
 import { useState } from 'react';
 import { getBrandfetchLogoUrl } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 export default function FavoritesPage() {
+  const t = useTranslations();
   const { status } = useSession();
   const router = useRouter();
   const { favorites, loading, removeFavorite, refreshMember } = useMember();
@@ -36,13 +38,13 @@ export default function FavoritesPage() {
       // Force refresh to ensure UI updates
       await refreshMember();
       toast({
-        title: 'Entfernt',
-        description: `${serviceName} wurde aus deinen Favoriten entfernt.`,
+        title: t('favorites.removed'),
+        description: t('favorites.removedDescription', { service: serviceName }),
       });
     } catch {
       toast({
-        title: 'Fehler',
-        description: 'Es ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+        title: t('common.error'),
+        description: t('favorites.errorOccurred'),
         variant: 'destructive',
       });
     } finally {
@@ -68,27 +70,26 @@ export default function FavoritesPage() {
       <div className="container mx-auto px-6 py-8 max-w-6xl">
         <div className="flex items-center gap-3 mb-8">
           <Heart className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold">Meine Favoriten</h1>
+          <h1 className="text-4xl font-bold">{t('favorites.title')}</h1>
         </div>
 
         {favorites.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-16 text-center">
               <Heart className="h-16 w-16 text-muted-foreground mb-4" />
-              <h2 className="text-2xl font-semibold mb-2">Noch keine Favoriten</h2>
+              <h2 className="text-2xl font-semibold mb-2">{t('favorites.noFavoritesYet')}</h2>
               <p className="text-muted-foreground mb-6 max-w-md">
-                Du hast noch keine Apps als Favoriten gespeichert. Durchstöbere unsere
-                Sammlung und markiere deine Lieblings-Apps!
+                {t('favorites.noFavoritesDescription')}
               </p>
               <Button asChild>
-                <Link href="/">Apps entdecken</Link>
+                <Link href="/">{t('favorites.discoverApps')}</Link>
               </Button>
             </CardContent>
           </Card>
         ) : (
           <>
             <p className="text-muted-foreground mb-6">
-              Du hast {favorites.length} App{favorites.length !== 1 ? 's' : ''} als Favoriten gespeichert
+              {t('favorites.savedCount', { count: favorites.length, plural: favorites.length !== 1 ? 's' : '' })}
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -165,7 +166,7 @@ export default function FavoritesPage() {
                       <div className="flex gap-2 mt-4">
                         <Button asChild className="flex-1" size="sm">
                           <Link href={`/s/${service.slug}`}>
-                            Details
+                            {t('favorites.details')}
                           </Link>
                         </Button>
                         <Button
