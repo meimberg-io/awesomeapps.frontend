@@ -50,7 +50,7 @@ export default function FavoritesPage() {
     }
   };
 
-  if (loading || status === 'loading') {
+  if (loading || status === 'loading' || status === 'unauthenticated') {
     return (
       <div className="min-h-screen bg-background">
         <Header />
