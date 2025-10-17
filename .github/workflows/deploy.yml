@@ -73,7 +73,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "."
         target: "/opt/awesomeapps-frontend"
-        rm: false
+        rm: true
         strip_components: 0
 
     - name: Deploy with Docker Compose
