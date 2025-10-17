@@ -198,10 +198,10 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                         <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                         <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                       </div>
-                      <span className="text-sm text-muted-foreground">{t('searchingApps')}</span>
+                      <span className="text-sm text-foreground/70">{t('searchingApps')}</span>
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground h-[20px]">
+                    <p className="text-sm text-foreground/70 h-[20px]">
                       {t('appsFound', {count: displayServices.length})}
                     </p>
                   )}
@@ -214,7 +214,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                       className={`pb-3 px-1 text-lg font-semibold transition-colors relative ${
                         activeTab === 'featured'
                           ? 'text-primary'
-                          : 'text-muted-foreground hover:text-foreground'
+                          : 'text-foreground/80 hover:text-foreground'
                       }`}
                     >
                       {t('featuredApps')}
@@ -231,7 +231,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                       className={`pb-3 px-1 text-lg font-semibold transition-colors relative ${
                         activeTab === 'all'
                           ? 'text-primary'
-                          : 'text-muted-foreground hover:text-foreground'
+                          : 'text-foreground/80 hover:text-foreground'
                       }`}
                     >
                       {t('allApps')}
@@ -244,7 +244,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                       )}
                     </button>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-4">
+                  <p className="text-sm text-foreground/70 mt-4">
                     {displayServices.length} {displayServices.length === 1 ? t('app') : t('apps')}
                   </p>
                 </div>
