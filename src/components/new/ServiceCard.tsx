@@ -32,7 +32,7 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
       {service.top && (
         <Badge 
           variant="secondary" 
-          className="absolute top-4 right-4 z-10"
+          className="absolute top-4 right-4 z-10 text-white"
         >
           Top
         </Badge>
