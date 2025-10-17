@@ -7,22 +7,25 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
 import { getBrandfetchLogoUrl } from "@/lib/utils";
 import { STRAPI_BASEURL } from "@/lib/constants";
+import { renderIcon } from "@/components/util/renderIcon";
 
 interface ServiceTileProps {
-    service: Service,
+    service: Service;
+    locale?: string;
 }
 
-const ServiceTile: React.FC<ServiceTileProps> = ({service}) => {
+const ServiceTile: React.FC<ServiceTileProps> = ({service, locale = 'en'}) => {
     const iconurl = service.logo?.url 
         ? `${STRAPI_BASEURL}${service.logo.url}` 
         : getBrandfetchLogoUrl(service.url);
     
+    const dateLocale = locale === 'de' ? 'de-DE' : 'en-US';
     const publishDate = service.publishdate 
-        ? new Date(service.publishdate).toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' })
-        : new Date(service.updatedAt).toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' });
+        ? new Date(service.publishdate).toLocaleDateString(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' })
+        : new Date(service.updatedAt).toLocaleDateString(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' });
 
     return (
-        <Link href={`/s/${service.slug}`} className="block">
+        <Link href={`s/${service.slug}`} className="block">
             <Card className="group relative overflow-hidden hover:shadow-xl hover:brightness-110 transition-all duration-300 cursor-pointer border-border/50 bg-card h-full flex flex-col">
                 {/* Logo Header */}
                 <div className="px-7 py-4 flex items-center justify-center border-b border-border/50">
@@ -49,14 +52,15 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service}) => {
                         {service.tags.slice(0, 3).map((tag) => (
                             <Badge 
                                 key={tag.documentId} 
-                                variant="secondary" 
-                                className="text-xs"
+                                variant="default" 
+                                className="text-xs flex items-center gap-1"
                                 onClick={(e) => {
                                     e.preventDefault();
                                     window.location.href = `/t/${tag.name}`;
                                 }}
                             >
-                                {tag.icon} {tag.name}
+                                {tag.icon && renderIcon(tag.icon, 'text-primary-foreground', 14)}
+                                {tag.name}
                             </Badge>
                         ))}
                     </div>

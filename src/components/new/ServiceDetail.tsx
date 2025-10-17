@@ -31,6 +31,7 @@ import { renderIcon } from "@/components/util/renderIcon";
 import Link from "next/link";
 import { getBrandfetchLogoUrl } from "@/lib/utils";
 import { STRAPI_BASEURL } from "@/lib/constants";
+import { useTranslations } from "next-intl";
 
 interface ServiceDetailProps {
   service: Service;
@@ -43,6 +44,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
   const { data: session } = useSession();
   const { addFavorite, removeFavorite, isFavorite } = useMember();
   const { toast } = useToast();
+  const t = useTranslations('serviceDetail');
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [regenerateStatus, setRegenerateStatus] = useState<'idle' | 'loading' | 'requested'>('idle');
@@ -353,16 +355,20 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
           <div className="relative">
             {/* Floating Info Card */}
             {service.shortfacts && (
-              <div className="float-right w-80 ml-8 mb-8 bg-white dark:bg-slate-900 border border-border/50 rounded-lg overflow-hidden">
+              <div 
+                className="float-right w-80 ml-8 mb-8 bg-white dark:bg-slate-900 border border-border/50 rounded-lg overflow-hidden"
+                itemScope 
+                itemType="https://schema.org/Question"
+              >
                 <div className="bg-gradient-to-r from-primary/20 to-primary/15 px-6 py-3.5">
                   <div className="flex items-center gap-2">
                     <Star className="h-4 w-4 text-primary" />
-                    <h3 className="text-base font-semibold text-primary">Shortfacts</h3>
+                    <h3 className="text-base font-semibold text-primary" itemProp="name">{t('whatIs', { service: service.name })}</h3>
                   </div>
                 </div>
-                <div className="p-6 space-y-5">
+                <div className="p-6 space-y-5" itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
                   <div>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
+                    <p className="text-sm leading-relaxed text-muted-foreground" itemProp="text">
                       {service.shortfacts}
                     </p>
                   </div>
@@ -391,9 +397,13 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
               )}
 
               {service.functionality && (
-                <div className="mb-10">
-                  <h2 className="text-2xl font-bold mb-4 text-foreground">Funktionen und Einsatzmöglichkeiten</h2>
-                  <MarkdownRenderer content={service.functionality}/>
+                <div className="mb-10" itemScope itemType="https://schema.org/Question">
+                  <h2 className="text-2xl font-bold mb-4 text-foreground" itemProp="name">{t('whatFeatures', { service: service.name })}</h2>
+                  <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                    <div itemProp="text">
+                      <MarkdownRenderer content={service.functionality}/>
+                    </div>
+                  </div>
                 </div>
               )}
               {service.pricing && (

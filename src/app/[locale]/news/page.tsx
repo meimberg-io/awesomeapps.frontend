@@ -54,7 +54,7 @@ export default async function NewsPage({params}: Props) {
     return (
         <div>
             <Header/>
-            <ServiceNewsList services={services}/>
+            <ServiceNewsList services={services} locale={locale}/>
             <Footer/>
         </div>
     )

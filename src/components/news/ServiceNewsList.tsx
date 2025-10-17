@@ -5,12 +5,17 @@ import {Service} from '@/types/service'
 import ServiceNewsTile from "@/components/news/ServiceNewsTile"
 import Image from "next/image"
 import heroBackground from "@/assets/header_01.jpg";
+import {useTranslations} from 'next-intl';
+import {Locale} from '@/types/locale';
 
 interface Props {
     services: Service[];
+    locale: Locale;
 }
 
-export default function ServiceNewsList({services}: Props) {
+export default function ServiceNewsList({services, locale}: Props) {
+    const t = useTranslations('news');
+    
     return (
         <div className="min-h-screen bg-background">
             {/* Hero Section */}
@@ -19,7 +24,7 @@ export default function ServiceNewsList({services}: Props) {
                 <div className="absolute inset-0">
                     <Image
                         src={heroBackground}
-                        alt="Hero background"
+                        alt={t('title')}
                         fill
                         className="object-cover"
                         priority
@@ -33,10 +38,10 @@ export default function ServiceNewsList({services}: Props) {
                 <div className="container mx-auto max-w-6xl relative z-10">
                     <div className="text-center">
                         <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
-                            Neu vorgestellte Apps
+                            {t('title')}
                         </h1>
                         <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto">
-                            Aktuelle Websites und Internetservices - frisch vorgestellt
+                            {t('subtitle')}
                         </p>
                     </div>
                 </div>
@@ -49,6 +54,7 @@ export default function ServiceNewsList({services}: Props) {
                         <ServiceNewsTile
                             key={service.documentId}
                             service={service}
+                            locale={locale}
                         />
                     ))}
                 </div>
