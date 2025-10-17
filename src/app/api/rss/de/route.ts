@@ -15,10 +15,10 @@ const escapeXml = (text: string | null): string => {
 
 const generateRssFeed = (services: Service[], locale: 'en' | 'de') => {
     const baseUrl = APP_BASEURL;
-    const title = locale === 'en' ? 'Newest Services - ServiceAtlas' : 'Neueste Services - ServiceAtlas';
+    const title = locale === 'en' ? 'Newest Apps and Online Tools - AwesomeApps' : 'Neueste Apps und Online Tools - AwesomeApps';
     const description = locale === 'en' 
-        ? 'Latest services and tools added to ServiceAtlas' 
-        : 'Neueste Services und Tools auf ServiceAtlas';
+        ? 'Latest services and tools added to AwesomeApps' 
+        : 'Neueste Services und Tools auf AwesomeApps';
     const language = locale === 'en' ? 'en-US' : 'de-DE';
 
     const items = services.map(service => {

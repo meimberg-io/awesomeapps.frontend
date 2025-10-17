@@ -11,9 +11,9 @@ const MediaComponent: React.FC<MediaBlockProps> = ({ data }) => {
     const isVideo = data.file.mime.startsWith('video/');
 
     return (
-        <div className="media mb-8 mt-4">
-            {isImage && <img src={`${STRAPI_BASEURL}${data.file.url}`} alt={data.file.alternativeText} />}
-            {isVideo && <video controls src={`${STRAPI_BASEURL}${data.file.url}`} />}
+        <div className="media mt-12 mb-16">
+            {isImage && <img src={`${STRAPI_BASEURL}${data.file.url}`} alt={data.file.alternativeText} className="rounded-lg" />}
+            {isVideo && <video controls src={`${STRAPI_BASEURL}${data.file.url}`} className="rounded-lg" />}
             {!isImage && !isVideo && <a href={`${STRAPI_BASEURL}${data.file.url}`} target="_blank" rel="noopener noreferrer">Datei herunterladen</a>}
         </div>
     );
