@@ -68,7 +68,7 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading || status === 'loading') {
+  if (loading || status === 'loading' || !member) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -78,10 +78,6 @@ export default function ProfilePage() {
         <Footer />
       </div>
     );
-  }
-
-  if (!member) {
-    return null;
   }
 
   const memberSince = member.createdAt ? new Date(member.createdAt).toLocaleDateString('de-DE', {
