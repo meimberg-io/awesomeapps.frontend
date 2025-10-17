@@ -67,7 +67,7 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
         </div>
       </div>
 
-      <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
+      <p className="text-sm text-muted-foreground mb-4 line-clamp-4 leading-relaxed">
         {service.abstract || service.description}
       </p>
 

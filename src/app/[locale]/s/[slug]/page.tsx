@@ -162,7 +162,44 @@ export default async function Page({params}: Props) {
         ]
     }
 
-    const structuredData = [softwareApplicationSchema, breadcrumbSchema]
+    // FAQPage schema for Q&A sections
+    const faqQuestions = [];
+    
+    if (service.shortfacts) {
+        faqQuestions.push({
+            "@type": "Question",
+            "name": locale === 'de' ? `Was ist ${service.name}?` : `What is ${service.name}?`,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": service.shortfacts
+            }
+        });
+    }
+    
+    if (service.functionality) {
+        faqQuestions.push({
+            "@type": "Question",
+            "name": locale === 'de' 
+                ? `Welche Funktionen und Einsatzmöglichkeiten bietet ${service.name}?`
+                : `What features and use cases does ${service.name} offer?`,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": service.functionality
+            }
+        });
+    }
+
+    const faqSchema = faqQuestions.length > 0 ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqQuestions
+    } : null;
+
+    const structuredData = [
+        softwareApplicationSchema, 
+        breadcrumbSchema,
+        ...(faqSchema ? [faqSchema] : [])
+    ]
 
     return (
         <>

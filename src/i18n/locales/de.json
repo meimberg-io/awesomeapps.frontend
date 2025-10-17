@@ -177,7 +177,7 @@
     "quickAccess": "Schnellzugriff"
   },
   "news": {
-    "title": "Neu vorgestellt",
+    "title": "Neu vorgestellte Apps und Tools",
     "subtitle": "Kürzlich hinzugefügte und aktualisierte Services",
     "noNews": "Keine aktuellen Updates",
     "seeMore": "Mehr anzeigen"
@@ -198,8 +198,8 @@
     "defaultDescription": "Finde und vergleiche die besten Software-as-a-Service Lösungen. Ausführliche Bewertungen, Screenshots und Preise für Business-Software, Produktivitäts-Tools und Cloud-Services.",
     "homeTitle": "AwesomeApps - Best of Breed der Apps & Online Tools",
     "homeDescription": "Finde und vergleiche die besten SaaS-Lösungen. Mit Bewertungen, Screenshots und Preisen.",
-    "newsTitle": "Neu vorgestellt - AwesomeApps",
-    "newsDescription": "Kürzlich hinzugefügte und aktualisierte Services",
+    "newsTitle": "Neu vorgestellte Apps und Tools - AwesomeApps",
+    "newsDescription": "Kürzlich hinzugefügte und aktualisierte Services, Tools und Online-Anwendungen",
     "favoritesTitle": "Meine Favoriten - AwesomeApps",
     "profileTitle": "Profil - AwesomeApps"
   },
@@ -216,6 +216,8 @@
     "prices": "Preise",
     "priceDisclaimer": "Die Preise können je nach Region variieren. Wir übernehmen keine Gewähr auf die Korrektheit der Preise. Für aktuelle Informationen siehe:",
     "whatOthersSay": "Was sagen andere Nutzer über {service}?",
+    "whatIs": "Was ist {service}?",
+    "whatFeatures": "Welche Funktionen und Einsatzmöglichkeiten bietet {service}?",
     "cancel": "Abbrechen",
     "giveReview": "Bewertung abgeben",
     "tryNow": "Jetzt ausprobieren",

@@ -177,7 +177,7 @@
     "quickAccess": "Quick access"
   },
   "news": {
-    "title": "Newly Presented",
+    "title": "Newly Presented Apps and Tools",
     "subtitle": "Recently added and updated services",
     "noNews": "No recent updates",
     "seeMore": "See more"
@@ -198,8 +198,8 @@
     "defaultDescription": "Discover and compare the best Software-as-a-Service solutions. Comprehensive reviews, screenshots, and pricing for business software, productivity tools, and cloud services.",
     "homeTitle": "AwesomeApps - Best of Breed Apps & Online Tools",
     "homeDescription": "Find and compare the best SaaS solutions. With reviews, screenshots, and pricing.",
-    "newsTitle": "Newly Presented - AwesomeApps",
-    "newsDescription": "Recently added and updated services",
+    "newsTitle": "Newly Presented Apps and Tools - AwesomeApps",
+    "newsDescription": "Recently added and updated services, tools and online applications",
     "favoritesTitle": "My Favorites - AwesomeApps",
     "profileTitle": "Profile - AwesomeApps"
   },
@@ -216,6 +216,8 @@
     "prices": "Prices",
     "priceDisclaimer": "Prices may vary by region. We do not guarantee the accuracy of prices. For current information see:",
     "whatOthersSay": "What do other users say about {service}?",
+    "whatIs": "What is {service}?",
+    "whatFeatures": "What features and use cases does {service} offer?",
     "cancel": "Cancel",
     "giveReview": "Give review",
     "tryNow": "Try now",
