@@ -26,6 +26,12 @@ export function MemberProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const fetchMemberData = React.useCallback(async () => {
+    // Skip during SSR/build - only run in browser
+    if (typeof window === 'undefined') {
+      setLoading(false);
+      return;
+    }
+
     if (status === 'authenticated' && session?.strapiJwt && session?.memberId) {
       try {
         setLoading(true);
