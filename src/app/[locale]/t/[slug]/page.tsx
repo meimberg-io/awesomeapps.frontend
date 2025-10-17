@@ -3,6 +3,7 @@ import InteractiveServiceList from '@/components/new/InteractiveServiceList'
 import {Metadata} from "next";
 import {notFound} from "next/navigation";
 import {Tag} from "@/types/tag";
+import {APP_BASEURL} from '@/lib/constants';
 
 type Props = {
     params: Promise<{ slug: string }>
@@ -31,7 +32,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
         openGraph: {
             title: `${tag.name} Tools`,
             description,
-            url: `https://awesomeapps.meimberg.io/t/${tagname}`,
+            url: `${APP_BASEURL}/t/${tagname}`,
             siteName: 'AwesomeApps',
             type: 'website',
             locale: 'de_DE',
@@ -75,13 +76,13 @@ export default async function Page({params}: {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://awesomeapps.meimberg.io"
+                "item": APP_BASEURL
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": tag.name,
-                "item": `https://awesomeapps.meimberg.io/t/${tagname}`
+                "item": `${APP_BASEURL}/t/${tagname}`
             }
         ]
     }

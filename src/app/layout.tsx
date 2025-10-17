@@ -5,6 +5,7 @@ import Providers from "@/components/Providers";
 import { Manrope } from 'next/font/google'
 import type { Metadata } from 'next'
 import {Locale} from '@/types/locale';
+import {APP_BASEURL} from '@/lib/constants';
 
 const manrope = Manrope({ 
     subsets: ['latin'],
@@ -13,7 +14,7 @@ const manrope = Manrope({
 })
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://awesomeapps.meimberg.io'),
+    metadataBase: new URL(APP_BASEURL),
     keywords: ['SaaS', 'Software', 'Web Apps', 'Online Tools', 'Produktivität', 'Business Software', 'Cloud Services'],
     authors: [{ name: 'AwesomeApps' }],
     creator: 'AwesomeApps',
@@ -54,8 +55,8 @@ export default async function RootLayout({children, params}: Props) {
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "AwesomeApps",
-        "url": "https://awesomeapps.meimberg.io",
-        "logo": "https://awesomeapps.meimberg.io/logo-full.svg",
+        "url": APP_BASEURL,
+        "logo": `${APP_BASEURL}/logo-full.svg`,
         "description": "Best of Breed der Apps & Online Tools - Die beste Auswahl an SaaS-Tools und Online-Apps"
     }
 

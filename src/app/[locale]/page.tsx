@@ -4,6 +4,7 @@ import InteractiveServiceList from "@/components/new/InteractiveServiceList";
 import {Locale} from '@/types/locale';
 import {getTranslations} from 'next-intl/server';
 import {Service} from '@/types/service';
+import {APP_BASEURL} from '@/lib/constants';
 
 type Props = {
     params: Promise<{locale: Locale}>;
@@ -22,7 +23,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
             openGraph: {
                 title: t('homeTitle'),
                 description: t('homeDescription'),
-                url: `https://awesomeapps.meimberg.io${canonicalPath}`,
+                url: `${APP_BASEURL}${canonicalPath}`,
                 siteName: 'AwesomeApps',
                 type: 'website',
                 locale: ogLocale,
@@ -37,6 +38,9 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
                 languages: {
                     'en': '/en',
                     'de': '/de',
+                },
+                types: {
+                    'application/rss+xml': `/api/rss/${locale}`,
                 },
             },
         };
@@ -59,13 +63,13 @@ export default async function HomePage({params}: Props) {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "AwesomeApps",
-        "url": "https://awesomeapps.meimberg.io",
+        "url": APP_BASEURL,
         "inLanguage": locale,
         "potentialAction": {
             "@type": "SearchAction",
             "target": {
                 "@type": "EntryPoint",
-                "urlTemplate": "https://awesomeapps.meimberg.io/?search={search_term_string}"
+                "urlTemplate": `${APP_BASEURL}/?search={search_term_string}`
             },
             "query-input": "required name=search_term_string"
         }
