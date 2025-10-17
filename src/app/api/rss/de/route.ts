@@ -22,7 +22,7 @@ const generateRssFeed = (services: Service[], locale: 'en' | 'de') => {
     const language = locale === 'en' ? 'en-US' : 'de-DE';
 
     const items = services.map(service => {
-        const link = `${baseUrl}/${locale}/s/${service.slug}`;
+        const link = `${baseUrl}/${locale}/s/${service.name}`;
         const pubDate = new Date(service.publishdate || service.updatedAt).toUTCString();
         const imageUrl = service.thumbnail?.url 
             ? (service.thumbnail.url.startsWith('http') 

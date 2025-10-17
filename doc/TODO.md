@@ -12,4 +12,4 @@ there are still many german untranslated texts in the application. Just Some exa
 * Die von Ihnen gesuchte Seite konnte leider nicht gefunden werden.
 * Aktuelle Websites und Internetservices - frisch vorgestellt
 
-And many more. 
+And many many more. Please find ALL occurnces of untranslated tags and put gthem in a plan / toto list. I would like to review it before you start
