@@ -27,13 +27,13 @@ export default function Header() {
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container flex h-16 items-center justify-between px-6">
+            <div className="container flex h-12 lg:h-16 items-center justify-between px-4 lg:px-6">
                 <div className="flex items-center gap-6">
                     <Link href={`/${locale}`} className="flex items-center space-x-2">
                         <img
                             alt="AwesomeApps"
                             src="/logo-full.svg"
-                            className="h-8 w-auto"
+                            className="h-6 lg:h-8 w-auto"
                         />
                     </Link>
                     <nav className="hidden md:flex md:gap-x-8">

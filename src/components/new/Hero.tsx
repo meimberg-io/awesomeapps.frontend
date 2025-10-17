@@ -15,7 +15,7 @@ export const Hero = ({ searchQuery, onSearchChange }: HeroProps) => {
   const t = useTranslations('hero');
   
   return (
-    <section className="relative overflow-hidden py-20 px-6">
+    <section className="relative overflow-hidden py-12 lg:py-20 px-6">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
@@ -32,11 +32,11 @@ export const Hero = ({ searchQuery, onSearchChange }: HeroProps) => {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-primary/30 to-transparent" />
       
       <div className="container mx-auto max-w-6xl relative z-10">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
+        <div className="text-center mb-8 lg:mb-10">
+          <h1 className="hidden lg:block text-4xl md:text-6xl font-bold text-primary-foreground mb-4">
             AwesomeApps
           </h1>
-          <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto">
+          <p className="text-base lg:text-lg xl:text-xl text-primary-foreground/90 max-w-2xl mx-auto">
             {t('subtitle')}
           </p>
         </div>

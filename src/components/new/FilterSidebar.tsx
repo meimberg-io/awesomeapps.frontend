@@ -10,7 +10,7 @@ import { Tag } from "@/types/tag";
 import { Service } from "@/types/service";
 import { useMemo, useState } from "react";
 import { renderIcon } from "@/components/util/renderIcon";
-import { X } from "lucide-react";
+import { X, ChevronDown, ChevronUp } from "lucide-react";
 import {useTranslations} from 'next-intl';
 
 interface FilterSidebarProps {
@@ -29,6 +29,7 @@ export const FilterSidebar = ({
 }: FilterSidebarProps) => {
   const t = useTranslations('filter');
   const [tagSearch, setTagSearch] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   // Create a Set for faster lookups
   const selectedTagIds = useMemo(() => {
@@ -60,8 +61,25 @@ export const FilterSidebar = ({
 
   return (
     <aside className="w-full lg:w-80 space-y-6">
-      <div className="bg-card rounded-xl p-6 shadow-sm border border-border/50">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-card rounded-xl shadow-sm border border-border/50">
+        {/* Mobile: Collapsible header */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="lg:hidden w-full flex items-center justify-between p-4 text-left"
+        >
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold text-lg">{t('filterByTags')}</h3>
+            {hasActiveFilters && (
+              <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 py-0.5">
+                {selectedTags.length}
+              </span>
+            )}
+          </div>
+          {isOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+        </button>
+
+        {/* Desktop: Always visible header */}
+        <div className="hidden lg:flex items-center justify-between p-6 pb-4">
           <h3 className="font-semibold text-lg">{t('filterByTags')}</h3>
           {hasActiveFilters && (
             <Button
@@ -75,40 +93,69 @@ export const FilterSidebar = ({
             </Button>
           )}
         </div>
-        <Input
-          placeholder={t('allTags')}
-          value={tagSearch}
-          onChange={(e) => setTagSearch(e.target.value)}
-          className="mb-4"
-        />
-        <ScrollArea className="h-[400px]">
-          <div className="space-y-3 pr-4">
-            {filteredTags.map((tag) => (
-              <div key={tag.documentId} className="flex items-center space-x-2">
-                <Checkbox
-                  id={tag.documentId}
-                  checked={selectedTagIds.has(tag.documentId)}
-                  onCheckedChange={() => onTagChange(tag.documentId)}
-                />
-                <Label
-                  htmlFor={tag.documentId}
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1 flex items-center gap-2"
-                >
-                  {tag.icon && renderIcon(tag.icon, 'text-primary', 16)}
-                  <span className="truncate">{tag.name}</span>
-                </Label>
-                <span className="text-xs text-muted-foreground shrink-0 ml-2">
-                  ({tag.count})
-                </span>
-              </div>
-            ))}
+
+        {/* Collapsible content */}
+        <div className={`${isOpen ? 'block' : 'hidden'} lg:block p-6 pt-0 lg:pt-0 transition-all duration-200`}>
+          <div className="flex items-center gap-2 mb-4">
+            <Input
+              placeholder={t('allTags')}
+              value={tagSearch}
+              onChange={(e) => setTagSearch(e.target.value)}
+              className="flex-1"
+            />
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  onClearFilters();
+                  // Auto-collapse on mobile after clearing filters
+                  if (window.innerWidth < 1024) {
+                    setIsOpen(false);
+                  }
+                }}
+                className="lg:hidden h-9 w-9 text-muted-foreground hover:text-foreground"
+                title={t('clearFilters')}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
           </div>
-        </ScrollArea>
+          <ScrollArea className="h-[400px]">
+            <div className="space-y-3 pr-4">
+              {filteredTags.map((tag) => (
+                <div key={tag.documentId} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={tag.documentId}
+                    checked={selectedTagIds.has(tag.documentId)}
+                    onCheckedChange={() => {
+                      onTagChange(tag.documentId);
+                      // Auto-collapse on mobile after selecting a tag
+                      if (window.innerWidth < 1024) {
+                        setIsOpen(false);
+                      }
+                    }}
+                  />
+                  <Label
+                    htmlFor={tag.documentId}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1 flex items-center gap-2"
+                  >
+                    {tag.icon && renderIcon(tag.icon, 'text-primary', 16)}
+                    <span className="truncate">{tag.name}</span>
+                  </Label>
+                  <span className="text-xs text-muted-foreground shrink-0 ml-2">
+                    ({tag.count})
+                  </span>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
       </div>
 
-      <Separator />
+      <Separator className="hidden lg:block" />
 
-      <div className="bg-muted/50 rounded-xl p-6">
+      <div className="hidden lg:block bg-muted/50 rounded-xl p-6">
         <h4 className="font-medium mb-2">💡 {t('tippHeadline')}</h4>
         <p className="text-sm text-muted-foreground">
           {t('tippText')}
