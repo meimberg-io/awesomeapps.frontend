@@ -87,8 +87,12 @@ jobs:
           
           # Deploy using the unified docker-compose.yml with production profile
           docker-compose down || true
-          docker-compose --profile prod build --no-cache
-          docker-compose --profile prod up -d
+          if ! docker-compose --profile prod build --no-cache; then
+            echo "❌ Docker build failed!"
+            docker-compose --profile prod logs || true
+            exit 1          
+          fi
+          docker-compose --profile prod up -d       
           
           # Clean up
           docker image prune -f
