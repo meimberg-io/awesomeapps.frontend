@@ -1,112 +1,133 @@
-name: Deploy AwesomeApps Frontend to Server
+name: Build and Push Frontend
 
 on:
   push:
     branches: [ main, master ]
 
 env:
-  APP_PORT: ${{ vars.APP_PORT }}
-  APP_NAME: "awesomeapps-frontend"
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  test:
+  build-and-push:
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm ci
-
-    - name: Run tests
-      env:
-        NEXT_PUBLIC_STRAPI_BASEURL: ${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
-        NEXT_PUBLIC_APP_BASEURL: ${{ vars.NEXT_PUBLIC_APP_BASEURL }}
-        NEXT_PUBLIC_MATOMO_TRACKER: ${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
-        AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-        NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
-      run: |
-        npm run lint
-        npm run build
-
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    permissions:
+      contents: read
+      packages: write
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Create .env file
-      run: |
-        cat > .env << EOF
-        NODE_ENV=production
-        APP_PORT=${{ vars.APP_PORT }}
-        PORT=5680
-        NEXT_PUBLIC_STRAPI_BASEURL=${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
-        NEXT_PUBLIC_APP_BASEURL=${{ vars.NEXT_PUBLIC_APP_BASEURL }}
-        NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
-        REVALIDATE_SECRET=${{ secrets.REVALIDATE_SECRET }}
-        AUTH_SECRET=${{ secrets.AUTH_SECRET }}
-        NEXTAUTH_URL=${{ vars.NEXTAUTH_URL }}
-        OAUTH_GOOGLE_CLIENT_ID=${{ vars.OAUTH_GOOGLE_CLIENT_ID }}
-        OAUTH_GOOGLE_CLIENT_SECRET=${{ secrets.OAUTH_GOOGLE_CLIENT_SECRET }}
-        OAUTH_GITHUB_CLIENT_ID=${{ vars.OAUTH_GITHUB_CLIENT_ID }}
-        OAUTH_GITHUB_CLIENT_SECRET=${{ secrets.OAUTH_GITHUB_CLIENT_SECRET }}
-        OAUTH_AZURE_AD_CLIENT_ID=${{ vars.OAUTH_AZURE_AD_CLIENT_ID }}
-        OAUTH_AZURE_AD_CLIENT_SECRET=${{ secrets.OAUTH_AZURE_AD_CLIENT_SECRET }}
-        OAUTH_AZURE_AD_TENANT_ID=${{ vars.OAUTH_AZURE_AD_TENANT_ID }}
-        EOF
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Deploy files to server
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=sha,prefix={{branch}}-
+          type=semver,pattern={{version}}
+          type=raw,value=latest
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          NEXT_PUBLIC_STRAPI_BASEURL=${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
+          NEXT_PUBLIC_APP_BASEURL=${{ vars.NEXT_PUBLIC_APP_BASEURL }}
+          NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER || 'false' }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    env:
+      PROJECT_NAME: awesomeapps-frontend
+      APP_DOMAIN: ${{ vars.APP_DOMAIN }}
+      DOCKER_IMAGE: ghcr.io/${{ github.repository }}:latest
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NEXT_PUBLIC_STRAPI_BASEURL: ${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
+      NEXT_PUBLIC_APP_BASEURL: ${{ vars.NEXT_PUBLIC_APP_BASEURL }}
+      NEXT_PUBLIC_MATOMO_TRACKER: ${{ vars.NEXT_PUBLIC_MATOMO_TRACKER || 'false' }}
+      REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Copy docker-compose template to server
       uses: appleboy/scp-action@v0.1.7
       with:
-        host: ${{ vars.HOST }}
-        username: ${{ vars.USERNAME }}
+        host: ${{ vars.SERVER_HOST }}
+        username: ${{ vars.SERVER_USER || 'deploy' }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "."
-        target: "/opt/awesomeapps-frontend"
-        rm: true
-        strip_components: 0
-
-    - name: Deploy with Docker Compose
+        source: "docker-compose.prod.yml"
+        target: "/srv/projects/${{ env.PROJECT_NAME }}/"
+    
+    - name: Deploy to server
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ vars.HOST }}
-        username: ${{ vars.USERNAME }}
+        host: ${{ vars.SERVER_HOST }}
+        username: ${{ vars.SERVER_USER || 'deploy' }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        envs: PROJECT_NAME,GITHUB_TOKEN,DOCKER_IMAGE,APP_DOMAIN,NEXT_PUBLIC_STRAPI_BASEURL,NEXT_PUBLIC_APP_BASEURL,NEXT_PUBLIC_MATOMO_TRACKER,REVALIDATE_SECRET
         script: |
-          cd /opt/awesomeapps-frontend
+          set -e
           
-          # Deploy using the unified docker-compose.yml with production profile
-          docker-compose down || true
-          if ! docker-compose --profile prod build --no-cache; then
-            echo "❌ Docker build failed!"
-            docker-compose --profile prod logs || true
-            exit 1          
-          fi
-          docker-compose --profile prod up -d       
+          # Login to GitHub Container Registry
+          echo "$GITHUB_TOKEN" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           
-          # Clean up
-          docker image prune -f
+          # Create project directory
+          mkdir -p /srv/projects/${PROJECT_NAME}
+          cd /srv/projects/${PROJECT_NAME}
+          
+          # Create .env file with secrets
+          cat > .env << EOF
+          NODE_ENV=production
+          PORT=5680
+          HOSTNAME=0.0.0.0
+          NEXT_PUBLIC_STRAPI_BASEURL=$NEXT_PUBLIC_STRAPI_BASEURL
+          NEXT_PUBLIC_APP_BASEURL=$NEXT_PUBLIC_APP_BASEURL
+          NEXT_PUBLIC_MATOMO_TRACKER=$NEXT_PUBLIC_MATOMO_TRACKER
+          REVALIDATE_SECRET=$REVALIDATE_SECRET
+          EOF
+          
+          # Substitute variables in docker-compose template
+          export PROJECT_NAME="${PROJECT_NAME}"
+          export DOCKER_IMAGE="${DOCKER_IMAGE}"
+          export APP_DOMAIN="${APP_DOMAIN}"
+          
+          envsubst < docker-compose.prod.yml > docker-compose.yml
+          
+          echo "Generated docker-compose.yml:"
+          cat docker-compose.yml
+          
+          # Pull latest image and deploy
+          docker compose pull
+          docker compose up -d
+          
+          # Wait for container to be ready
+          sleep 5
           
           # Verify deployment
-          echo "Waiting for application to start..."
-          sleep 120
-          if curl -f http://localhost:${{ env.APP_PORT }}/ > /dev/null 2>&1; then
-            echo "✅ AwesomeApps deployed successfully on port ${{ env.APP_PORT }}!"
-            echo "🌐 Application is available at: http://${{ vars.HOST }}:${{ env.APP_PORT }}"
+          if docker ps | grep -q ${PROJECT_NAME}; then
+            echo "✅ ${PROJECT_NAME} deployed successfully!"
+            echo "🌐 Accessible at: https://${{ env.APP_DOMAIN }}"
           else
-            echo "❌ Deployment verification failed!"
-            echo "📋 Container logs:"
-            docker-compose --profile prod logs || true
+            echo "❌ Deployment failed - container not running"
+            docker logs ${PROJECT_NAME}
             exit 1
           fi
-
