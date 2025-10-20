@@ -10,8 +10,9 @@ Initial configuration required for automatic deployment.
 |------|-------|-------------|
 | `APP_DOMAIN` | `awesomeapps-frontend.meimberg.io` | Application domain |
 | `SERVER_HOST` | `hc-02.meimberg.io` | Server hostname |
-| `SERVER_USER` | `deploy` | SSH user (optional, defaults to `deploy`) |
-| `NEXT_PUBLIC_STRAPI_BASEURL` | `https://awesomeapps-strapi.meimberg.io` | Strapi backend URL |
+| `SERVER_USER` | `deploy` | SSH user for deployment |
+| `STRAPI_INTERNAL_URL` | `http://awesomeapps-strapi:1337` | Internal Strapi URL for server-side fetching |
+| `NEXT_PUBLIC_STRAPI_BASEURL` | `https://awesomeapps-strapi.meimberg.io` | Strapi backend URL (public) |
 | `NEXT_PUBLIC_APP_BASEURL` | `https://awesomeapps-frontend.meimberg.io` | Frontend app URL |
 
 ## GitHub Secrets
