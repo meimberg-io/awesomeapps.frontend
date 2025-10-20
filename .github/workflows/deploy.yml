@@ -48,7 +48,7 @@ jobs:
         build-args: |
           NEXT_PUBLIC_STRAPI_BASEURL=${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
           NEXT_PUBLIC_APP_BASEURL=${{ vars.NEXT_PUBLIC_APP_BASEURL }}
-          NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER || 'false' }}
+          NEXT_PUBLIC_MATOMO_TRACKER=${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
 
   deploy:
     needs: build-and-push
@@ -59,9 +59,10 @@ jobs:
       APP_DOMAIN: ${{ vars.APP_DOMAIN }}
       DOCKER_IMAGE: ghcr.io/${{ github.repository }}:latest
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      STRAPI_INTERNAL_URL: ${{ vars.STRAPI_INTERNAL_URL }}
       NEXT_PUBLIC_STRAPI_BASEURL: ${{ vars.NEXT_PUBLIC_STRAPI_BASEURL }}
       NEXT_PUBLIC_APP_BASEURL: ${{ vars.NEXT_PUBLIC_APP_BASEURL }}
-      NEXT_PUBLIC_MATOMO_TRACKER: ${{ vars.NEXT_PUBLIC_MATOMO_TRACKER || 'false' }}
+      NEXT_PUBLIC_MATOMO_TRACKER: ${{ vars.NEXT_PUBLIC_MATOMO_TRACKER }}
       REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
     
     steps:
@@ -72,7 +73,7 @@ jobs:
       uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ vars.SERVER_HOST }}
-        username: ${{ vars.SERVER_USER || 'deploy' }}
+        username: ${{ vars.SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "docker-compose.prod.yml"
         target: "/srv/projects/${{ env.PROJECT_NAME }}/"
@@ -81,9 +82,9 @@ jobs:
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ vars.SERVER_HOST }}
-        username: ${{ vars.SERVER_USER || 'deploy' }}
+        username: ${{ vars.SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        envs: PROJECT_NAME,GITHUB_TOKEN,DOCKER_IMAGE,APP_DOMAIN,NEXT_PUBLIC_STRAPI_BASEURL,NEXT_PUBLIC_APP_BASEURL,NEXT_PUBLIC_MATOMO_TRACKER,REVALIDATE_SECRET
+        envs: PROJECT_NAME,GITHUB_TOKEN,DOCKER_IMAGE,APP_DOMAIN,STRAPI_INTERNAL_URL,NEXT_PUBLIC_STRAPI_BASEURL,NEXT_PUBLIC_APP_BASEURL,NEXT_PUBLIC_MATOMO_TRACKER,REVALIDATE_SECRET
         script: |
           set -e
           
@@ -99,6 +100,7 @@ jobs:
           NODE_ENV=production
           PORT=5680
           HOSTNAME=0.0.0.0
+          STRAPI_INTERNAL_URL=$STRAPI_INTERNAL_URL
           NEXT_PUBLIC_STRAPI_BASEURL=$NEXT_PUBLIC_STRAPI_BASEURL
           NEXT_PUBLIC_APP_BASEURL=$NEXT_PUBLIC_APP_BASEURL
           NEXT_PUBLIC_MATOMO_TRACKER=$NEXT_PUBLIC_MATOMO_TRACKER
