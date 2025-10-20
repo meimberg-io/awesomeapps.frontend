@@ -3,4 +3,8 @@ export const STRAPI_BASEURL = typeof window === 'undefined'
   ? (process.env.STRAPI_INTERNAL_URL || process.env.NEXT_PUBLIC_STRAPI_BASEURL)
   : process.env.NEXT_PUBLIC_STRAPI_BASEURL;
 
-export const APP_BASEURL = process.env.NEXT_PUBLIC_APP_BASEURL || 'http://localhost:8203';
+if (!process.env.NEXT_PUBLIC_APP_BASEURL) {
+  throw new Error('NEXT_PUBLIC_APP_BASEURL environment variable is required');
+}
+
+export const APP_BASEURL = process.env.NEXT_PUBLIC_APP_BASEURL;
