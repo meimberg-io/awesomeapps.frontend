@@ -23,6 +23,14 @@ Initial configuration required for automatic deployment.
 |------|-------|-------------|
 | `SSH_PRIVATE_KEY` | `<private key contents>` | Deploy user private key |
 | `REVALIDATE_SECRET` | `<random secret>` | Next.js revalidation token |
+| `AUTH_SECRET` | `<random secret>` | NextAuth.js secret for JWT signing |
+| `OAUTH_GOOGLE_CLIENT_ID` | `<google client id>` | Google OAuth Client ID |
+| `OAUTH_GOOGLE_CLIENT_SECRET` | `<google client secret>` | Google OAuth Client Secret |
+| `OAUTH_GITHUB_CLIENT_ID` | `<github client id>` | GitHub OAuth Client ID (optional) |
+| `OAUTH_GITHUB_CLIENT_SECRET` | `<github client secret>` | GitHub OAuth Client Secret (optional) |
+| `OAUTH_AZURE_AD_CLIENT_ID` | `<azure client id>` | Azure AD Client ID (optional) |
+| `OAUTH_AZURE_AD_CLIENT_SECRET` | `<azure client secret>` | Azure AD Client Secret (optional) |
+| `OAUTH_AZURE_AD_TENANT_ID` | `<azure tenant id>` | Azure AD Tenant ID (optional) |
 
 **Get SSH private key:**
 ```bash
@@ -36,10 +44,19 @@ Get-Content C:\Users\YourName\.ssh\id_rsa
 
 Copy entire output including `-----BEGIN` and `-----END` lines.
 
-**Generate revalidate secret:**
+**Generate secrets:**
 ```bash
+# Generate REVALIDATE_SECRET
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+
+# Generate AUTH_SECRET
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
+
+**OAuth Provider Setup:**
+- **Google OAuth:** Create credentials at [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+- **GitHub OAuth:** Create app at [GitHub Developer Settings](https://github.com/settings/developers)
+- **Azure AD:** Create app registration at [Azure Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
 
 
 
@@ -105,7 +122,8 @@ git push origin main
 Before first deployment:
 
 - [ ] GitHub Variables added: `APP_DOMAIN`, `SERVER_HOST`, `SERVER_USER`, Next.js public vars
-- [ ] GitHub Secrets added: `SSH_PRIVATE_KEY`, `REVALIDATE_SECRET`
+- [ ] GitHub Secrets added: `SSH_PRIVATE_KEY`, `REVALIDATE_SECRET`, `AUTH_SECRET`
+- [ ] OAuth Secrets configured: At minimum `OAUTH_GOOGLE_CLIENT_ID` and `OAUTH_GOOGLE_CLIENT_SECRET`
 - [ ] DNS A record configured
 - [ ] Server infrastructure deployed via Ansible
 - [ ] Can SSH to server: `ssh deploy@hc-02.meimberg.io`
