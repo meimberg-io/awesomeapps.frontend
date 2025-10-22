@@ -33,7 +33,7 @@ export const GET_SERVICES = gql`
 export const GET_SERVICES_NEWS = gql`
     query GetServicesNews($limit: Int, $locale: I18NLocaleCode = "en") {
         services(
-            sort: "updatedAt:desc",
+            sort: "createdAt:desc",
             pagination: {
                 limit: $limit
             },
