@@ -8,6 +8,7 @@ import { renderIcon } from "@/components/util/renderIcon";
 import { Tag } from "@/types/tag";
 import { getBrandfetchLogoUrl } from "@/lib/utils";
 import { STRAPI_BASEURL } from "@/lib/constants";
+import { useTranslations } from 'next-intl';
 
 interface ServiceCardProps {
   service: Service;
@@ -16,6 +17,8 @@ interface ServiceCardProps {
 }
 
 export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: ServiceCardProps) => {
+  const t = useTranslations('common');
+  const tService = useTranslations('service');
   const iconurl = service.logo?.url 
     ? `${STRAPI_BASEURL}${service.logo.url}` 
     : getBrandfetchLogoUrl(service.url);
@@ -23,6 +26,17 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
   // Use cached review statistics from backend
   const reviewCount = service.reviewCount || 0;
   const averageRating = service.averageRating || 0;
+  
+  // Check if service is new (less than 5 days old)
+  const isNew = () => {
+    const serviceDate = new Date(service.createdAt);
+    const now = new Date();
+    const daysDiff = (now.getTime() - serviceDate.getTime()) / (1000 * 60 * 60 * 24);
+    return daysDiff <= 5;
+  };
+  
+  // Show Top badge if service is top, otherwise show New badge if it's new
+  const showNewBadge = !service.top && isNew();
 
   return (
     <Card 
@@ -34,7 +48,15 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
           variant="secondary" 
           className="absolute top-4 right-4 z-10 text-white"
         >
-          Top
+          {t('top')}
+        </Badge>
+      )}
+      {showNewBadge && (
+        <Badge 
+          variant="secondary" 
+          className="absolute top-4 right-4 z-10 text-white bg-green-600 hover:bg-green-700"
+        >
+          {t('new')}
         </Badge>
       )}
 
@@ -58,11 +80,11 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
                 <span className="text-sm font-semibold text-primary">{averageRating.toFixed(1)}</span>
               </div>
               <span className="text-xs text-muted-foreground">
-                {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
+                {reviewCount} {reviewCount === 1 ? tService('review') : tService('reviews')}
               </span>
             </div>
           ) : (
-            <span className="text-xs text-muted-foreground">No reviews yet</span>
+            <span className="text-xs text-muted-foreground">{tService('noReviews')}</span>
           )}
         </div>
       </div>
