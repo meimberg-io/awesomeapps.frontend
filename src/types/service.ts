@@ -27,6 +27,7 @@ export interface Service {
     reviews?: Review[];
     reviewCount?: number;
     averageRating?: number;
+    createdAt: string;
     updatedAt: string;
     publishdate: string;
     top: boolean;

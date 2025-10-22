@@ -8,6 +8,7 @@ export const GET_SERVICES = gql`
             slug
             url
             abstract
+            createdAt
             updatedAt
             top
             publishdate
@@ -48,9 +49,12 @@ export const GET_SERVICES_NEWS = gql`
             slug
             url
             abstract
+            createdAt
             updatedAt
             top
             publishdate
+            reviewCount
+            averageRating
             tags {
                 documentId
                 name
@@ -86,9 +90,12 @@ export const SEARCH_SERVICES = gql`
             slug
             url
             abstract
+            createdAt
             updatedAt
             top
             publishdate
+            reviewCount
+            averageRating
             tags {
                 documentId
                 name

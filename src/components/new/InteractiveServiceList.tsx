@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
@@ -33,8 +33,20 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   const [tags, setTags] = useState<Tag[]>(initialTags);
   const [isSearching, setIsSearching] = useState(false);
   const [isLoadingFiltered, setIsLoadingFiltered] = useState(false);
-  const [activeTab, setActiveTab] = useState<'featured' | 'all'>('featured');
-  const [displayServices, setDisplayServices] = useState<Service[]>(initialServices.filter(s => s.top));
+  const [activeTab, setActiveTab] = useState<'new' | 'featured' | 'all'>('new');
+  
+  // Calculate newest services (sorted by publishdate or updatedAt, limit to 6)
+  const newestServices = useMemo(() => {
+    return [...initialServices]
+      .sort((a, b) => {
+        const dateA = new Date(a.publishdate || a.updatedAt).getTime();
+        const dateB = new Date(b.publishdate || b.updatedAt).getTime();
+        return dateB - dateA;
+      })
+      .slice(0, 6);
+  }, [initialServices]);
+  
+  const [displayServices, setDisplayServices] = useState<Service[]>(newestServices);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -55,9 +67,9 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
       const isSelected = prev.some(t => t.documentId === tagId);
       if (isSelected) {
         const newTags = prev.filter((t) => t.documentId !== tagId);
-        // If removing the last tag, go back to featured
+        // If removing the last tag, go back to new
         if (newTags.length === 0) {
-          setActiveTab('featured');
+          setActiveTab('new');
         }
         return newTags;
       } else {
@@ -70,7 +82,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
 
   const handleClearFilters = () => {
     setIsLoadingFiltered(true);
-    setActiveTab('featured'); // Reset to featured when clearing all filters
+    setActiveTab('new'); // Reset to new when clearing all filters
     setSelectedTags([]);
   };
 
@@ -119,18 +131,31 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
       // When no tags selected and no search, reset to initial services
       setServices(initialServices);
       setTags(initialTags);
-      setDisplayServices(activeTab === 'featured' ? initialServices.filter(s => s.top) : initialServices);
+      
+      // Update display based on active tab
+      if (activeTab === 'new') {
+        setDisplayServices(newestServices);
+      } else if (activeTab === 'featured') {
+        setDisplayServices(initialServices.filter(s => s.top));
+      } else {
+        setDisplayServices(initialServices);
+      }
       setIsLoadingFiltered(false);
     }
-  }, [selectedTags, maintag, initialServices, initialTags, searchQuery, locale, activeTab]);
+  }, [selectedTags, maintag, initialServices, initialTags, searchQuery, locale, activeTab, newestServices]);
 
   // Update display when tab changes (without tags/search active)
   useEffect(() => {
     if (selectedTags.length === 0 && searchQuery.trim() === "") {
-      const filtered = activeTab === 'featured' ? services.filter(s => s.top) : services;
-      setDisplayServices(filtered);
+      if (activeTab === 'new') {
+        setDisplayServices(newestServices);
+      } else if (activeTab === 'featured') {
+        setDisplayServices(services.filter(s => s.top));
+      } else {
+        setDisplayServices(services);
+      }
     }
-  }, [activeTab, services, selectedTags.length, searchQuery]);
+  }, [activeTab, services, selectedTags.length, searchQuery, newestServices]);
 
   const handleServiceClick = (service: Service) => {
     router.push(`/s/${service.slug}`);
@@ -209,6 +234,23 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
               ) : (
                 <div className="mb-6">
                   <div className="flex items-center gap-4 border-b border-border">
+                    <button
+                      onClick={() => setActiveTab('new')}
+                      className={`pb-3 px-1 text-lg font-semibold transition-colors relative ${
+                        activeTab === 'new'
+                          ? 'text-primary'
+                          : 'text-foreground/80 hover:text-foreground'
+                      }`}
+                    >
+                      {t('newApps')}
+                      {activeTab === 'new' && (
+                        <motion.div
+                          layoutId="activeTab"
+                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                      )}
+                    </button>
                     <button
                       onClick={() => setActiveTab('featured')}
                       className={`pb-3 px-1 text-lg font-semibold transition-colors relative ${
