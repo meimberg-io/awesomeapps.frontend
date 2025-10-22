@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
@@ -10,7 +10,7 @@ import { ServiceCard } from "@/components/new/ServiceCard";
 import { FilterSidebar } from "@/components/new/FilterSidebar";
 import { Service } from "@/types/service";
 import { Tag } from "@/types/tag";
-import { fetchServices, fetchTags, searchServices } from "@/lib/strapi";
+import { fetchServices, fetchTags, searchServices, fetchServicesNews } from "@/lib/strapi";
 import { Badge } from "@/components/ui/badge";
 import { Trash2 } from "lucide-react";
 import { renderIcon } from "@/components/util/renderIcon";
@@ -35,18 +35,31 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   const [isLoadingFiltered, setIsLoadingFiltered] = useState(false);
   const [activeTab, setActiveTab] = useState<'new' | 'featured' | 'all'>('new');
   
-  // Calculate newest services (sorted by publishdate or updatedAt, limit to 6)
-  const newestServices = useMemo(() => {
-    return [...initialServices]
-      .sort((a, b) => {
-        const dateA = new Date(a.publishdate || a.updatedAt).getTime();
-        const dateB = new Date(b.publishdate || b.updatedAt).getTime();
-        return dateB - dateA;
-      })
-      .slice(0, 6);
-  }, [initialServices]);
+  // Fetch newest services separately for proper sorting
+  const [newestServices, setNewestServices] = useState<Service[]>([]);
+  const [isLoadingNew, setIsLoadingNew] = useState(false);
   
   const [displayServices, setDisplayServices] = useState<Service[]>(newestServices);
+
+  // Fetch newest services on mount and locale change
+  useEffect(() => {
+    const loadNewestServices = async () => {
+      setIsLoadingNew(true);
+      try {
+        const newest = await fetchServicesNews(locale, 6);
+        setNewestServices(newest);
+        if (activeTab === 'new') {
+          setDisplayServices(newest);
+        }
+      } catch (error) {
+        console.error('Error fetching newest services:', error);
+      } finally {
+        setIsLoadingNew(false);
+      }
+    };
+
+    loadNewestServices();
+  }, [locale, activeTab]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -216,7 +229,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
                       ))}
                     </AnimatePresence>
                   </div>
-                  {isLoadingFiltered ? (
+                  {(isLoadingFiltered || isLoadingNew) ? (
                     <div className="flex items-center gap-2 h-[20px]">
                       <div className="flex gap-1">
                         <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
