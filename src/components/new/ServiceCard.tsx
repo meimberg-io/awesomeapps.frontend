@@ -54,7 +54,8 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
       {showNewBadge && (
         <Badge 
           variant="secondary" 
-          className="absolute top-4 right-4 z-10 text-white bg-green-600 hover:bg-green-700"
+          className="absolute top-4 right-4 z-10 text-white"
+          style={{ backgroundColor: 'hsl(20 83% 55%)', border: 'transparent' }}
         >
           {t('new')}
         </Badge>
