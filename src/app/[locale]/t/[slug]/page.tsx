@@ -3,14 +3,15 @@ import InteractiveServiceList from '@/components/new/InteractiveServiceList'
 import {Metadata} from "next";
 import {notFound} from "next/navigation";
 import {Tag} from "@/types/tag";
+import {Locale} from "@/types/locale";
 import {APP_BASEURL} from '@/lib/constants';
 
 type Props = {
-    params: Promise<{ slug: string }>
+    params: Promise<{ slug: string; locale: Locale }>
 }
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
-    const tagname = (await params).slug;
+    const {slug: tagname} = await params;
     const tag: Tag | undefined = await fetchTagDetailByName(tagname)
 
     if (!tag) {
@@ -55,17 +56,17 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 
 // Hauptseite für Service-Detail
 export default async function Page({params}: {
-    params: Promise<{ slug: string }>
+    params: Promise<{ slug: string; locale: Locale }>
 }) {
-    const tagname = (await params).slug;
+    const {slug: tagname, locale} = await params;
     const tag: Tag | undefined = await fetchTagDetailByName(tagname)
 
     if (!tag) {
         notFound() // 404 Seite
     }
 
-    const initialServices = await fetchServices([tag])
-    const initialTags = await fetchTags([tag])
+    const initialServices = await fetchServices([tag], locale)
+    const initialTags = await fetchTags([tag], locale)
 
     // BreadcrumbList schema for tag pages
     const breadcrumbSchema = {

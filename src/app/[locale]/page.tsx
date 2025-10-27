@@ -57,7 +57,7 @@ export default async function HomePage({params}: Props) {
         allServices = [];
     }
     
-    const initialTags = await fetchTags([])
+    const initialTags = await fetchTags([], locale)
 
     const websiteSchema = {
         "@context": "https://schema.org",

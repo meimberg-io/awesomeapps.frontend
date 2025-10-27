@@ -131,7 +131,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
       setIsLoadingFiltered(true);
       Promise.all([
         fetchServices(selectedTags, locale),
-        fetchTags(selectedTags)
+        fetchTags(selectedTags, locale)
       ])
         .then(([newServices, newTags]) => {
           setServices(newServices);

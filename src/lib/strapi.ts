@@ -65,11 +65,11 @@ export const searchServices = async (searchQuery: string, locale: Locale = 'en')
     }
 };
 
-export const fetchTags = async (tags?: Tag[]): Promise<Tag[]> => {
+export const fetchTags = async (tags?: Tag[], locale: Locale = 'en'): Promise<Tag[]> => {
     const tagIds = tags?.map(tag => tag.documentId) || [];
     const {data} = await client.query({
         query: GET_TAGS,
-        variables: {additionalTags: tagIds},
+        variables: {additionalTags: tagIds, locale},
         fetchPolicy: "no-cache"
     });
     const tagsResult: Tag[] = data.tags;
