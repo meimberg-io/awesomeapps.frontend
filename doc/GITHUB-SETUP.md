@@ -14,6 +14,12 @@ Initial configuration required for automatic deployment.
 | `STRAPI_INTERNAL_URL` | `http://awesomeapps-strapi:1337` | Internal Strapi URL for server-side fetching |
 | `NEXT_PUBLIC_STRAPI_BASEURL` | `https://awesomeapps-strapi.meimberg.io` | Strapi backend URL (public) |
 | `NEXT_PUBLIC_APP_BASEURL` | `https://awesomeapps-frontend.meimberg.io` | Frontend app URL |
+| `NEXT_PUBLIC_MATOMO_TRACKER` | `true` | Enable Matomo tracking (public) |
+| `APP_PORT` | `8204` | Local/dev host port for Docker Compose |
+| `OAUTH_GOOGLE_CLIENT_ID` | `<google client id>` | Google OAuth Client ID |
+| `OAUTH_GITHUB_CLIENT_ID` | `<github client id>` | GitHub OAuth Client ID (optional) |
+| `OAUTH_AZURE_AD_CLIENT_ID` | `<azure client id>` | Azure AD Client ID (optional) |
+| `OAUTH_AZURE_AD_TENANT_ID` | `<azure tenant id>` | Azure AD Tenant ID (optional) |
 
 ## GitHub Secrets
 
@@ -24,13 +30,11 @@ Initial configuration required for automatic deployment.
 | `SSH_PRIVATE_KEY` | `<private key contents>` | Deploy user private key |
 | `REVALIDATE_SECRET` | `<random secret>` | Next.js revalidation token |
 | `AUTH_SECRET` | `<random secret>` | NextAuth.js secret for JWT signing |
-| `OAUTH_GOOGLE_CLIENT_ID` | `<google client id>` | Google OAuth Client ID |
 | `OAUTH_GOOGLE_CLIENT_SECRET` | `<google client secret>` | Google OAuth Client Secret |
-| `OAUTH_GITHUB_CLIENT_ID` | `<github client id>` | GitHub OAuth Client ID (optional) |
 | `OAUTH_GITHUB_CLIENT_SECRET` | `<github client secret>` | GitHub OAuth Client Secret (optional) |
-| `OAUTH_AZURE_AD_CLIENT_ID` | `<azure client id>` | Azure AD Client ID (optional) |
 | `OAUTH_AZURE_AD_CLIENT_SECRET` | `<azure client secret>` | Azure AD Client Secret (optional) |
-| `OAUTH_AZURE_AD_TENANT_ID` | `<azure tenant id>` | Azure AD Tenant ID (optional) |
+
+> Note: `NEXTAUTH_URL` is set automatically during deploy from `NEXT_PUBLIC_APP_BASEURL`; do not add it to Variables/Secrets.
 
 **Get SSH private key:**
 ```bash
