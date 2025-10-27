@@ -9,6 +9,8 @@ import {Tag} from '@/types/tag'
 import {fetchServices, fetchTags} from '@/lib/strapi'
 import PageHeader from "@/components/PageHeader";
 import {PageHeaderStyle} from "@/types/PageHeaderStyle";
+import {useLocale} from 'next-intl';
+import {Locale} from '@/types/locale';
 
 interface Props {
     initialServices: Service[]
@@ -17,6 +19,7 @@ interface Props {
 }
 
 export default function InteractiveServiceList({ initialServices, initialTags, maintag }: Props) {
+    const locale = useLocale() as Locale;
     const [services, setServices] = useState<Service[]>(initialServices)
     const [tags, setTags] = useState<Tag[]>(initialTags)
 
@@ -33,9 +36,9 @@ export default function InteractiveServiceList({ initialServices, initialTags, m
     }
 
     useEffect(() => {
-        fetchServices(selectedTags).then(setServices).catch(console.error)
-        fetchTags(selectedTags).then(setTags).catch(console.error)
-    }, [selectedTags])
+        fetchServices(selectedTags, locale).then(setServices).catch(console.error)
+        fetchTags(selectedTags, locale).then(setTags).catch(console.error)
+    }, [selectedTags, locale])
 
     return (
         <>
