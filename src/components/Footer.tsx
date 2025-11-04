@@ -1,10 +1,13 @@
 import Link from "next/link";
-
-const footerLinks = [
-  { name: 'Impressum', href: '/p/imprint' },
-];
+import { useTranslations } from 'next-intl';
 
 export default function Footer() {
+  const t = useTranslations('footer');
+  
+  const footerLinks = [
+    { name: t('imprint'), href: '/p/imprint' },
+  ];
+
   return (
     <footer className="w-full border-t border-border/40 bg-background">
       <div className="container mx-auto px-6 py-6">

@@ -5,26 +5,30 @@ import {notFound} from "next/navigation";
 import {Tag} from "@/types/tag";
 import {Locale} from "@/types/locale";
 import {APP_BASEURL} from '@/lib/constants';
+import {getTranslations} from 'next-intl/server';
 
 type Props = {
     params: Promise<{ slug: string; locale: Locale }>
 }
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
-    const {slug: tagname} = await params;
+    const {slug: tagname, locale} = await params;
     const tag: Tag | undefined = await fetchTagDetailByName(tagname)
+    const t = await getTranslations({locale, namespace: 'errors'})
 
     if (!tag) {
         return {
-            title: `${tagname} nicht gefunden - AwesomeApps`,
-            description: `Die Kategorie ${tagname} konnte nicht gefunden werden.`,
+            title: `${t('categoryNotFound', { category: tagname })} - AwesomeApps`,
+            description: t('categoryNotFoundDescription', { category: tagname }),
         }
     }
 
     const title = `${tag.name} - SaaS Tools & Apps | AwesomeApps`
     const description = tag.description 
         ? tag.description 
-        : `Entdecke die besten ${tag.name} SaaS-Tools und Online-Apps. Vergleiche Features, Preise und Bewertungen.`
+        : locale === 'de'
+            ? `Entdecke die besten ${tag.name} SaaS-Tools und Online-Apps. Vergleiche Features, Preise und Bewertungen.`
+            : `Discover the best ${tag.name} SaaS tools and online apps. Compare features, prices, and reviews.`
 
     return {
         title,

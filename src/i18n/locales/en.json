@@ -91,7 +91,13 @@
     "shareExperience": "Share your experience with this service",
     "thanks": "Thanks",
     "markedHelpful": "You have marked this review as helpful.",
-    "couldNotMark": "The review could not be marked."
+    "couldNotMark": "The review could not be marked.",
+    "beFirstToReview": "Be the first to review this service!",
+    "personFoundHelpful": "person found this helpful",
+    "peopleFoundHelpful": "people found this helpful",
+    "reviewSingular": "Review",
+    "reviewPlural": "Reviews",
+    "noReviews": "No reviews yet"
   },
   "filter": {
     "filterByTags": "Filter by tags",

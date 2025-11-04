@@ -45,6 +45,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
   const { addFavorite, removeFavorite, isFavorite } = useMember();
   const { toast } = useToast();
   const t = useTranslations('serviceDetail');
+  const tReview = useTranslations('review');
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [regenerateStatus, setRegenerateStatus] = useState<'idle' | 'loading' | 'requested'>('idle');
@@ -236,7 +237,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
             className="mb-6"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Zurück zur Übersicht
+            {t('backToOverview')}
           </Button>
 
           {/* Header Section with Logo and Title */}
@@ -313,7 +314,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
                   <Star className="h-5 w-5 fill-primary text-primary" />
                   <span className="font-bold text-lg text-primary">{displayRating}</span>
                   <span className="text-sm text-muted-foreground">
-                    ({reviews.length} {reviews.length === 1 ? 'Bewertung' : 'Bewertungen'})
+                    ({reviews.length} {reviews.length === 1 ? tReview('reviewSingular') : tReview('reviewPlural')})
                   </span>
                 </div>
                 {reviews.length > 0 && (
@@ -324,7 +325,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
                     className="text-sm"
                   >
                     <MessageSquare className="h-4 w-4 mr-1" />
-                    Bewertungen ansehen
+                    {t('viewReviews')}
                   </Button>
                 )}
                 {service.top && (
@@ -408,12 +409,11 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
               )}
               {service.pricing && (
                 <div className="mb-10">
-                  <h2 className="text-2xl font-bold mb-4 text-foreground">Preise</h2>
+                  <h2 className="text-2xl font-bold mb-4 text-foreground">{t('prices')}</h2>
                   <MarkdownRenderer content={service.pricing}/>
                   <div className="mt-6 p-4 bg-muted/50 border-l-4 border-primary/40 rounded-r">
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      Die Preise können je nach Region variieren. Wir übernehmen keine Gewähr auf die Korrektheit der Preise. 
-                      Für aktuelle Informationen siehe: <a href={service.url} className="text-primary hover:underline font-medium">{service.url}</a>
+                      {t('priceDisclaimer')} <a href={service.url} className="text-primary hover:underline font-medium">{service.url}</a>
                     </p>
                   </div>
                 </div>
@@ -457,18 +457,18 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                     <MessageSquare className="h-5 w-5 text-primary" />
                   </div>
-                  <h2 className="text-3xl font-bold text-foreground">Bewertungen</h2>
+                  <h2 className="text-3xl font-bold text-foreground">{tReview('reviewPlural')}</h2>
                 </div>
                 <Button 
                   onClick={() => setShowReviewForm(!showReviewForm)}
                   variant={showReviewForm ? "outline" : "default"}
                   size="default"
                 >
-                  {showReviewForm ? "Abbrechen" : "Bewertung abgeben"}
+                  {showReviewForm ? t('cancel') : t('giveReview')}
                 </Button>
               </div>
               <p className="text-muted-foreground text-base">
-                Was sagen andere Nutzer über {service.name}?
+                {t('whatOthersSay', { service: service.name })}
               </p>
             </div>
 
@@ -499,13 +499,13 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
             <div className="flex gap-4 flex-wrap justify-center">
               <Button className="min-w-[200px]" size="lg" asChild>
                 <a href={service.url} target="_blank" rel="noopener noreferrer">
-                  Jetzt ausprobieren
+                  {t('tryNow')}
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </a>
               </Button>
               <Button variant="outline" size="lg" onClick={() => router.back()}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Zurück
+                {t('back')}
               </Button>
             </div>
           </div>
