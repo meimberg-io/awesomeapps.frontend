@@ -91,7 +91,13 @@
     "shareExperience": "Teile deine Erfahrungen mit diesem Service",
     "thanks": "Danke",
     "markedHelpful": "Du hast diese Bewertung als hilfreich markiert.",
-    "couldNotMark": "Die Bewertung konnte nicht markiert werden."
+    "couldNotMark": "Die Bewertung konnte nicht markiert werden.",
+    "beFirstToReview": "Sei der Erste, der diesen Service bewertet!",
+    "personFoundHelpful": "Person fand dies hilfreich",
+    "peopleFoundHelpful": "Personen fanden dies hilfreich",
+    "reviewSingular": "Bewertung",
+    "reviewPlural": "Bewertungen",
+    "noReviews": "Noch keine Bewertungen"
   },
   "filter": {
     "filterByTags": "Nach Tags filtern",

@@ -57,9 +57,9 @@ export function ReviewList({ reviews, onReviewsChange }: ReviewListProps) {
       <Card>
         <CardContent className="py-12 text-center">
           <Star className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Noch keine Bewertungen</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('noReviews')}</h3>
           <p className="text-muted-foreground">
-            Sei der Erste, der diesen Service bewertet!
+            {t('beFirstToReview')}
           </p>
         </CardContent>
       </Card>
@@ -134,11 +134,11 @@ export function ReviewList({ reviews, onReviewsChange }: ReviewListProps) {
                       className="text-xs"
                     >
                       <ThumbsUp className="h-3 w-3 mr-1" />
-                      Hilfreich
+                      {t('helpful')}
                     </Button>
                     {review.helpfulCount > 0 && (
                       <Badge variant="secondary" className="text-xs">
-                        {review.helpfulCount} {review.helpfulCount === 1 ? 'Person fand' : 'Personen fanden'} dies hilfreich
+                        {review.helpfulCount} {review.helpfulCount === 1 ? t('personFoundHelpful') : t('peopleFoundHelpful')}
                       </Badge>
                     )}
                   </div>

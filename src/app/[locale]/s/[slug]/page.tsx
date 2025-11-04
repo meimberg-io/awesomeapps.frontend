@@ -5,6 +5,7 @@ import type {Metadata} from 'next'
 import { getBrandfetchLogoUrl } from '@/lib/utils'
 import { STRAPI_BASEURL, APP_BASEURL } from '@/lib/constants'
 import {Locale} from '@/types/locale'
+import {getTranslations} from 'next-intl/server'
 
 type Props = {
     params: Promise<{ slug: string; locale: Locale }>
@@ -13,18 +14,23 @@ type Props = {
 export async function generateMetadata({params}: Props): Promise<Metadata> {
     const {slug, locale} = await params;
     const service = await fetchServiceDetailBySlug(slug, locale)
+    const t = await getTranslations({locale, namespace: 'errors'})
 
     if (!service) {
         return {
-            title: 'Service nicht gefunden - AwesomeApps',
-            description: 'Der angeforderte Service konnte nicht gefunden werden.',
+            title: `${t('serviceNotFound')} - AwesomeApps`,
+            description: t('serviceNotFoundDescription'),
         }
     }
 
-    const title = `${service.name} - Bewertung, Features & Preise | AwesomeApps`
+    const title = locale === 'de' 
+        ? `${service.name} - Bewertung, Features & Preise | AwesomeApps`
+        : `${service.name} - Review, Features & Pricing | AwesomeApps`
     const description = service.abstract 
         ? `${service.abstract.substring(0, 155)}...`
-        : `Erfahre mehr über ${service.name}. Detaillierte Bewertungen, Features, Screenshots und Preisinformationen.`
+        : locale === 'de'
+            ? `Erfahre mehr über ${service.name}. Detaillierte Bewertungen, Features, Screenshots und Preisinformationen.`
+            : `Learn more about ${service.name}. Detailed reviews, features, screenshots and pricing information.`
     
     const logoUrl = service.logo?.url 
         ? `${STRAPI_BASEURL}${service.logo.url}` 
