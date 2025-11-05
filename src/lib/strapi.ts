@@ -73,7 +73,7 @@ export const fetchTags = async (tags?: Tag[], locale: Locale = 'en'): Promise<Ta
         fetchPolicy: "no-cache"
     });
     const tagsResult: Tag[] = data.tags;
-    return tagsResult.filter(tag => tag.count > 0);
+    return tagsResult.filter(tag => tag.count > 0 && !tag.excluded);
 };
 
 export const fetchServiceDetail = async (id: string, locale: Locale = 'en'): Promise<Service> => {

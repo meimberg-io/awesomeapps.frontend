@@ -38,11 +38,13 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 
     const ogLocale = locale === 'de' ? 'de_DE' : 'en_US';
     const canonicalPath = `/${locale}/s/${slug}`;
+    const visibleTags = service.tags.filter(tag => !tag.excluded);
+    const firstTag = visibleTags[0];
 
     return {
         title,
         description,
-        keywords: service.tags.map(tag => tag.name).join(', '),
+        keywords: visibleTags.map(tag => tag.name).join(', '),
         authors: [{ name: 'AwesomeApps' }],
         openGraph: {
             title: `${service.name} - SaaS Tool`,
@@ -55,7 +57,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
                 url: logoUrl,
                 width: 800,
                 height: 600,
-                alt: `${service.name} Logo - ${service.tags[0]?.name || 'SaaS'} Tool`,
+                alt: `${service.name} Logo - ${firstTag?.name || 'SaaS'} Tool`,
             }],
         },
         twitter: {
@@ -102,6 +104,9 @@ export default async function Page({params}: Props) {
         ? `${STRAPI_BASEURL}${service.logo.url}` 
         : getBrandfetchLogoUrl(service.url);
 
+    // Filter out excluded tags
+    const visibleTags = service.tags.filter(tag => !tag.excluded);
+
     // Structured data (JSON-LD) for SEO
     const softwareApplicationSchema = {
         "@context": "https://schema.org",
@@ -111,8 +116,8 @@ export default async function Page({params}: Props) {
         "url": `${APP_BASEURL}/s/${service.slug}`,
         "applicationCategory": "WebApplication",
         "operatingSystem": "Web-based",
-        ...(service.tags.length > 0 && {
-            "applicationSubCategory": service.tags[0].name
+        ...(visibleTags.length > 0 && {
+            "applicationSubCategory": visibleTags[0].name
         }),
         "offers": {
             "@type": "Offer",
@@ -153,15 +158,15 @@ export default async function Page({params}: Props) {
                 "name": "Home",
                 "item": APP_BASEURL
             },
-            ...(service.tags.length > 0 ? [{
+            ...(visibleTags.length > 0 ? [{
                 "@type": "ListItem",
                 "position": 2,
-                "name": service.tags[0].name,
-                "item": `${APP_BASEURL}/t/${service.tags[0].name}`
+                "name": visibleTags[0].name,
+                "item": `${APP_BASEURL}/t/${visibleTags[0].name}`
             }] : []),
             {
                 "@type": "ListItem",
-                "position": service.tags.length > 0 ? 3 : 2,
+                "position": visibleTags.length > 0 ? 3 : 2,
                 "name": service.name,
                 "item": `${APP_BASEURL}/s/${service.slug}`
             }

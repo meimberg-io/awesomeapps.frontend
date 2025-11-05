@@ -147,16 +147,16 @@ export default function FavoritesPage() {
                       )}
 
                       {/* Tags */}
-                      {service.tags && service.tags.length > 0 && (
+                      {service.tags && service.tags.filter(tag => !tag.excluded).length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {service.tags.slice(0, 3).map((tag) => (
+                          {service.tags.filter(tag => !tag.excluded).slice(0, 3).map((tag) => (
                             <Badge key={tag.documentId} variant="outline" className="text-xs">
                               {tag.icon} {tag.name}
                             </Badge>
                           ))}
-                          {service.tags.length > 3 && (
+                          {service.tags.filter(tag => !tag.excluded).length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                              +{service.tags.length - 3}
+                              +{service.tags.filter(tag => !tag.excluded).length - 3}
                             </Badge>
                           )}
                         </div>
