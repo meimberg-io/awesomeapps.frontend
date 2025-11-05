@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useMember } from '@/contexts/MemberContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -16,9 +16,12 @@ import { STRAPI_BASEURL } from '@/lib/constants';
 import { useState } from 'react';
 import { getBrandfetchLogoUrl } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
+import { Locale } from '@/types/locale';
 
 export default function FavoritesPage() {
   const t = useTranslations();
+  const params = useParams();
+  const locale = (params?.locale as Locale) || 'de';
   const { status } = useSession();
   const router = useRouter();
   const { favorites, loading, removeFavorite, refreshMember } = useMember();
@@ -165,7 +168,7 @@ export default function FavoritesPage() {
                       {/* Actions */}
                       <div className="flex gap-2 mt-4">
                         <Button asChild className="flex-1" size="sm">
-                          <Link href={`/s/${service.slug}`}>
+                          <Link href={`/${locale}/s/${service.slug}`}>
                             {t('favorites.details')}
                           </Link>
                         </Button>

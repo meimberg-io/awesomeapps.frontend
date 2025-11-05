@@ -230,6 +230,7 @@
     "giveReview": "Bewertung abgeben",
     "tryNow": "Jetzt ausprobieren",
     "back": "Zurück",
+    "noRating": "Keine",
     "processingError": "Fehler bei der Verarbeitung",
     "requestNotProcessed": "Die Anfrage konnte nicht verarbeitet werden.",
     "regenerateService": "Service regenerieren",
