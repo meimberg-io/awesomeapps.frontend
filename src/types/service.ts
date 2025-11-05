@@ -13,11 +13,9 @@ export interface Service {
     url: string;
     abstract: string | null;
     pricing: string | null;
-    longdescription: RootNode[];
     shortfacts:  string | null;
     description:  string | null;
     functionality:  string | null;
-    articlecontent: Block[];
     thumbnail: Image;
     screenshots: Image[];
     logo: Image;
