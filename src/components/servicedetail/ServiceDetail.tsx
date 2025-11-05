@@ -48,12 +48,7 @@ const ServiceDetail: React.FC<Props> = ({service}) => {
                     <p className="mt-4 text-sm text-right italic text-gray-200 ">{t('priceDisclaimer')} <a href={service.url}>{service.url}</a></p>
                 </div>
             )}
-            {/* articlecontent */}
-
-
-            <div className="mb-16">
-                {service.articlecontent && <DynamicZoneComponent blocks={service.articlecontent}/>}
-            </div>
+           
 
             {service.youtube_video && <Youtube video={service.youtube_video} title={service.youtube_title}/>}
 

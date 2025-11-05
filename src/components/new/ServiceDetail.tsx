@@ -419,12 +419,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
                 </div>
               )}
 
-              {/* Article content */}
-              {service.articlecontent && (
-                <div className="mb-10">
-                  <DynamicZoneComponent blocks={service.articlecontent}/>
-                </div>
-              )}
+            
             </div>
 
             {/* Clear float and add full-width media sections */}

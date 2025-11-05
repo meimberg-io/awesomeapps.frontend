@@ -118,7 +118,6 @@ export const GET_SERVICE_DETAIL = gql`
             documentId
             name
             abstract
-            longdescription
             description
             functionality
             shortfacts
@@ -127,30 +126,6 @@ export const GET_SERVICE_DETAIL = gql`
             pricing
             top
             publishdate
-            articlecontent {
-                __typename
-                ... on ComponentSharedRichText {
-                    body
-                }
-                ... on ComponentSharedMedia {
-                    file {
-                        url
-                        alternativeText
-                        mime
-                    }
-                }
-                ... on ComponentSharedQuote {
-                    title
-                    body
-                }
-                ... on ComponentSharedSlider {
-                    files {
-                        url
-                        alternativeText
-                    }
-
-                }
-            }
 
             url
             tags {
@@ -200,7 +175,6 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
             name
             slug
             abstract
-            longdescription
             description
             functionality
             youtube_title
@@ -208,31 +182,7 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
             shortfacts
             pricing
             top
-            publishdate
-            articlecontent {
-                __typename
-                ... on ComponentSharedRichText {
-                    body
-                }
-                ... on ComponentSharedMedia {
-                    file {
-                        url
-                        alternativeText
-                        mime
-                    }
-                }
-                ... on ComponentSharedQuote {
-                    title
-                    body
-                }
-                ... on ComponentSharedSlider {
-                    files {
-                        url
-                        alternativeText
-                    }
-
-                }
-            }
+            publishdate          
 
             url
             tags {
