@@ -5,6 +5,8 @@ import { useSession } from 'next-auth/react';
 import { Member } from '@/types/member';
 import { Service } from '@/types/service';
 import * as StrapiAPI from '@/lib/api/strapi-api';
+import { useParams } from 'next/navigation';
+import { Locale } from '@/types/locale';
 
 interface MemberContextType {
   member: Member | null;
@@ -21,6 +23,8 @@ const MemberContext = createContext<MemberContextType | undefined>(undefined);
 
 export function MemberProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
+  const params = useParams();
+  const locale = (params?.locale as Locale) || 'de';
   const [member, setMember] = useState<Member | null>(null);
   const [favorites, setFavorites] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,10 +39,10 @@ export function MemberProvider({ children }: { children: ReactNode }) {
     if (status === 'authenticated' && session?.strapiJwt && session?.memberId) {
       try {
         setLoading(true);
-        const profileData = await StrapiAPI.getMemberProfile(session.memberId, session.strapiJwt);
+        const profileData = await StrapiAPI.getMemberProfile(session.memberId, session.strapiJwt, locale);
         setMember(profileData.data);
         
-        const favoritesData = await StrapiAPI.getFavorites(session.memberId, session.strapiJwt);
+        const favoritesData = await StrapiAPI.getFavorites(session.memberId, session.strapiJwt, locale);
         setFavorites(favoritesData.data);
       } catch (error) {
         console.error('Failed to fetch member data:', error);
@@ -50,7 +54,7 @@ export function MemberProvider({ children }: { children: ReactNode }) {
       setFavorites([]);
       setLoading(false);
     }
-  }, [status, session?.strapiJwt, session?.memberId]);
+  }, [status, session?.strapiJwt, session?.memberId, locale]);
 
   useEffect(() => {
     fetchMemberData();
@@ -64,7 +68,7 @@ export function MemberProvider({ children }: { children: ReactNode }) {
     await StrapiAPI.addFavorite(session.memberId, serviceDocumentId, session.strapiJwt);
     
     // Refresh favorites
-    const favoritesData = await StrapiAPI.getFavorites(session.memberId, session.strapiJwt);
+    const favoritesData = await StrapiAPI.getFavorites(session.memberId, session.strapiJwt, locale);
     setFavorites(favoritesData.data);
   };
 
@@ -76,7 +80,7 @@ export function MemberProvider({ children }: { children: ReactNode }) {
     await StrapiAPI.removeFavorite(session.memberId, serviceDocumentId, session.strapiJwt);
     
     // Refresh favorites
-    const favoritesData = await StrapiAPI.getFavorites(session.memberId, session.strapiJwt);
+    const favoritesData = await StrapiAPI.getFavorites(session.memberId, session.strapiJwt, locale);
     setFavorites(favoritesData.data);
   };
 

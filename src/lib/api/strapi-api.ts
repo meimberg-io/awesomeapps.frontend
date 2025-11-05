@@ -110,9 +110,10 @@ export async function removeFavorite(
  */
 export async function getFavorites(
   memberId: number,
-  jwt: string
+  jwt: string,
+  locale: string = 'de'
 ): Promise<{ data: Service[] }> {
-  const response = await fetch(`${STRAPI_BASEURL}/api/members/${memberId}/favorites`, {
+  const response = await fetch(`${STRAPI_BASEURL}/api/members/${memberId}/favorites?locale=${locale}`, {
     headers: {
       'Authorization': `Bearer ${jwt}`,
     },
@@ -152,9 +153,10 @@ export async function checkFavorite(
  */
 export async function getMemberProfile(
   memberId: number,
-  jwt: string
+  jwt: string,
+  locale: string = 'de'
 ): Promise<{ data: Member & { statistics: { reviewCount: number; favoriteCount: number; memberSince: string; lastLogin: string | null } } }> {
-  const response = await fetch(`${STRAPI_BASEURL}/api/members/${memberId}/profile`, {
+  const response = await fetch(`${STRAPI_BASEURL}/api/members/${memberId}/profile?locale=${locale}`, {
     headers: {
       'Authorization': `Bearer ${jwt}`,
     },

@@ -230,6 +230,7 @@
     "giveReview": "Give review",
     "tryNow": "Try now",
     "back": "Back",
+    "noRating": "None",
     "processingError": "Processing error",
     "requestNotProcessed": "The request could not be processed.",
     "regenerateService": "Regenerate service",

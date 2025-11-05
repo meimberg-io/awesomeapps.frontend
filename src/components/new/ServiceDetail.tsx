@@ -62,7 +62,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.voting, 0) / reviews.length
     : 0;
-  const displayRating = averageRating > 0 ? averageRating.toFixed(1) : 'Keine';
+  const displayRating = averageRating > 0 ? averageRating.toFixed(1) : t('noRating');
 
   // Sync currentNewService with prop changes
   useEffect(() => {
@@ -303,7 +303,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
                   size="icon"
                   onClick={handleToggleFavorite}
                   disabled={isTogglingFavorite}
-                  title={favorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
+                  title={favorite ? t('removeFromFavorites') : t('addToFavorites')}
                   className={favorite ? "bg-green-700 hover:bg-green-800 border-green-700 text-white" : ""}
                 >
                   <Heart className={`h-5 w-5 ${favorite ? 'fill-current' : ''}`} />
