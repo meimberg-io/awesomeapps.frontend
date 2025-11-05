@@ -245,7 +245,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
             <div className="w-24 h-24 flex-shrink-0 border border-gray-300">
               <img
                 src={iconurl}
-                alt={`${service.name} Logo - ${service.tags[0]?.name || 'SaaS'} Tool`}
+                alt={`${service.name} Logo - ${service.tags.filter(tag => !tag.excluded)[0]?.name || 'SaaS'} Tool`}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -335,7 +335,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
               
               {/* Tags */}
               <div className="flex flex-wrap gap-2 pt-8">
-                {service.tags.map((tag) => (
+                {service.tags.filter(tag => !tag.excluded).map((tag) => (
                   <Link key={tag.documentId} href={`/t/${tag.name}`}>
                     <Badge variant="outline" className="text-sm font-normal bg-background border-border/50 text-foreground/70 hover:bg-primary/5 hover:border-primary/30 transition-colors cursor-pointer">
                       {tag.icon && renderIcon(tag.icon, 'inline-block mr-1', 14)}

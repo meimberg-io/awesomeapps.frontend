@@ -32,7 +32,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, locale = 'en'}) => {
                     <div className="w-16 h-16 border border-gray-300">
                         <img 
                             src={iconurl} 
-                            alt={`${service.name} Logo - ${service.tags[0]?.name || 'SaaS'} Tool`}
+                            alt={`${service.name} Logo - ${service.tags.filter(tag => !tag.excluded)[0]?.name || 'SaaS'} Tool`}
                             className="w-full h-full object-contain"
                         />
                     </div>
@@ -49,7 +49,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, locale = 'en'}) => {
                     
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2 mt-4">
-                        {service.tags.slice(0, 3).map((tag) => (
+                        {service.tags.filter(tag => !tag.excluded).slice(0, 3).map((tag) => (
                             <Badge 
                                 key={tag.documentId} 
                                 variant="default" 

@@ -4,4 +4,5 @@ export interface Tag {
     count: number;
     description?: string;
     icon?: string;
+    excluded?: boolean;
 }

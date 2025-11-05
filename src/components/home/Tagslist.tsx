@@ -16,7 +16,7 @@ const TagsAvailable: React.FC<TagsAvailableProps> = ({tags}) => {
             <div className="max-w-screen-2xl px-4 sm:px-6 lg:px-8 mx-auto ">
                 <div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
 
-                    {tags.map((tag: Tag) => (
+                    {tags.filter(tag => !tag.excluded).map((tag: Tag) => (
                         <Link href={`/t/${tag.name}`} key={tag.documentId}
                               className="transition-all group h-auto max-w-full rounded-lg bg-sasecondary-950 text-sasecondary-100 border-0 hover:brightness-125 hover:no-underline"
                         >

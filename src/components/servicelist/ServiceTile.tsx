@@ -45,7 +45,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, selectedTags, toggleT
                     <p className="text-md text-gray-300 transition-colors duration-300">{service.abstract}</p>
 
                     <div className="card-actions text-md">
-                        {service.tags.map((tag) => (
+                        {service.tags.filter(tag => !tag.excluded).map((tag) => (
                             <div 
                                 onClick={(e) => {
                                     e.stopPropagation();

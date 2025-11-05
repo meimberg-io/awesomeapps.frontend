@@ -65,7 +65,7 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
         <div className="w-16 h-16 flex-shrink-0">
           <img
             src={iconurl}
-            alt={`${service.name} Logo - ${service.tags[0]?.name || 'SaaS'} Tool`}
+            alt={`${service.name} Logo - ${service.tags.filter(tag => !tag.excluded)[0]?.name || 'SaaS'} Tool`}
             className="w-full h-full object-contain"
           />
         </div>
@@ -95,7 +95,7 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
       </p>
 
       <div className="flex flex-wrap gap-2">
-        {service.tags.map((tag) => {
+        {service.tags.filter(tag => !tag.excluded).map((tag) => {
           const isSelected = selectedTags.some(selectedTag => selectedTag.documentId === tag.documentId);
           return (
             <Badge 
