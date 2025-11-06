@@ -36,7 +36,7 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
     <div className="min-h-screen bg-background">
       <Header />
       <div className="h-1 bg-gradient-to-r from-primary via-primary/50 to-primary" />
-      <AdminNav locale={locale} />
+      <AdminNav locale={locale} jwt={session.strapiJwt as string} />
       <main>{children}</main>
     </div>
   )
