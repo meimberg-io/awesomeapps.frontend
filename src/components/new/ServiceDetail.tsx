@@ -16,7 +16,6 @@ import { Review } from "@/types/review";
 import { NewService } from "@/types/newService";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import DynamicZoneComponent from "@/components/strapicomponents/dynamiczone/DynamicZoneComponent";
 import MarkdownRenderer from "@/components/util/MarkdownRenderer";
 import { Screenshots } from "@/components/util/Screenshots";
 import Youtube from "@/components/Youtube";

@@ -14,7 +14,6 @@ interface ImageUploadProps {
   onChange: (image: Image | null) => void
   jwt: string
   onUpload?: (file: File) => Promise<Image | null>
-  multiple?: boolean
   maxSize?: number // in MB
   acceptedTypes?: string[]
 }
@@ -25,7 +24,6 @@ export function ImageUpload({
   onChange,
   jwt,
   onUpload,
-  multiple = false,
   maxSize = 5,
   acceptedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
 }: ImageUploadProps) {
@@ -94,11 +92,12 @@ export function ImageUpload({
           description: 'Image uploaded successfully',
         })
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error uploading image:', error)
+      const message = error instanceof Error ? error.message : 'Failed to upload image'
       toast({
         title: 'Error',
-        description: error.message || 'Failed to upload image',
+        description: message,
         variant: 'destructive',
       })
     } finally {

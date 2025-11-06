@@ -60,7 +60,6 @@ export function MultipleImageUpload({
         const formData = new FormData()
         formData.append('files', file)
         formData.append('fileInfo', JSON.stringify({
-          alternativeText: file.name,
           caption: file.name,
         }))
 
@@ -92,11 +91,12 @@ export function MultipleImageUpload({
           description: 'Image uploaded successfully',
         })
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error uploading image:', error)
+      const message = error instanceof Error ? error.message : 'Failed to upload image'
       toast({
         title: 'Error',
-        description: error.message || 'Failed to upload image',
+        description: message,
         variant: 'destructive',
       })
     } finally {
@@ -163,7 +163,7 @@ export function MultipleImageUpload({
                 <div key={image.documentId || index} className="relative">
                   <img
                     src={`${STRAPI_BASEURL}${image.url}`}
-                    alt={image.alternativeText || `Image ${index + 1}`}
+                    alt={image.caption || `Image ${index + 1}`}
                     className="h-24 w-24 object-contain rounded border"
                   />
                   <Button

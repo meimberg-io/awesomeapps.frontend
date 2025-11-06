@@ -48,11 +48,12 @@ export function QueueEditForm({ locale, jwt, queueItem }: QueueEditFormProps) {
       })
       router.push(`/${locale}/admin/queue`)
       router.refresh()
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving queue item:', error)
+      const message = error instanceof Error ? error.message : 'Failed to save queue item'
       toast({
         title: 'Error',
-        description: error.message || 'Failed to save queue item',
+        description: message,
         variant: 'destructive',
       })
     } finally {

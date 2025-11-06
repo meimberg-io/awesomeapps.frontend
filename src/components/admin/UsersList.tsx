@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Locale } from '@/types/locale'
-import { Member } from '@/types/member'
 import { getUsersList, type UsersListResponse } from '@/lib/api/admin-users-api'
 import {
   Table,
@@ -15,7 +14,7 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import {
   Select,
   SelectContent,
@@ -26,7 +25,6 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Search, ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import Link from 'next/link'
 
 interface UsersListProps {
   locale: Locale

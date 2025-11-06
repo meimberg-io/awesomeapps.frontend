@@ -33,7 +33,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Edit, Trash2, X, Search } from 'lucide-react'
+import { Plus, Edit, Trash2, Search } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { Input } from '@/components/ui/input'
 import { renderIcon } from '@/components/util/renderIcon'
@@ -117,11 +117,12 @@ export function TagsList({ locale, jwt }: TagsListProps) {
       })
       setDeleteDialog({ open: false, tag: null })
       fetchTags()
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting tag:', error)
+      const message = error instanceof Error ? error.message : 'Failed to delete tag'
       toast({
         title: 'Error',
-        description: error.message || 'Failed to delete tag',
+        description: message,
         variant: 'destructive',
       })
     } finally {
