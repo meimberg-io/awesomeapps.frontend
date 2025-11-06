@@ -109,11 +109,12 @@ export function TagEditForm({ locale, jwt, tag }: TagEditFormProps) {
       }
       router.push(`/${locale}/admin/tags`)
       router.refresh()
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving tag:', error)
+      const message = error instanceof Error ? error.message : 'Failed to save tag'
       toast({
         title: 'Error',
-        description: error.message || 'Failed to save tag',
+        description: message,
         variant: 'destructive',
       })
     } finally {

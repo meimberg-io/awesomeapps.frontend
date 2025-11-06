@@ -1,6 +1,5 @@
 import React from "react";
 import {Service} from "@/types/service";
-import DynamicZoneComponent from "@/components/strapicomponents/dynamiczone/DynamicZoneComponent";
 import MarkdownRenderer from "@/components/util/MarkdownRenderer";
 import {Screenshots} from "@/components/util/Screenshots";
 import Youtube from "@/components/Youtube";

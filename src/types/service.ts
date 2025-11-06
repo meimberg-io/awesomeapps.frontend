@@ -1,7 +1,4 @@
 
-// @ts-ignore
-import {RootNode} from "@strapi/blocks-react-renderer/dist/BlocksRenderer";
-import {Block} from "./block";
 import {Image} from "./image";
 import {Tag} from "./tag";
 import {Review} from "./review";

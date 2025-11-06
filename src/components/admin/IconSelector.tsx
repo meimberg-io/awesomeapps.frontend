@@ -16,8 +16,6 @@ import { renderIcon } from '@/components/util/renderIcon'
 import { Search, X } from 'lucide-react'
 import icons from 'lucide-static/icon-nodes.json'
 
-type IconNodeMap = Record<string, Array<[string, Record<string, string>]>>
-
 interface IconSelectorProps {
   value: string
   onChange: (iconName: string) => void

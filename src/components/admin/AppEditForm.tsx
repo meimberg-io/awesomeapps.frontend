@@ -19,7 +19,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { MarkdownEditor } from '@/components/admin/MarkdownEditor'
 import { ImageUpload } from '@/components/admin/ImageUpload'
 import { MultipleImageUpload } from '@/components/admin/MultipleImageUpload'
-import { STRAPI_BASEURL } from '@/lib/constants'
 import { getBrandfetchLogoUrl } from '@/lib/utils'
 import { Image } from '@/types/image'
 
@@ -180,7 +179,7 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
 
     try {
       // Common fields (not localized)
-      const commonData: any = {
+      const commonData: Record<string, unknown> = {
         name: formData.name,
         slug: formData.slug,
         url: formData.url,
@@ -190,12 +189,12 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
         publishdate: formData.publishdate || null,
         tags: selectedTagIds.length > 0 ? selectedTagIds : undefined,
         // Strapi media relations: use documentId or id
-        logo: logo ? (logo as any).id || logo.documentId : null,
-        screenshots: screenshots.length > 0 ? screenshots.map(img => (img as any).id || img.documentId).filter(Boolean) : undefined,
+        logo: logo ? logo.documentId : null,
+        screenshots: screenshots.length > 0 ? screenshots.map(img => img.documentId).filter(Boolean) : undefined,
       }
 
       // English data
-      const enData: any = {
+      const enData: Record<string, unknown> = {
         ...commonData,
         abstract: formData.abstract_en || null,
         shortfacts: formData.shortfacts_en || null,
@@ -205,7 +204,7 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
       }
 
       // German data
-      const deData: any = {
+      const deData: Record<string, unknown> = {
         ...commonData,
         abstract: formData.abstract_de || null,
         shortfacts: formData.shortfacts_de || null,
@@ -238,11 +237,12 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
       } else {
         router.refresh()
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving app:', error)
+      const message = error instanceof Error ? error.message : 'Failed to save app'
       toast({
         title: 'Error',
-        description: error.message || 'Failed to save app',
+        description: message,
         variant: 'destructive',
       })
     } finally {
