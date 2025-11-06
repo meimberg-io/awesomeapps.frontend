@@ -91,7 +91,7 @@ export function AppsList({
       // Create queue item in Strapi
       // If "all" is selected, don't put anything in the field
       await createQueueItem(jwt, {
-        slug: app.slug,
+        slug: app.name,
         field: field === 'all' ? '' : field,
         n8nstatus: 'new',
       })
@@ -227,12 +227,14 @@ export function AppsList({
           <h1 className="text-3xl font-bold">Apps</h1>
           <p className="text-muted-foreground mt-1">Manage all apps</p>
         </div>
-        <Button asChild>
-          <Link href={`/${locale}/admin/apps/new`}>
-            <Plus className="h-4 w-4 mr-2" />
-            New App
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild>
+            <Link href={`/${locale}/admin/apps/new`}>
+              <Plus className="h-4 w-4 mr-2" />
+              New App
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Card>
