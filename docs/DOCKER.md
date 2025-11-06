@@ -24,6 +24,7 @@ NEXT_PUBLIC_MATOMO_TRACKER=false
 REVALIDATE_SECRET=your-secret-token
 AUTH_SECRET=your-nextauth-secret
 NEXTAUTH_URL=http://localhost:8204
+ADMIN_EMAILS=admin1@example.com,admin2@example.com
 ```
 
 **Note:** Use `host.docker.internal` to access services on your host from inside Docker.
