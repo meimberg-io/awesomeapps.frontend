@@ -20,6 +20,7 @@ Initial configuration required for automatic deployment.
 | `OAUTH_GITHUB_CLIENT_ID` | `<github client id>` | GitHub OAuth Client ID (optional) |
 | `OAUTH_AZURE_AD_CLIENT_ID` | `<azure client id>` | Azure AD Client ID (optional) |
 | `OAUTH_AZURE_AD_TENANT_ID` | `<azure tenant id>` | Azure AD Tenant ID (optional) |
+| `ADMIN_EMAILS` | `admin1@example.com,admin2@example.com` | Admin email whitelist (comma-separated, optional, defaults to `oli@meimberg.io`) |
 
 ## GitHub Secrets
 

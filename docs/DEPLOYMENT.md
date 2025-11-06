@@ -88,6 +88,10 @@ curl -I https://awesomeapps-frontend.meimberg.io/
 - `NEXT_PUBLIC_STRAPI_BASEURL` - Strapi API URL
 - `NEXT_PUBLIC_APP_BASEURL` - Frontend base URL
 - `NEXT_PUBLIC_MATOMO_TRACKER` - Matomo tracking (optional)
+- `ADMIN_EMAILS` - Admin email whitelist (comma-separated, optional, defaults to `oli@meimberg.io`)
+
+**Runtime Environment Variables (set in `.env` on server):**
+- `ADMIN_EMAILS` - Admin email whitelist (comma-separated, optional, defaults to `oli@meimberg.io`)
 
 ## Build Args
 
