@@ -96,10 +96,6 @@ export function AppsList({
         n8nstatus: 'new',
       })
       
-      // Also call the webhook
-      const url = `https://n8n.meimberg.io/webhook/a2e23025-297f-4b92-8473-8db6b8cfd2aa?service=${encodeURIComponent(app.name)}&fields=${encodeURIComponent(field)}`
-      await fetch(url)
-      
       toast({
         title: 'Success',
         description: `Service regeneration requested${field !== 'all' ? ` (Field: ${field})` : ''}. Added to queue.`,
