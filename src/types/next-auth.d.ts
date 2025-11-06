@@ -5,6 +5,7 @@ declare module "next-auth" {
     strapiJwt?: string
     memberId?: number
     memberDocumentId?: string
+    isAdmin?: boolean
     user: {
       id?: string
       name?: string | null
@@ -19,6 +20,7 @@ declare module "next-auth/jwt" {
     strapiJwt?: string
     memberId?: number
     memberDocumentId?: string
+    isAdmin?: boolean
   }
 }
 

@@ -3,6 +3,7 @@ import Google from "next-auth/providers/google"
 import GitHub from "next-auth/providers/github"
 import AzureAD from "next-auth/providers/azure-ad"
 import { STRAPI_BASEURL } from "@/lib/constants"
+import { isAdminEmail } from "@/lib/config/admin"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -76,6 +77,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.error('❌ Failed to authenticate with Strapi:', error);
         }
       }
+      
+      // Check admin authorization
+      const userEmail = profile?.email || user?.email;
+      if (userEmail) {
+        token.isAdmin = isAdminEmail(userEmail);
+      }
+      
       return token;
     },
     async session({ session, token }) {
@@ -85,6 +93,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.memberId = token.memberId as number;
         session.memberDocumentId = token.memberDocumentId as string;
       }
+      // Add admin status
+      if (token.isAdmin !== undefined) {
+        session.isAdmin = token.isAdmin as boolean;
+      }
       return session;
     },
     authorized({ auth, request: { nextUrl } }) {
@@ -92,6 +104,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const isOnProtectedRoute = nextUrl.pathname.startsWith("/protected") || 
                                  nextUrl.pathname.startsWith("/profile") ||
                                  nextUrl.pathname.startsWith("/favorites")
+      
+      // Check admin routes
+      const isOnAdminRoute = nextUrl.pathname.includes("/admin")
+      
+      if (isOnAdminRoute) {
+        if (!isLoggedIn) {
+          return false // Redirect to sign-in
+        }
+        if (!auth?.isAdmin) {
+          return false // User is logged in but not admin - will show 403
+        }
+      }
       
       if (isOnProtectedRoute && !isLoggedIn) {
         return false

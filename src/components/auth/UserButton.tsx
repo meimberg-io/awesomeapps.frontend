@@ -10,16 +10,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, UserCircle, Heart } from "lucide-react";
+import { LogOut, User, UserCircle, Heart, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations, useLocale } from 'next-intl';
 import { Locale } from '@/types/locale';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 export function UserButton() {
   const { data: session, status } = useSession();
   const t = useTranslations('auth');
   const locale = useLocale() as Locale;
+  const { isAuthorized: isAdmin } = useAdminAuth();
 
   if (status === "loading") {
     return (
@@ -86,6 +88,14 @@ export function UserButton() {
             {t('myFavorites')}
           </Link>
         </DropdownMenuItem>
+        {isAdmin && (
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link href={`/${locale}/admin`}>
+              <Settings className="h-4 w-4 mr-2" />
+              Admin
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
           <LogOut className="h-4 w-4 mr-2" />
