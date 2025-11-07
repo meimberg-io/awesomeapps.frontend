@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Locale } from '@/types/locale'
-import { Service } from '@/types/service'
+import { App } from '@/types/app'
 import { Tag } from '@/types/tag'
 import { createAppWithLocalizations, updateAppWithLocalizations, getTags, checkUniqueness } from '@/lib/api/admin-apps-api'
 import { Button } from '@/components/ui/button'
@@ -25,8 +25,8 @@ import { Image } from '@/types/image'
 interface AppEditFormProps {
   locale: Locale
   jwt: string
-  appEn?: Service | null
-  appDe?: Service | null
+  appEn?: App | null
+  appDe?: App | null
 }
 
 export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {

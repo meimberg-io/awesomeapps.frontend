@@ -1,5 +1,5 @@
 import {fetchServiceDetailBySlug, fetchServiceReviews, fetchNewServiceBySlug} from '@/lib/strapi'
-import ServiceDetail from '@/components/new/ServiceDetail'
+import AppDetail from '@/components/AppDetail'
 import {notFound} from 'next/navigation'
 import type {Metadata} from 'next'
 import { getBrandfetchLogoUrl } from '@/lib/utils'
@@ -218,7 +218,7 @@ export default async function Page({params}: Props) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
             />
-            <ServiceDetail service={service} initialReviews={reviews} newService={newService} />
+            <AppDetail service={service} initialReviews={reviews} newService={newService} />
         </>
     )
 }

@@ -1,7 +1,7 @@
 "use client"
 import React from "react";
 import Link from "next/link";
-import {Service} from "@/types/service";
+import {App} from "@/types/app";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
@@ -10,7 +10,7 @@ import { STRAPI_BASEURL } from "@/lib/constants";
 import { renderIcon } from "@/components/util/renderIcon";
 
 interface ServiceTileProps {
-    service: Service;
+    service: App;
     locale?: string;
 }
 

@@ -3,14 +3,14 @@ import React from "react"
 import {Swiper, SwiperSlide} from 'swiper/react'
 import {Autoplay, EffectCoverflow, Navigation, Pagination} from 'swiper/modules'
 import {STRAPI_BASEURL} from '@/lib/constants'
-import {Service} from '@/types/service'
+import {App} from '@/types/app'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/autoplay'
 
-export function Screenshots({service}: { service: Service }) {
+export function Screenshots({service}: { service: App }) {
 
     return <div className="mb-16">
 

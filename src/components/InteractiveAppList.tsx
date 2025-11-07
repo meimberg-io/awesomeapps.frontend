@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Hero } from "@/components/new/Hero";
-import { ServiceCard } from "@/components/new/ServiceCard";
-import { FilterSidebar } from "@/components/new/FilterSidebar";
-import { Service } from "@/types/service";
+import { Hero } from "@/components/Hero";
+import { AppCard } from "@/components/AppCard";
+import { FilterSidebar } from "@/components/FilterSidebar";
+import { App } from "@/types/app";
 import { Tag } from "@/types/tag";
 import { fetchServices, fetchTags, searchServices, fetchServicesNews } from "@/lib/strapi";
 import { Badge } from "@/components/ui/badge";
@@ -18,28 +18,28 @@ import {useTranslations, useLocale} from 'next-intl';
 import {Locale} from '@/types/locale';
 
 interface InteractiveServiceListProps {
-  initialServices: Service[];
+  initialServices: App[];
   initialTags: Tag[];
   maintag?: Tag;
 }
 
-const InteractiveServiceList = ({ initialServices, initialTags, maintag }: InteractiveServiceListProps) => {
+const InteractiveAppList = ({ initialServices, initialTags, maintag }: InteractiveServiceListProps) => {
   const router = useRouter();
   const t = useTranslations('filter');
   const locale = useLocale() as Locale;
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<Tag[]>(maintag ? [maintag] : []);
-  const [services, setServices] = useState<Service[]>(initialServices);
+  const [services, setServices] = useState<App[]>(initialServices);
   const [tags, setTags] = useState<Tag[]>(initialTags);
   const [isSearching, setIsSearching] = useState(false);
   const [isLoadingFiltered, setIsLoadingFiltered] = useState(false);
   const [activeTab, setActiveTab] = useState<'new' | 'featured' | 'all'>('new');
   
   // Fetch newest services separately for proper sorting
-  const [newestServices, setNewestServices] = useState<Service[]>([]);
+  const [newestApp, setNewestApp] = useState<App[]>([]);
   const [isLoadingNew, setIsLoadingNew] = useState(false);
   
-  const [displayServices, setDisplayServices] = useState<Service[]>(newestServices);
+  const [displayServices, setDisplayServices] = useState<App[]>(newestApp);
 
   // Fetch newest services on mount and locale change
   useEffect(() => {
@@ -47,7 +47,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
       setIsLoadingNew(true);
       try {
         const newest = await fetchServicesNews(locale, 6);
-        setNewestServices(newest);
+        setNewestApp(newest);
         if (activeTab === 'new') {
           setDisplayServices(newest);
         }
@@ -147,7 +147,7 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
       
       // Update display based on active tab
       if (activeTab === 'new') {
-        setDisplayServices(newestServices);
+        setDisplayServices(newestApp);
       } else if (activeTab === 'featured') {
         setDisplayServices(initialServices.filter(s => s.top));
       } else {
@@ -155,22 +155,22 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
       }
       setIsLoadingFiltered(false);
     }
-  }, [selectedTags, maintag, initialServices, initialTags, searchQuery, locale, activeTab, newestServices]);
+  }, [selectedTags, maintag, initialServices, initialTags, searchQuery, locale, activeTab, newestApp]);
 
   // Update display when tab changes (without tags/search active)
   useEffect(() => {
     if (selectedTags.length === 0 && searchQuery.trim() === "") {
       if (activeTab === 'new') {
-        setDisplayServices(newestServices);
+        setDisplayServices(newestApp);
       } else if (activeTab === 'featured') {
         setDisplayServices(services.filter(s => s.top));
       } else {
         setDisplayServices(services);
       }
     }
-  }, [activeTab, services, selectedTags.length, searchQuery, newestServices]);
+  }, [activeTab, services, selectedTags.length, searchQuery, newestApp]);
 
-  const handleServiceClick = (service: Service) => {
+  const handleServiceClick = (service: App) => {
     router.push(`/s/${service.slug}`);
   };
 
@@ -315,9 +315,9 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {displayServices.map((service) => (
-                  <ServiceCard
+                  <AppCard
                     key={service.documentId}
-                    service={service}
+                    app={service}
                     onServiceClick={handleServiceClick}
                     selectedTags={selectedTags}
                   />
@@ -332,5 +332,5 @@ const InteractiveServiceList = ({ initialServices, initialTags, maintag }: Inter
   );
 };
 
-export default InteractiveServiceList;
+export default InteractiveAppList;
 

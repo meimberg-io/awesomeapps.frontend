@@ -36,9 +36,9 @@ Create an admin administration section for managing apps (services), tags, users
 
 ### Key Terminology
 
-- **App/Service**: The main entity representing an application. Currently named "service" in codebase but will be renamed to "app" in future. For this feature, both terms are equivalent.
+- **App/App**: The main entity representing an application. Currently named "app" in codebase but will be renamed to "app" in future. For this feature, both terms are equivalent.
 - **Admin**: The administration section (not to be confused with Strapi backend)
-- **New Service Queue**: Queue of apps pending import/update (stored in `new-service` collection)
+- **New App Queue**: Queue of apps pending import/update (stored in `new-app` collection)
 
 ---
 
@@ -353,7 +353,7 @@ Create a dedicated navigation component for admin sections:
 
 **Purpose**: Manage apps pending import/update
 
-**Data Model**: `new-service` collection with fields:
+**Data Model**: `new-app` collection with fields:
 - `slug` (string)
 - `field` (string)
 - `n8nstatus` (enum: "new", "pending", "finished", "error")
@@ -516,9 +516,9 @@ Create a dedicated navigation component for admin sections:
 
 ## Data Models
 
-### App/Service Model
+### App/App Model
 
-**Strapi Collection**: `service`
+**Strapi Collection**: `app`
 
 **Fields** (from schema):
 - `name` (string, unique, not localized)
@@ -557,7 +557,7 @@ Create a dedicated navigation component for admin sections:
 - `description` (text)
 - `icon` (string)
 - `excluded` (boolean, default: false)
-- `services` (relation: manyToMany with service)
+- `services` (relation: manyToMany with app)
 
 ### Member/User Model
 
@@ -570,7 +570,7 @@ Create a dedicated navigation component for admin sections:
 - `avatarUrl` (string)
 - `oauthProvider` (enum: google, github, azure-ad, local)
 - `oauthId` (string)
-- `favorites` (relation: manyToMany with service)
+- `favorites` (relation: manyToMany with app)
 - `lastlogin` (datetime)
 - `reviews` (relation: oneToMany with review)
 - `bio` (text, max 500)
@@ -579,9 +579,9 @@ Create a dedicated navigation component for admin sections:
 - `strapiUser` (relation: oneToOne with admin user)
 - `createdAt` (datetime)
 
-### New Service Queue Model
+### New App Queue Model
 
-**Strapi Collection**: `new-service`
+**Strapi Collection**: `new-app`
 
 **Fields**:
 - `slug` (string)
@@ -642,7 +642,7 @@ All API calls to Strapi: `${STRAPI_BASEURL}/api`
 
 1. **GET /tags**
    - Query params: `populate[services][count]` (to get count)
-   - Returns: List of tags with service count
+   - Returns: List of tags with app count
    - Authorization: Required
 
 2. **GET /tags/:id**
@@ -970,7 +970,7 @@ export const AdminAPI = {
 ### Phase 5: Tags Management
 - [ ] Create tags list page
 - [ ] Create tag edit/create form
-- [ ] Implement service count display
+- [ ] Implement app count display
 
 ### Phase 6: Users Management
 - [ ] Create users list page

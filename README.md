@@ -1,6 +1,6 @@
 # AwesomeApps Frontend
 
-Next.js frontend for the AwesomeApps service directory.
+Next.js frontend for the AwesomeApps app directory.
 
 **First time?** See [doc/SETUP.md](doc/SETUP.md) to create required local files (`.env`)
 

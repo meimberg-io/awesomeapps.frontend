@@ -3,7 +3,7 @@ import {Image} from "./image";
 import {Tag} from "./tag";
 import {Review} from "./review";
 
-export interface Service {
+export interface App {
     documentId: string;
     name: string;
     slug: string;

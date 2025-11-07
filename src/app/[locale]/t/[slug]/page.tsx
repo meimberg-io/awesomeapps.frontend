@@ -1,5 +1,5 @@
 import {fetchServices, fetchTagDetailByName, fetchTags} from '@/lib/strapi'
-import InteractiveServiceList from '@/components/new/InteractiveServiceList'
+import InteractiveAppList from '@/components/InteractiveAppList'
 import {Metadata} from "next";
 import {notFound} from "next/navigation";
 import {Tag} from "@/types/tag";
@@ -58,7 +58,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 }
 
 
-// Hauptseite für Service-Detail
+// Hauptseite für App-Detail
 export default async function Page({params}: {
     params: Promise<{ slug: string; locale: Locale }>
 }) {
@@ -98,7 +98,7 @@ export default async function Page({params}: {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
-            <InteractiveServiceList
+            <InteractiveAppList
                 initialServices={initialServices}
                 initialTags={initialTags}
                 maintag={tag}

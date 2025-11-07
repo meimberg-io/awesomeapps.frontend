@@ -1,5 +1,5 @@
 import { STRAPI_BASEURL } from '@/lib/constants'
-import { Service } from '@/types/service'
+import { App } from '@/types/app'
 import { Tag } from '@/types/tag'
 
 interface StrapiResponse<T> {
@@ -27,7 +27,7 @@ interface AppsListParams {
 }
 
 export interface AppsListResponse {
-  data: Service[]
+  data: App[]
   pagination: {
     page: number
     pageSize: number
@@ -91,7 +91,7 @@ export async function getAppsList(
       throw new Error('Failed to fetch apps')
     }
 
-    const data = await response.json() as StrapiResponse<Service>
+    const data = await response.json() as StrapiResponse<App>
 
     return {
       data: data.data || [],
@@ -120,7 +120,7 @@ export async function getApp(
   jwt: string,
   id: string,
   locale?: string
-): Promise<Service | null> {
+): Promise<App | null> {
   const headers = {
     'Authorization': `Bearer ${jwt}`,
     'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ export async function getApp(
       throw new Error('Failed to fetch app')
     }
 
-    const data = await response.json() as { data: Service }
+    const data = await response.json() as { data: App }
     return data.data || null
   } catch (error) {
     console.error('Error fetching app:', error)
@@ -153,8 +153,8 @@ export async function getApp(
 }
 
 export interface AppWithLocalizations {
-  en: Service | null
-  de: Service | null
+  en: App | null
+  de: App | null
 }
 
 export async function getAppWithLocalizations(
@@ -183,8 +183,8 @@ export async function getAppWithLocalizations(
       ),
     ])
 
-    const enData = enResponse.ok ? ((await enResponse.json()) as { data: Service }).data : null
-    const deData = deResponse.ok ? ((await deResponse.json()) as { data: Service }).data : null
+    const enData = enResponse.ok ? ((await enResponse.json()) as { data: App }).data : null
+    const deData = deResponse.ok ? ((await deResponse.json()) as { data: App }).data : null
 
     return {
       en: enData || null,
@@ -201,9 +201,9 @@ export async function getAppWithLocalizations(
 
 export async function createApp(
   jwt: string,
-  appData: Partial<Service>,
+  appData: Partial<App>,
   locale?: string
-): Promise<Service | null> {
+): Promise<App | null> {
   const headers = {
     'Authorization': `Bearer ${jwt}`,
     'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ export async function createApp(
       throw new Error(error.error?.message || 'Failed to create app')
     }
 
-    const data = await response.json() as { data: Service }
+    const data = await response.json() as { data: App }
     return data.data || null
   } catch (error) {
     console.error('Error creating app:', error)
@@ -239,9 +239,9 @@ export async function createApp(
 
 export async function createAppWithLocalizations(
   jwt: string,
-  enData: Partial<Service>,
-  deData: Partial<Service>
-): Promise<{ en: Service | null; de: Service | null }> {
+  enData: Partial<App>,
+  deData: Partial<App>
+): Promise<{ en: App | null; de: App | null }> {
   try {
     // Create English version first (default locale)
     const enApp = await createApp(jwt, enData, 'en')
@@ -251,7 +251,7 @@ export async function createAppWithLocalizations(
     }
 
     // Create German localization
-    let deApp: Service | null = null
+    let deApp: App | null = null
     try {
       // Use the documentId from the English version to create the German localization
       const deDataWithLocalization = {
@@ -278,9 +278,9 @@ export async function createAppWithLocalizations(
 export async function updateApp(
   jwt: string,
   id: string,
-  appData: Partial<Service>,
+  appData: Partial<App>,
   locale?: string
-): Promise<Service | null> {
+): Promise<App | null> {
   const headers = {
     'Authorization': `Bearer ${jwt}`,
     'Content-Type': 'application/json',
@@ -306,7 +306,7 @@ export async function updateApp(
       throw new Error(error.error?.message || 'Failed to update app')
     }
 
-    const data = await response.json() as { data: Service }
+    const data = await response.json() as { data: App }
     return data.data || null
   } catch (error) {
     console.error('Error updating app:', error)
@@ -317,15 +317,15 @@ export async function updateApp(
 export async function updateAppWithLocalizations(
   jwt: string,
   documentId: string,
-  enData: Partial<Service>,
-  deData: Partial<Service>
-): Promise<{ en: Service | null; de: Service | null }> {
+  enData: Partial<App>,
+  deData: Partial<App>
+): Promise<{ en: App | null; de: App | null }> {
   try {
     // First, get both versions to find their IDs
     const localizations = await getAppWithLocalizations(jwt, documentId)
     
     // Update English version
-    let enApp: Service | null = null
+    let enApp: App | null = null
     if (localizations.en) {
       enApp = await updateApp(jwt, localizations.en.documentId, enData, 'en')
     } else {
@@ -334,7 +334,7 @@ export async function updateAppWithLocalizations(
     }
 
     // Update or create German localization
-    let deApp: Service | null = null
+    let deApp: App | null = null
     if (localizations.de) {
       // Update existing German version
       deApp = await updateApp(jwt, localizations.de.documentId, deData, 'de')
@@ -419,7 +419,7 @@ export async function checkUniqueness(
       return false
     }
 
-    const data = await response.json() as StrapiResponse<Service>
+    const data = await response.json() as StrapiResponse<App>
     return (data.data?.length || 0) === 0
   } catch (error) {
     console.error('Error checking uniqueness:', error)

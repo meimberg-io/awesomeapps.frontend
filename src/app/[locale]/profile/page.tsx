@@ -207,7 +207,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{(member as Member & { statistics?: { reviewCount: number } }).statistics?.reviewCount || 0}</p>
-                    <p className="text-sm text-muted-foreground">{t('service.reviews')}</p>
+                    <p className="text-sm text-muted-foreground">{t('app.reviews')}</p>
                   </div>
                 </div>
 

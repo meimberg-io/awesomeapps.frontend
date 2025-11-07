@@ -1,5 +1,5 @@
 import { STRAPI_BASEURL } from '@/lib/constants'
-import { Service } from '@/types/service'
+import { App } from '@/types/app'
 import { NewService } from '@/types/newService'
 
 interface AdminStats {
@@ -36,7 +36,7 @@ export async function getAdminStats(jwt: string): Promise<AdminStats> {
     }
 
     const [appsData, membersData, queueData] = await Promise.all([
-      appsRes.json() as Promise<StrapiResponse<Service>>,
+      appsRes.json() as Promise<StrapiResponse<App>>,
       membersRes.json() as Promise<StrapiResponse<unknown>>,
       queueRes.json() as Promise<StrapiResponse<NewService>>,
     ])
@@ -61,7 +61,7 @@ export async function getAdminStats(jwt: string): Promise<AdminStats> {
   }
 }
 
-export async function getRecentApps(jwt: string, limit: number = 10): Promise<Service[]> {
+export async function getRecentApps(jwt: string, limit: number = 10): Promise<App[]> {
   const headers = {
     'Authorization': `Bearer ${jwt}`,
     'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ export async function getRecentApps(jwt: string, limit: number = 10): Promise<Se
       throw new Error('Failed to fetch recent apps')
     }
 
-    const data = await response.json() as StrapiResponse<Service>
+    const data = await response.json() as StrapiResponse<App>
     return data.data || []
   } catch (error) {
     console.error('Error fetching recent apps:', error)

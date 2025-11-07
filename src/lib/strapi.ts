@@ -1,5 +1,5 @@
 import {Tag} from "@/types/tag";
-import {Service} from "@/types/service";
+import {App} from "@/types/app";
 import {Page} from "@/types/page";
 import {Review} from "@/types/review";
 import {NewService} from "@/types/newService";
@@ -18,7 +18,7 @@ const client = new ApolloClient({
 });
 
 
-export const fetchServices = async (tags?: Tag[], locale: Locale = 'en'): Promise<Service[]> => {
+export const fetchServices = async (tags?: Tag[], locale: Locale = 'en'): Promise<App[]> => {
     const tagIds = tags?.map(tag => tag.documentId) || [];
     
     try {
@@ -34,7 +34,7 @@ export const fetchServices = async (tags?: Tag[], locale: Locale = 'en'): Promis
     }
 };
 
-export const fetchServicesNews = async (locale: Locale = 'en', limit: number = 4): Promise<Service[]> => {
+export const fetchServicesNews = async (locale: Locale = 'en', limit: number = 4): Promise<App[]> => {
     try {
         const {data} = await client.query({
             query: GET_SERVICES_NEWS,
@@ -48,7 +48,7 @@ export const fetchServicesNews = async (locale: Locale = 'en', limit: number = 4
     }
 };
 
-export const searchServices = async (searchQuery: string, locale: Locale = 'en'): Promise<Service[]> => {
+export const searchServices = async (searchQuery: string, locale: Locale = 'en'): Promise<App[]> => {
     if (!searchQuery || searchQuery.trim() === "") {
         return [];
     }
@@ -76,7 +76,7 @@ export const fetchTags = async (tags?: Tag[], locale: Locale = 'en'): Promise<Ta
     return tagsResult.filter(tag => tag.count > 0 && !tag.excluded);
 };
 
-export const fetchServiceDetail = async (id: string, locale: Locale = 'en'): Promise<Service> => {
+export const fetchServiceDetail = async (id: string, locale: Locale = 'en'): Promise<App> => {
     const {data} = await client.query({
         query: GET_SERVICE_DETAIL,
         variables: {id, locale},
@@ -84,7 +84,7 @@ export const fetchServiceDetail = async (id: string, locale: Locale = 'en'): Pro
     return data.service;
 };
 
-export const fetchServiceDetailBySlug = async (slug: string, locale: Locale = 'en'): Promise<Service | undefined> => {
+export const fetchServiceDetailBySlug = async (slug: string, locale: Locale = 'en'): Promise<App | undefined> => {
     try {
         const {data} = await client.query({
             query: GET_SERVICE_DETAIL_BY_SLUG,
@@ -92,7 +92,7 @@ export const fetchServiceDetailBySlug = async (slug: string, locale: Locale = 'e
             fetchPolicy: "no-cache",
         });
         
-        // If service found, return it
+        // If app found, return it
         if (data["services"] && data["services"].length > 0) {
             return data["services"][0];
         }

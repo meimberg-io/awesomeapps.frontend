@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Service } from "@/types/service";
+import { App } from "@/types/app";
 import { Review } from "@/types/review";
 import { NewService } from "@/types/newService";
 import Header from "@/components/Header";
@@ -33,12 +33,12 @@ import { STRAPI_BASEURL } from "@/lib/constants";
 import { useTranslations } from "next-intl";
 
 interface ServiceDetailProps {
-  service: Service;
+  service: App;
   initialReviews: Review[];
   newService?: NewService;
 }
 
-export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDetailProps) => {
+export const AppDetail = ({ service, initialReviews, newService }: ServiceDetailProps) => {
   const router = useRouter();
   const { data: session } = useSession();
   const { addFavorite, removeFavorite, isFavorite } = useMember();
@@ -109,7 +109,7 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
         icon: RefreshCw,
         className: '',
         disabled: regenerateStatus === 'loading' || regenerateStatus === 'requested',
-        title: regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'Service regenerieren'
+        title: regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'App regenerieren'
       };
     }
 
@@ -140,14 +140,14 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
           icon: RefreshCw,
           className: '',
           disabled: regenerateStatus === 'loading' || regenerateStatus === 'requested',
-          title: regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'Service regenerieren'
+          title: regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'App regenerieren'
         };
       default:
         return {
           icon: RefreshCw,
           className: '',
           disabled: regenerateStatus === 'loading' || regenerateStatus === 'requested',
-          title: 'Service regenerieren'
+          title: 'App regenerieren'
         };
     }
   };
@@ -510,5 +510,5 @@ export const ServiceDetail = ({ service, initialReviews, newService }: ServiceDe
   );
 };
 
-export default ServiceDetail;
+export default AppDetail;
 

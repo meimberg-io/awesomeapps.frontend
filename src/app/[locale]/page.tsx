@@ -1,9 +1,9 @@
 import {fetchServices, fetchTags} from '@/lib/strapi'
 import {Metadata} from "next";
-import InteractiveServiceList from "@/components/new/InteractiveServiceList";
+import InteractiveAppList from "@/components/InteractiveAppList";
 import {Locale} from '@/types/locale';
 import {getTranslations} from 'next-intl/server';
-import {Service} from '@/types/service';
+import {App} from '@/types/app';
 import {APP_BASEURL} from '@/lib/constants';
 
 type Props = {
@@ -49,7 +49,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 export default async function HomePage({params}: Props) {
     const {locale} = await params;
     
-    let allServices: Service[];
+    let allServices: App[];
     try {
         allServices = await fetchServices([], locale);
     } catch (error) {
@@ -81,7 +81,7 @@ export default async function HomePage({params}: Props) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
             />
-            <InteractiveServiceList
+            <InteractiveAppList
                 initialServices={allServices}
                 initialTags={initialTags}
             />
