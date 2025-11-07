@@ -3,47 +3,47 @@
 import { Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Service } from "@/types/service";
+import { App } from "@/types/app";
 import { renderIcon } from "@/components/util/renderIcon";
 import { Tag } from "@/types/tag";
 import { getBrandfetchLogoUrl } from "@/lib/utils";
 import { STRAPI_BASEURL } from "@/lib/constants";
 import { useTranslations } from 'next-intl';
 
-interface ServiceCardProps {
-  service: Service;
-  onServiceClick: (service: Service) => void;
+interface AppCardProps {
+  app: App;
+  onServiceClick: (service: App) => void;
   selectedTags?: Tag[];
 }
 
-export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: ServiceCardProps) => {
+export const AppCard = ({ app, onServiceClick, selectedTags = [] }: AppCardProps) => {
   const t = useTranslations('common');
   const tService = useTranslations('service');
-  const iconurl = service.logo?.url 
-    ? `${STRAPI_BASEURL}${service.logo.url}` 
-    : getBrandfetchLogoUrl(service.url);
+  const iconurl = app.logo?.url
+    ? `${STRAPI_BASEURL}${app.logo.url}`
+    : getBrandfetchLogoUrl(app.url);
   
   // Use cached review statistics from backend
-  const reviewCount = service.reviewCount || 0;
-  const averageRating = service.averageRating || 0;
+  const reviewCount = app.reviewCount || 0;
+  const averageRating = app.averageRating || 0;
   
-  // Check if service is new (less than 5 days old)
+  // Check if app is new (less than 5 days old)
   const isNew = () => {
-    const serviceDate = new Date(service.createdAt);
+    const serviceDate = new Date(app.createdAt);
     const now = new Date();
     const daysDiff = (now.getTime() - serviceDate.getTime()) / (1000 * 60 * 60 * 24);
     return daysDiff <= 5;
   };
   
-  // Show Top badge if service is top, otherwise show New badge if it's new
-  const showNewBadge = !service.top && isNew();
+  // Show Top badge if app is top, otherwise show New badge if it's new
+  const showNewBadge = !app.top && isNew();
 
   return (
     <Card 
       className="group relative overflow-hidden hover:shadow-xl hover:brightness-110 transition-all duration-300 cursor-pointer border-border/50 p-6 bg-card"
-      onClick={() => onServiceClick(service)}
+      onClick={() => onServiceClick(app)}
     >
-      {service.top && (
+      {app.top && (
         <Badge 
           variant="secondary" 
           className="absolute top-4 right-4 z-10 text-white"
@@ -65,14 +65,14 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
         <div className="w-16 h-16 flex-shrink-0">
           <img
             src={iconurl}
-            alt={`${service.name} Logo - ${service.tags.filter(tag => !tag.excluded)[0]?.name || 'SaaS'} Tool`}
+            alt={`${app.name} Logo - ${app.tags.filter(tag => !tag.excluded)[0]?.name || 'SaaS'} Tool`}
             className="w-full h-full object-contain"
           />
         </div>
         
         <div className="flex-1 min-w-0">
           <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors line-clamp-1">
-            {service.name}
+            {app.name}
           </h3>
           {reviewCount > 0 ? (
             <div className="flex items-center gap-1.5">
@@ -91,11 +91,11 @@ export const ServiceCard = ({ service, onServiceClick, selectedTags = [] }: Serv
       </div>
 
       <p className="text-sm text-muted-foreground mb-4 line-clamp-4 leading-relaxed">
-        {service.abstract || service.description}
+        {app.abstract || app.description}
       </p>
 
       <div className="flex flex-wrap gap-2">
-        {service.tags.filter(tag => !tag.excluded).map((tag) => {
+        {app.tags.filter(tag => !tag.excluded).map((tag) => {
           const isSelected = selectedTags.some(selectedTag => selectedTag.documentId === tag.documentId);
           return (
             <Badge 

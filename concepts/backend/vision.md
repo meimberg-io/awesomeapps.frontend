@@ -2,7 +2,7 @@
 
 ## Preliminary note
 
-In both the frontend and the strapi project the main entity is a "service" which means an app. Both m,ean the same. I will rename the "service" to "app" but not for the moment. In this feature we will be talking abut apps, which means the same as services
+In both the frontend and the strapi project the main entity is a "app" which means an app. Both m,ean the same. I will rename the "app" to "app" but not for the moment. In this feature we will be talking abut apps, which means the same as services
 
 ## Vision
 
@@ -36,14 +36,14 @@ This section shows a list of apps with editing options.
 
 ### Edit Mask
 
-* The edit Mask allows to edit all fields ob a service. Fieldtypes and selection or design of appropiate input controls needed
+* The edit Mask allows to edit all fields ob a app. Fieldtypes and selection or design of appropiate input controls needed
 * Translation de / en has to be taken into account (en is default language, de should always be present)
 * logo upload should be possible
 * check of uniqueness of particular fields (name, slug, url) needed
 
 ### App queue
 
-A Mask for quickly see and edit the "new service" list. 
+A Mask for quickly see and edit the "new app" list. 
 
 ### Tags
 

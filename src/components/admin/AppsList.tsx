@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Locale } from '@/types/locale'
-import { Service } from '@/types/service'
+import { App } from '@/types/app'
 import { getAppsList, deleteApp, type AppsListResponse } from '@/lib/api/admin-apps-api'
 import { createQueueItem } from '@/lib/api/admin-queue-api'
 import {
@@ -78,12 +78,12 @@ export function AppsList({
   const [topFilter, setTopFilter] = useState<boolean | undefined>(initialTop)
   const [deleteDialog, setDeleteDialog] = useState<{
     open: boolean
-    app: Service | null
+    app: App | null
   }>({ open: false, app: null })
   const [deleting, setDeleting] = useState(false)
   const [syncStatuses, setSyncStatuses] = useState<Record<string, 'idle' | 'loading'>>({})
 
-  const handleRegenerate = async (app: Service, field: string) => {
+  const handleRegenerate = async (app: App, field: string) => {
     const statusKey = app.documentId
     setSyncStatuses({ ...syncStatuses, [statusKey]: 'loading' })
     
@@ -102,10 +102,10 @@ export function AppsList({
       })
       setTimeout(() => router.refresh(), 1000)
     } catch (error) {
-      console.error('Error regenerating service:', error)
+      console.error('Error regenerating app:', error)
       toast({
         title: 'Error',
-        description: 'Failed to request service regeneration',
+        description: 'Failed to request app regeneration',
         variant: 'destructive',
       })
     } finally {

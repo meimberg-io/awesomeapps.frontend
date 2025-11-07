@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Locale } from '@/types/locale'
-import { Service } from '@/types/service'
+import { App } from '@/types/app'
 import {
   Table,
   TableBody,
@@ -14,7 +14,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface RecentAppsProps {
-  apps: Service[]
+  apps: App[]
   locale: Locale
   isLoading?: boolean
 }

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Tag } from "@/types/tag";
-import { Service } from "@/types/service";
+import { App } from "@/types/app";
 import { useMemo, useState } from "react";
 import { renderIcon } from "@/components/util/renderIcon";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
@@ -17,7 +17,7 @@ interface FilterSidebarProps {
   selectedTags: Tag[];
   onTagChange: (tagId: string) => void;
   availableTags: Tag[];
-  services: Service[];
+  services: App[];
   onClearFilters: () => void;
 }
 

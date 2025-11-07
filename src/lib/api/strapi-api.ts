@@ -1,6 +1,6 @@
 import { STRAPI_BASEURL } from "@/lib/constants";
 import { Member } from "@/types/member";
-import { Service } from "@/types/service";
+import { App } from "@/types/app";
 
 /**
  * Authenticate member with Strapi and get JWT
@@ -58,7 +58,7 @@ export async function updateMemberProfile(
 }
 
 /**
- * Add service to favorites
+ * Add app to favorites
  */
 export async function addFavorite(
   memberId: number,
@@ -83,7 +83,7 @@ export async function addFavorite(
 }
 
 /**
- * Remove service from favorites
+ * Remove app from favorites
  */
 export async function removeFavorite(
   memberId: number,
@@ -112,7 +112,7 @@ export async function getFavorites(
   memberId: number,
   jwt: string,
   locale: string = 'de'
-): Promise<{ data: Service[] }> {
+): Promise<{ data: App[] }> {
   const response = await fetch(`${STRAPI_BASEURL}/api/members/${memberId}/favorites?locale=${locale}`, {
     headers: {
       'Authorization': `Bearer ${jwt}`,
@@ -128,7 +128,7 @@ export async function getFavorites(
 }
 
 /**
- * Check if service is favorited
+ * Check if app is favorited
  */
 export async function checkFavorite(
   memberId: number,

@@ -1,12 +1,12 @@
 import {Member} from "./member";
-import {Service} from "./service";
+import {App} from "./app";
 
 export interface Review {
     documentId: string;
     reviewtext: string | null;
     voting: number;
     member: Member;
-    service?: Service;
+    service?: App;
     isPublished: boolean;
     helpfulCount: number;
     createdAt: string;

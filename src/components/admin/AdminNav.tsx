@@ -47,10 +47,10 @@ export function AdminNav({ locale, jwt }: AdminNavProps) {
       })
       setNewServiceName('')
     } catch (error) {
-      console.error('Error queuing new service from nav:', error)
+      console.error('Error queuing new app from nav:', error)
       toast({
         title: 'Error',
-        description: 'Failed to queue new service',
+        description: 'Failed to queue new app',
         variant: 'destructive',
       })
     } finally {

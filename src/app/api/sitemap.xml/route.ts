@@ -1,12 +1,12 @@
 import {fetchPages, fetchServices} from "@/lib/strapi";
-import {Service} from "@/types/service";
+import {App} from "@/types/app";
 import {Page} from "@/types/page";
 import {APP_BASEURL} from "@/lib/constants";
 import {NextResponse} from "next/server";
 
 const generateSitemap = (
-    servicesEn: Service[], 
-    servicesDe: Service[], 
+    servicesEn: App[],
+    servicesDe: App[],
     pagesEn: Page[], 
     pagesDe: Page[]
 ) => {
@@ -22,7 +22,7 @@ const generateSitemap = (
                 </url>`;
     }
 
-    // Generate service URLs for both locales with hreflang
+    // Generate app URLs for both locales with hreflang
     const serviceUrls = servicesEn.map(service => {
         const alternates = `
             <xhtml:link rel="alternate" hreflang="en" href="${baseUrl}/en/s/${service.slug}" />

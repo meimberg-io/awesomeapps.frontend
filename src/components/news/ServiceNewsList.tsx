@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import {Service} from '@/types/service'
+import {App} from '@/types/app'
 import ServiceNewsTile from "@/components/news/ServiceNewsTile"
 import Image from "next/image"
 import heroBackground from "@/assets/header_01.jpg";
@@ -9,7 +9,7 @@ import {useTranslations} from 'next-intl';
 import {Locale} from '@/types/locale';
 
 interface Props {
-    services: Service[];
+    services: App[];
     locale: Locale;
 }
 

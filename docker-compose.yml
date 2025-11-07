@@ -1,6 +1,6 @@
 # Unified docker-compose.yml for both local development and production deployment
 services:
-  # Base service definition (template only - never instantiated)
+  # Base app definition (template only - never instantiated)
   app-base:
     profiles: ["base"]  # Dummy profile to prevent instantiation
     build:
@@ -39,7 +39,7 @@ services:
       retries: 3
       start_period: 40s
 
-  # Development service with volume mounts
+  # Development app with volume mounts
   app-dev:
     profiles: ["dev",""]
     extends: app-base
@@ -53,7 +53,7 @@ services:
       - ./graphql.config.yml:/app/graphql.config.yml:ro
       - /app/node_modules
 
-  # Production service without volume mounts
+  # Production app without volume mounts
   app-prod:
     profiles: ["prod"]
     extends: app-base

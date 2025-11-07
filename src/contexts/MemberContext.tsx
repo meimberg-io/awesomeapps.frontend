@@ -3,14 +3,14 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
 import { Member } from '@/types/member';
-import { Service } from '@/types/service';
+import { App } from '@/types/app';
 import * as StrapiAPI from '@/lib/api/strapi-api';
 import { useParams } from 'next/navigation';
 import { Locale } from '@/types/locale';
 
 interface MemberContextType {
   member: Member | null;
-  favorites: Service[];
+  favorites: App[];
   loading: boolean;
   addFavorite: (serviceDocumentId: string) => Promise<void>;
   removeFavorite: (serviceDocumentId: string) => Promise<void>;
@@ -26,7 +26,7 @@ export function MemberProvider({ children }: { children: ReactNode }) {
   const params = useParams();
   const locale = (params?.locale as Locale) || 'de';
   const [member, setMember] = useState<Member | null>(null);
-  const [favorites, setFavorites] = useState<Service[]>([]);
+  const [favorites, setFavorites] = useState<App[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchMemberData = React.useCallback(async () => {

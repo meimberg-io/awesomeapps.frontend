@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {fetchServicesNews} from "@/lib/strapi";
 import {APP_BASEURL, STRAPI_BASEURL} from "@/lib/constants";
-import {Service} from "@/types/service";
+import {App} from "@/types/app";
 
 const escapeXml = (text: string | null): string => {
     if (!text) return '';
@@ -13,7 +13,7 @@ const escapeXml = (text: string | null): string => {
         .replace(/'/g, '&apos;');
 };
 
-const generateRssFeed = (services: Service[], locale: 'en' | 'de') => {
+const generateRssFeed = (services: App[], locale: 'en' | 'de') => {
     const baseUrl = APP_BASEURL;
     const title = locale === 'en' ? 'Newest Apps and Online Tools - AwesomeApps' : 'Neueste Apps und Online Tools - AwesomeApps';
     const description = locale === 'en' 
