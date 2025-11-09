@@ -63,19 +63,14 @@ export function QueueEditForm({ locale, jwt, queueItem }: QueueEditFormProps) {
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-8 space-y-8">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between gap-4">
         <Button asChild variant="ghost" size="sm">
           <Link href={`/${locale}/admin/queue`}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Queue
           </Link>
         </Button>
-        <div>
-          <h1 className="text-3xl font-bold">Edit Queue Item</h1>
-          <p className="text-muted-foreground mt-1">
-            Editing: {queueItem.slug}
-          </p>
-        </div>
+        <h1 className="text-3xl font-bold">Edit Queue Item</h1>
       </div>
 
       <form onSubmit={handleSubmit}>

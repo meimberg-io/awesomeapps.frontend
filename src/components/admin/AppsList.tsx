@@ -339,12 +339,9 @@ export function AppsList({
                               <Badge
                                 key={tag.documentId}
                                 variant="outline"
-                                className={`font-normal flex items-center gap-1 ${tagStatusStyles[resolveTagStatus(tag)]}`}
+                                className={`font-normal ${tagStatusStyles[resolveTagStatus(tag)]}`}
                               >
-                                <span>{tag.name}</span>
-                                <span className="rounded bg-background/70 px-1.5 py-0.5 text-[10px] font-medium uppercase">
-                                  {tagStatusLabels[resolveTagStatus(tag)]}
-                                </span>
+                                {tag.name}
                               </Badge>
                             ))}
                             {(!app.tags || app.tags.length === 0) && (
