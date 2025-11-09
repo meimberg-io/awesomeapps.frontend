@@ -526,7 +526,7 @@ Create a dedicated navigation component for admin sections:
 - `url` (string, unique, not localized)
 - `abstract` (text, localized: de/en)
 - `pricing` (richtext, localized: de/en)
-- `shortfacts` (text, localized: de/en)
+- `shorty` (text, localized: de/en)
 - `description` (richtext, localized: de/en)
 - `functionality` (richtext, localized: de/en)
 - `thumbnail` (media: image, single, not localized)
