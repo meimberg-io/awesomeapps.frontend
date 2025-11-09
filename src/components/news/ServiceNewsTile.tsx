@@ -8,6 +8,7 @@ import { Calendar } from "lucide-react";
 import { getBrandfetchLogoUrl } from "@/lib/utils";
 import { STRAPI_BASEURL } from "@/lib/constants";
 import { renderIcon } from "@/components/util/renderIcon";
+import { isTagActive } from "@/lib/tag-utils";
 
 interface ServiceTileProps {
     service: App;
@@ -18,6 +19,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, locale = 'en'}) => {
     const iconurl = service.logo?.url 
         ? `${STRAPI_BASEURL}${service.logo.url}` 
         : getBrandfetchLogoUrl(service.url);
+    const activeTags = service.tags.filter(isTagActive);
     
     const dateLocale = locale === 'de' ? 'de-DE' : 'en-US';
     const publishDate = service.publishdate 
@@ -32,7 +34,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, locale = 'en'}) => {
                     <div className="w-16 h-16 border border-gray-300">
                         <img 
                             src={iconurl} 
-                            alt={`${service.name} Logo - ${service.tags.filter(tag => !tag.excluded)[0]?.name || 'SaaS'} Tool`}
+                            alt={`${service.name} Logo - ${activeTags[0]?.name || 'SaaS'} Tool`}
                             className="w-full h-full object-contain"
                         />
                     </div>
@@ -49,7 +51,7 @@ const ServiceTile: React.FC<ServiceTileProps> = ({service, locale = 'en'}) => {
                     
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2 mt-4">
-                        {service.tags.filter(tag => !tag.excluded).slice(0, 3).map((tag) => (
+                        {activeTags.slice(0, 3).map((tag) => (
                             <Badge 
                                 key={tag.documentId} 
                                 variant="default" 

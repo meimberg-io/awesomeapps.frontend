@@ -18,7 +18,7 @@ export const GET_SERVICES = gql`
                 documentId
                 name
                 icon
-                excluded
+                tagStatus
             }
             thumbnail {
                 url
@@ -60,7 +60,7 @@ export const GET_SERVICES_NEWS = gql`
                 documentId
                 name
                 icon
-                excluded
+                tagStatus
             }
             thumbnail {
                 url
@@ -102,7 +102,7 @@ export const SEARCH_SERVICES = gql`
                 documentId
                 name
                 icon
-                excluded
+                tagStatus
             }
             thumbnail {
                 url
@@ -135,7 +135,7 @@ export const GET_SERVICE_DETAIL = gql`
                 documentId
                 name
                 icon
-                excluded
+                tagStatus
             }
             thumbnail {
                 url
@@ -193,7 +193,7 @@ export const GET_SERVICE_DETAIL_BY_SLUG = gql`
                 documentId
                 name
                 icon
-                excluded
+                tagStatus
             }
             thumbnail {
                 url

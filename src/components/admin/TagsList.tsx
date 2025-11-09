@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Locale } from '@/types/locale'
-import { Tag } from '@/types/tag'
+import { Tag, TagStatus } from '@/types/tag'
+import { resolveTagStatus } from '@/lib/tag-utils'
 import { getTagsList, deleteTag } from '@/lib/api/admin-tags-api'
 import {
   Table,
@@ -52,7 +53,7 @@ export function TagsList({ locale, jwt }: TagsListProps) {
   const [tags, setTags] = useState<Tag[]>([])
   const [filteredTags, setFilteredTags] = useState<Tag[]>([])
   const [search, setSearch] = useState('')
-  const [excludedFilter, setExcludedFilter] = useState<'all' | 'excluded' | 'not-excluded'>('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | TagStatus>('all')
   const [deleteDialog, setDeleteDialog] = useState<{
     open: boolean
     tag: Tag | null
@@ -92,18 +93,16 @@ export function TagsList({ locale, jwt }: TagsListProps) {
       )
     }
 
-    // Filter by excluded status
-    if (excludedFilter === 'excluded') {
-      filtered = filtered.filter(tag => tag.excluded === true)
-    } else if (excludedFilter === 'not-excluded') {
-      filtered = filtered.filter(tag => tag.excluded !== true)
+    // Filter by status
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(tag => resolveTagStatus(tag) === statusFilter)
     }
 
     // Sort by name
     filtered.sort((a, b) => a.name.localeCompare(b.name))
 
     setFilteredTags(filtered)
-  }, [tags, search, excludedFilter])
+  }, [tags, search, statusFilter])
 
   const handleDelete = async () => {
     if (!deleteDialog.tag) return
@@ -161,17 +160,15 @@ export function TagsList({ locale, jwt }: TagsListProps) {
                 className="pl-10"
               />
             </div>
-            <Select
-              value={excludedFilter}
-              onValueChange={(value: string) => setExcludedFilter(value as 'all' | 'excluded' | 'not-excluded')}
-            >
+            <Select value={statusFilter} onValueChange={(value: string) => setStatusFilter(value as 'all' | TagStatus)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Tags</SelectItem>
-                <SelectItem value="excluded">Excluded Only</SelectItem>
-                <SelectItem value="not-excluded">Not Excluded</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="proposed">Proposed</SelectItem>
+                <SelectItem value="excluded">Excluded</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -194,7 +191,7 @@ export function TagsList({ locale, jwt }: TagsListProps) {
                     <TableHead>Name</TableHead>
                     <TableHead>Icon</TableHead>
                     <TableHead>Description</TableHead>
-                    <TableHead>Excluded</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead>Connected Apps</TableHead>
                     <TableHead className="w-[100px]">Actions</TableHead>
                   </TableRow>
@@ -224,11 +221,24 @@ export function TagsList({ locale, jwt }: TagsListProps) {
                         )}
                       </TableCell>
                       <TableCell>
-                        {tag.excluded ? (
-                          <Badge variant="destructive">Excluded</Badge>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
+                        {(() => {
+                          const status = resolveTagStatus(tag)
+                          const statusStyles: Record<TagStatus, string> = {
+                            active: 'bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200',
+                            proposed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200',
+                            excluded: 'bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-200',
+                          }
+                          const statusLabel: Record<TagStatus, string> = {
+                            active: 'Active',
+                            proposed: 'Proposed',
+                            excluded: 'Excluded',
+                          }
+                          return (
+                            <Badge variant="outline" className={statusStyles[status]}>
+                              {statusLabel[status]}
+                            </Badge>
+                          )
+                        })()}
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary">{tag.count || 0}</Badge>

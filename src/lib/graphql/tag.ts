@@ -7,7 +7,7 @@ export const GET_TAGS = gql`
             name
             description
             icon
-            excluded
+        tagStatus
             count(additionalTags: $additionalTags, locale: $locale)
         }
     }
@@ -21,7 +21,7 @@ export const GET_TAG_DETAIL_BY_NAME = gql`
             name
             description
             icon
-            excluded
+        tagStatus
         }
     }
 `;

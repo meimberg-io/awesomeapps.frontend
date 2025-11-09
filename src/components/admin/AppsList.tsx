@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Locale } from '@/types/locale'
 import { App } from '@/types/app'
+import { TagStatus } from '@/types/tag'
+import { resolveTagStatus } from '@/lib/tag-utils'
 import { getAppsList, deleteApp, type AppsListResponse } from '@/lib/api/admin-apps-api'
 import { RegenerateMenu } from '@/components/RegenerateMenu'
 import {
@@ -74,6 +76,18 @@ export function AppsList({
     app: App | null
   }>({ open: false, app: null })
   const [deleting, setDeleting] = useState(false)
+
+  const tagStatusStyles: Record<TagStatus, string> = {
+    active: 'bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200',
+    proposed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200',
+    excluded: 'bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-200',
+  }
+
+  const tagStatusLabels: Record<TagStatus, string> = {
+    active: 'Active',
+    proposed: 'Proposed',
+    excluded: 'Excluded',
+  }
 
   const fetchApps = async () => {
     setLoading(true)
@@ -322,8 +336,15 @@ export function AppsList({
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
                             {app.tags?.map((tag) => (
-                              <Badge key={tag.documentId} variant="outline" className="font-normal">
-                                {tag.name}
+                              <Badge
+                                key={tag.documentId}
+                                variant="outline"
+                                className={`font-normal flex items-center gap-1 ${tagStatusStyles[resolveTagStatus(tag)]}`}
+                              >
+                                <span>{tag.name}</span>
+                                <span className="rounded bg-background/70 px-1.5 py-0.5 text-[10px] font-medium uppercase">
+                                  {tagStatusLabels[resolveTagStatus(tag)]}
+                                </span>
                               </Badge>
                             ))}
                             {(!app.tags || app.tags.length === 0) && (

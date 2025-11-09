@@ -6,6 +6,7 @@ import { getBrandfetchLogoUrl } from '@/lib/utils'
 import { STRAPI_BASEURL, APP_BASEURL } from '@/lib/constants'
 import {Locale} from '@/types/locale'
 import {getTranslations} from 'next-intl/server'
+import { isTagActive } from '@/lib/tag-utils'
 
 type Props = {
     params: Promise<{ slug: string; locale: Locale }>
@@ -38,7 +39,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 
     const ogLocale = locale === 'de' ? 'de_DE' : 'en_US';
     const canonicalPath = `/${locale}/s/${slug}`;
-    const visibleTags = service.tags.filter(tag => !tag.excluded);
+    const visibleTags = service.tags.filter(isTagActive);
     const firstTag = visibleTags[0];
 
     return {
@@ -104,8 +105,8 @@ export default async function Page({params}: Props) {
         ? `${STRAPI_BASEURL}${service.logo.url}` 
         : getBrandfetchLogoUrl(service.url);
 
-    // Filter out excluded tags
-    const visibleTags = service.tags.filter(tag => !tag.excluded);
+    // Filter to active tags only
+    const visibleTags = service.tags.filter(isTagActive);
 
     // Structured data (JSON-LD) for SEO
     const softwareApplicationSchema = {

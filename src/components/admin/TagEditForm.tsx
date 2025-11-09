@@ -3,18 +3,25 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Locale } from '@/types/locale'
-import { Tag } from '@/types/tag'
+import { Tag, TagStatus } from '@/types/tag'
+import { resolveTagStatus } from '@/lib/tag-utils'
 import { createTag, updateTag, checkTagNameUniqueness } from '@/lib/api/admin-tags-api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/hooks/use-toast'
 import { ArrowLeft, Save, XCircle } from 'lucide-react'
 import { IconSelector } from '@/components/admin/IconSelector'
 import Link from 'next/link'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface TagEditFormProps {
   locale: Locale
@@ -31,7 +38,7 @@ export function TagEditForm({ locale, jwt, tag }: TagEditFormProps) {
     name: tag?.name || '',
     description: tag?.description || '',
     icon: tag?.icon || '',
-    excluded: tag?.excluded || false,
+    tagStatus: (tag ? resolveTagStatus(tag) : 'active') as TagStatus,
   })
 
   const handleNameChange = async (value: string) => {
@@ -177,13 +184,23 @@ export function TagEditForm({ locale, jwt, tag }: TagEditFormProps) {
             />
           </CardContent>
           <CardFooter className="bg-muted/50 pt-6">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="excluded"
-                checked={formData.excluded}
-                onCheckedChange={(checked) => setFormData({ ...formData, excluded: checked === true })}
-              />
-              <Label htmlFor="excluded" className="cursor-pointer">Excluded</Label>
+            <div className="space-y-2">
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={formData.tagStatus}
+                onValueChange={(value: string) =>
+                  setFormData({ ...formData, tagStatus: value as TagStatus })
+                }
+              >
+                <SelectTrigger id="status" className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="proposed">Proposed</SelectItem>
+                  <SelectItem value="excluded">Excluded</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardFooter>
         </Card>

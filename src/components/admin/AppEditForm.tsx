@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Locale } from '@/types/locale'
 import { App } from '@/types/app'
-import { Tag } from '@/types/tag'
+import { Tag, TagStatus } from '@/types/tag'
+import { resolveTagStatus, isTagExcluded } from '@/lib/tag-utils'
 import { createAppWithLocalizations, updateAppWithLocalizations, getTags, checkUniqueness } from '@/lib/api/admin-apps-api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -155,7 +156,24 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
     }
   }
 
-  const toggleTag = (tagId: string) => {
+  const statusStyles: Record<TagStatus, string> = {
+    active: 'bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200',
+    proposed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200',
+    excluded: 'bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-200',
+  }
+
+  const statusLabels: Record<TagStatus, string> = {
+    active: 'Active',
+    proposed: 'Proposed',
+    excluded: 'Excluded',
+  }
+
+  const toggleTag = (tag: Tag, force = false) => {
+    const status = resolveTagStatus(tag)
+    if (!force && status === 'excluded') {
+      return
+    }
+    const tagId = tag.documentId
     setSelectedTagIds(prev =>
       prev.includes(tagId)
         ? prev.filter(id => id !== tagId)
@@ -471,24 +489,32 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
                 ) : tags.length === 0 ? (
                   <p className="text-sm text-muted-foreground">No tags available</p>
                 ) : (
-                  tags.map((tag) => (
+                  tags.map((tag) => {
+                    const status = resolveTagStatus(tag)
+                    const isSelected = selectedTagIds.includes(tag.documentId)
+                    return (
                     <div
                       key={tag.documentId}
                       className="flex items-center gap-2 p-2 border rounded bg-card"
                     >
                       <Checkbox
                         id={`tag-${tag.documentId}`}
-                        checked={selectedTagIds.includes(tag.documentId)}
-                        onCheckedChange={() => toggleTag(tag.documentId)}
+                        checked={isSelected}
+                        onCheckedChange={() => toggleTag(tag)}
+                        disabled={isTagExcluded(tag)}
                       />
                       <Label
                         htmlFor={`tag-${tag.documentId}`}
-                        className="cursor-pointer text-sm"
+                        className={`cursor-pointer text-sm flex items-center gap-2 ${status === 'excluded' ? 'text-muted-foreground' : ''}`}
                       >
                         {tag.name}
+                        <Badge variant="outline" className={`text-xs ${statusStyles[status]}`}>
+                          {statusLabels[status]}
+                        </Badge>
                       </Label>
                     </div>
-                  ))
+                  )
+                  })
                 )}
               </div>
               {selectedTagIds.length > 0 && (
@@ -496,18 +522,28 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
                   <span className="text-sm text-muted-foreground">Selected:</span>
                   {tags
                     .filter(tag => selectedTagIds.includes(tag.documentId))
-                    .map((tag) => (
-                      <Badge key={tag.documentId} variant="secondary">
-                        {tag.name}
-                        <button
-                          type="button"
-                          onClick={() => toggleTag(tag.documentId)}
-                          className="ml-1 hover:text-destructive"
+                    .map((tag) => {
+                      const status = resolveTagStatus(tag)
+                      return (
+                        <Badge
+                          key={tag.documentId}
+                          variant="outline"
+                          className={`${statusStyles[status]} flex items-center gap-2`}
                         >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
+                          <span>{tag.name}</span>
+                          <span className="rounded bg-background/70 px-1.5 py-0.5 text-xs font-medium">
+                            {statusLabels[status]}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => toggleTag(tag, true)}
+                            className="ml-1 hover:text-destructive flex items-center justify-center"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      )
+                    })}
                 </div>
               )}
             </div>
