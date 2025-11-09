@@ -83,12 +83,6 @@ export function AppsList({
     excluded: 'bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-200',
   }
 
-  const tagStatusLabels: Record<TagStatus, string> = {
-    active: 'Active',
-    proposed: 'Proposed',
-    excluded: 'Excluded',
-  }
-
   const fetchApps = async () => {
     setLoading(true)
     try {
