@@ -53,7 +53,7 @@ export const FilterSidebar = ({
       if (!aSelected && bSelected) return 1;
       
       // If both selected or both not selected, sort by count
-      return b.count - a.count;
+      return (b.count ?? 0) - (a.count ?? 0);
     });
   }, [availableTags, tagSearch, selectedTagIds]);
 
@@ -144,7 +144,7 @@ export const FilterSidebar = ({
                     <span className="truncate">{tag.name}</span>
                   </Label>
                   <span className="text-xs text-muted-foreground shrink-0 ml-2">
-                    ({tag.count})
+                    ({tag.count ?? 0})
                   </span>
                 </div>
               ))}
