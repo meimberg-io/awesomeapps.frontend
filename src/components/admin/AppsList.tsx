@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Locale } from '@/types/locale'
 import { App } from '@/types/app'
 import { getAppsList, deleteApp, type AppsListResponse } from '@/lib/api/admin-apps-api'
-import { createQueueItem } from '@/lib/api/admin-queue-api'
+import { RegenerateMenu } from '@/components/RegenerateMenu'
 import {
   Table,
   TableBody,
@@ -34,15 +34,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
-import { Search, Plus, Edit, Trash2, ArrowUpDown, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
+import { Search, Plus, Edit, Trash2, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
 
@@ -81,37 +74,6 @@ export function AppsList({
     app: App | null
   }>({ open: false, app: null })
   const [deleting, setDeleting] = useState(false)
-  const [syncStatuses, setSyncStatuses] = useState<Record<string, 'idle' | 'loading'>>({})
-
-  const handleRegenerate = async (app: App, field: string) => {
-    const statusKey = app.documentId
-    setSyncStatuses({ ...syncStatuses, [statusKey]: 'loading' })
-    
-    try {
-      // Create queue item in Strapi
-      // If "all" is selected, don't put anything in the field
-      await createQueueItem(jwt, {
-        slug: app.name,
-        field: field === 'all' ? '' : field,
-        n8nstatus: 'new',
-      })
-      
-      toast({
-        title: 'Success',
-        description: `Service regeneration requested${field !== 'all' ? ` (Field: ${field})` : ''}. Added to queue.`,
-      })
-      setTimeout(() => router.refresh(), 1000)
-    } catch (error) {
-      console.error('Error regenerating app:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to request app regeneration',
-        variant: 'destructive',
-      })
-    } finally {
-      setSyncStatuses({ ...syncStatuses, [statusKey]: 'idle' })
-    }
-  }
 
   const fetchApps = async () => {
     setLoading(true)
@@ -394,50 +356,7 @@ export function AppsList({
                             >
                               <Trash2 className="h-4 w-4 text-destructive" />
                             </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  disabled={syncStatuses[app.documentId] === 'loading'}
-                                  title="Sync/Regenerate"
-                                >
-                                  <RefreshCw 
-                                    className={`h-4 w-4 ${syncStatuses[app.documentId] === 'loading' ? 'animate-spin' : ''}`} 
-                                  />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => handleRegenerate(app, 'all')}>
-                                  All
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => handleRegenerate(app, 'url')}>
-                                  URL
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleRegenerate(app, 'description')}>
-                                  Description
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleRegenerate(app, 'functionality')}>
-                                  Functionality
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleRegenerate(app, 'abstract')}>
-                                  Abstract
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleRegenerate(app, 'pricing')}>
-                                  Pricing
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleRegenerate(app, 'tags')}>
-                                  Tags
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleRegenerate(app, 'video')}>
-                                  Video
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleRegenerate(app, 'shortfacts')}>
-                                  Shortfacts
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            <RegenerateMenu serviceName={app.name} align="end" size="sm" />
                           </div>
                         </TableCell>
                       </TableRow>

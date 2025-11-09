@@ -1,16 +1,9 @@
 'use client';
 
-import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare, RefreshCw, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Star, ExternalLink, ArrowLeft, Globe, Heart, MessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import { App } from "@/types/app";
 import { Review } from "@/types/review";
 import { NewService } from "@/types/newService";
@@ -25,12 +18,13 @@ import { useRouter } from "next/navigation";
 import { useMember } from "@/contexts/MemberContext";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { renderIcon } from "@/components/util/renderIcon";
 import Link from "next/link";
 import { getBrandfetchLogoUrl } from "@/lib/utils";
 import { STRAPI_BASEURL } from "@/lib/constants";
 import { useTranslations } from "next-intl";
+import { RegenerateMenu } from '@/components/RegenerateMenu'
 
 interface ServiceDetailProps {
   service: App;
@@ -38,7 +32,7 @@ interface ServiceDetailProps {
   newService?: NewService;
 }
 
-export const AppDetail = ({ service, initialReviews, newService }: ServiceDetailProps) => {
+export const AppDetail = ({ service, initialReviews }: ServiceDetailProps) => {
   const router = useRouter();
   const { data: session } = useSession();
   const { addFavorite, removeFavorite, isFavorite } = useMember();
@@ -47,8 +41,6 @@ export const AppDetail = ({ service, initialReviews, newService }: ServiceDetail
   const tReview = useTranslations('review');
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [regenerateStatus, setRegenerateStatus] = useState<'idle' | 'loading' | 'requested'>('idle');
-  const [currentNewService, setCurrentNewService] = useState(newService);
   const reviews = initialReviews;
   const iconurl = service.logo?.url 
     ? `${STRAPI_BASEURL}${service.logo.url}` 
@@ -63,100 +55,7 @@ export const AppDetail = ({ service, initialReviews, newService }: ServiceDetail
     : 0;
   const displayRating = averageRating > 0 ? averageRating.toFixed(1) : t('noRating');
 
-  // Sync currentNewService with prop changes
-  useEffect(() => {
-    setCurrentNewService(newService);
-  }, [newService]);
-
-  // Poll for newService status updates
-  useEffect(() => {
-    if (!isAdmin) {
-      return;
-    }
-
-    const shouldPoll = currentNewService && 
-      (currentNewService.n8nstatus === 'new' || currentNewService.n8nstatus === 'pending');
-    
-    if (!shouldPoll) return;
-
-    const pollInterval = setInterval(async () => {
-      try {
-        const response = await fetch(`/api/new-service/${service.slug}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.newService) {
-            setCurrentNewService(data.newService);
-            // Stop polling if status is finished or error
-            if (data.newService.n8nstatus === 'finished' || data.newService.n8nstatus === 'error') {
-              clearInterval(pollInterval);
-            }
-          }
-        }
-      } catch {
-        // Silently handle polling errors
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(pollInterval);
-    };
-  }, [isAdmin, currentNewService, service.slug]);
-
-  // Determine button state based on newService status
-  const getRegenerateButtonState = () => {
-    if (!currentNewService) {
-      return {
-        icon: RefreshCw,
-        className: '',
-        disabled: regenerateStatus === 'loading' || regenerateStatus === 'requested',
-        title: regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'App regenerieren'
-      };
-    }
-
-    switch (currentNewService.n8nstatus) {
-      case 'new':
-        return {
-          icon: CheckCircle,
-          className: 'bg-green-600 hover:bg-green-700 border-green-600 text-white',
-          disabled: true,
-          title: 'Neu - Wird verarbeitet'
-        };
-      case 'pending':
-        return {
-          icon: Clock,
-          className: 'bg-yellow-600 hover:bg-yellow-700 border-yellow-600 text-white',
-          disabled: true,
-          title: 'In Bearbeitung'
-        };
-      case 'error':
-        return {
-          icon: AlertCircle,
-          className: 'bg-red-600 hover:bg-red-700 border-red-600 text-white',
-          disabled: true,
-          title: 'Fehler bei der Verarbeitung'
-        };
-      case 'finished':
-        return {
-          icon: RefreshCw,
-          className: '',
-          disabled: regenerateStatus === 'loading' || regenerateStatus === 'requested',
-          title: regenerateStatus === 'loading' ? 'Wird geladen...' : regenerateStatus === 'requested' ? 'Angefordert' : 'App regenerieren'
-        };
-      default:
-        return {
-          icon: RefreshCw,
-          className: '',
-          disabled: regenerateStatus === 'loading' || regenerateStatus === 'requested',
-          title: 'App regenerieren'
-        };
-    }
-  };
-
-  const buttonState = getRegenerateButtonState();
-  const RegenerateIcon = buttonState.icon;
-
   const handleReviewSubmitted = () => {
-    // Trigger a page refresh to get updated reviews
     router.refresh();
   };
 
@@ -196,33 +95,6 @@ export const AppDetail = ({ service, initialReviews, newService }: ServiceDetail
     }
   };
 
-  const handleRegenerate = async (field: string) => {
-    setRegenerateStatus('loading');
-    try {
-      const url = `https://n8n.meimberg.io/webhook/a2e23025-297f-4b92-8473-8db6b8cfd2aa?service=${encodeURIComponent(service.name)}&fields=${encodeURIComponent(field)}`;
-      const response = await fetch(url);
-      
-      if (response.ok) {
-        setRegenerateStatus('requested');
-        toast({
-          title: "Erfolg",
-          description: `Service-Regenerierung wurde angefordert${field !== 'all' ? ` (Feld: ${field})` : ''}.`,
-        });
-        // Start polling for status by refreshing to get initial newService entry
-        setTimeout(() => router.refresh(), 1000);
-      } else {
-        throw new Error('Request failed');
-      }
-    } catch {
-      setRegenerateStatus('idle');
-      toast({
-        title: "Fehler",
-        description: "Die Anfrage konnte nicht verarbeitet werden.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -253,49 +125,7 @@ export const AppDetail = ({ service, initialReviews, newService }: ServiceDetail
               <div className="flex items-center gap-3 mb-3">
                 <h1 className="text-4xl font-bold">{service.name}</h1>
                 {isAdmin && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        disabled={buttonState.disabled}
-                        title={buttonState.title}
-                        className={buttonState.className}
-                      >
-                        <RegenerateIcon className={`h-5 w-5 ${regenerateStatus === 'loading' ? 'animate-spin' : ''}`} />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      <DropdownMenuItem onClick={() => handleRegenerate('all')}>
-                        All
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => handleRegenerate('url')}>
-                        URL
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleRegenerate('description')}>
-                        Description
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleRegenerate('functionality')}>
-                        Functionality
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleRegenerate('abstract')}>
-                        Abstract
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleRegenerate('pricing')}>
-                        Pricing
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleRegenerate('tags')}>
-                        Tags
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleRegenerate('video')}>
-                        Video
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleRegenerate('shortfacts')}>
-                        Shortfacts
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <RegenerateMenu serviceName={service.name} statusSlug={service.slug} align="start" size="icon" />
                 )}
                 <Button
                   variant="outline"

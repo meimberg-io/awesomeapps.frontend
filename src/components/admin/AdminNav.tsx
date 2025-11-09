@@ -22,20 +22,13 @@ export function AdminNav({ locale, jwt }: AdminNavProps) {
   const [newServiceName, setNewServiceName] = useState('')
   const [addingNew, setAddingNew] = useState(false)
   
-  const toSlug = (name: string) =>
-    name
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-  
+
   const handleQueueNewService = async () => {
     const name = newServiceName.trim()
     if (!name || !jwt) return
     setAddingNew(true)
     try {
-      const slug = toSlug(name)
+      const slug = name
       await createQueueItem(jwt, {
         slug,
         field: '',
