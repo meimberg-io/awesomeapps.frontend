@@ -5,6 +5,7 @@ export interface NewService {
   n8nstatus: 'new' | 'pending' | 'finished' | 'error';
   createdAt: string;
   updatedAt: string;
+  errorMessage?: string | null;
 }
 
 

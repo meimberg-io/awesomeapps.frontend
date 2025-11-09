@@ -120,6 +120,15 @@ export function QueueEditForm({ locale, jwt, queueItem }: QueueEditFormProps) {
                 </SelectContent>
               </Select>
             </div>
+
+            {queueItem.errorMessage && (
+              <div className="space-y-2">
+                <Label htmlFor="errorMessage">Error Message</Label>
+                <div className="rounded-md border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive whitespace-pre-wrap">
+                  {queueItem.errorMessage}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

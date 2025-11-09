@@ -36,6 +36,12 @@ import { Badge } from '@/components/ui/badge'
 import { Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import Link from 'next/link'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface QueueListProps {
   locale: Locale
@@ -228,76 +234,95 @@ export function QueueList({
             </div>
           ) : (
             <>
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Slug</TableHead>
-                      <TableHead>Field</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Updated</TableHead>
-                      <TableHead className="w-[200px]">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {data.data.map((item) => (
-                      <TableRow key={item.documentId}>
-                        <TableCell className="font-medium">{item.slug}</TableCell>
-                        <TableCell className="text-muted-foreground">{item.field}</TableCell>
-                        <TableCell>
+              <TooltipProvider delayDuration={150}>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Slug</TableHead>
+                        <TableHead>Field</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Updated</TableHead>
+                        <TableHead className="w-[200px]">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {data.data.map((item) => {
+                        const badge = (
                           <Badge
                             className={`${getStatusColor(item.n8nstatus)} text-white`}
                             variant="secondary"
                           >
                             {item.n8nstatus}
                           </Badge>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {new Date(item.createdAt).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {new Date(item.updatedAt).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Select
-                              value={item.n8nstatus}
-                              onValueChange={(value: string) => handleStatusUpdate(item, value as 'new' | 'pending' | 'finished' | 'error')}
-                            >
-                              <SelectTrigger className="w-[120px] h-8">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="new">New</SelectItem>
-                                <SelectItem value="pending">Pending</SelectItem>
-                                <SelectItem value="finished">Finished</SelectItem>
-                                <SelectItem value="error">Error</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <Button
-                              asChild
-                              variant="ghost"
-                              size="sm"
-                            >
-                              <Link href={`/${locale}/admin/queue/${item.documentId}`}>
-                                <Edit className="h-4 w-4" />
-                              </Link>
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setDeleteDialog({ open: true, item })}
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                        )
+
+                        return (
+                          <TableRow key={item.documentId}>
+                            <TableCell className="font-medium">{item.slug}</TableCell>
+                            <TableCell className="text-muted-foreground">{item.field}</TableCell>
+                            <TableCell>
+                              {item.n8nstatus === 'error' && item.errorMessage ? (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>{badge}</TooltipTrigger>
+                                  <TooltipContent className="max-w-sm whitespace-pre-wrap text-sm">
+                                    {item.errorMessage}
+                                  </TooltipContent>
+                                </Tooltip>
+                              ) : (
+                                badge
+                              )}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {new Date(item.createdAt).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {new Date(item.updatedAt).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Select
+                                  value={item.n8nstatus}
+                                  onValueChange={(value: string) =>
+                                    handleStatusUpdate(item, value as 'new' | 'pending' | 'finished' | 'error')
+                                  }
+                                >
+                                  <SelectTrigger className="w-[120px] h-8">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="new">New</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="finished">Finished</SelectItem>
+                                    <SelectItem value="error">Error</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <Button
+                                  asChild
+                                  variant="ghost"
+                                  size="sm"
+                                >
+                                  <Link href={`/${locale}/admin/queue/${item.documentId}`}>
+                                    <Edit className="h-4 w-4" />
+                                  </Link>
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setDeleteDialog({ open: true, item })}
+                                >
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TooltipProvider>
 
               {data.pagination.pageCount > 1 && (
                 <div className="flex items-center justify-between mt-4">
