@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { getBrandfetchLogoUrl } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import { Locale } from '@/types/locale';
+import { isTagActive } from '@/lib/tag-utils';
 
 export default function FavoritesPage() {
   const t = useTranslations();
@@ -103,6 +104,7 @@ export default function FavoritesPage() {
                 const thumbnailUrl = service.thumbnail?.url
                   ? `${STRAPI_BASEURL}${service.thumbnail.url}`
                   : null;
+                const activeTags = (service.tags || []).filter(isTagActive);
 
                 return (
                   <Card key={service.documentId} className="overflow-hidden hover:shadow-xl hover:brightness-110 transition-all flex flex-col">
@@ -123,7 +125,7 @@ export default function FavoritesPage() {
                         <div className="w-12 h-12 flex-shrink-0 border border-gray-300">
                           <img
                             src={iconUrl}
-                            alt={`${service.name} Logo - ${service.tags?.[0]?.name || 'SaaS'} Tool`}
+                            alt={`${service.name} Logo - ${activeTags[0]?.name || 'SaaS'} Tool`}
                             className="w-full h-full object-contain"
                           />
                         </div>
@@ -147,16 +149,16 @@ export default function FavoritesPage() {
                       )}
 
                       {/* Tags */}
-                      {service.tags && service.tags.filter(tag => !tag.excluded).length > 0 && (
+                      {activeTags.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {service.tags.filter(tag => !tag.excluded).slice(0, 3).map((tag) => (
+                          {activeTags.slice(0, 3).map((tag) => (
                             <Badge key={tag.documentId} variant="outline" className="text-xs">
                               {tag.icon} {tag.name}
                             </Badge>
                           ))}
-                          {service.tags.filter(tag => !tag.excluded).length > 3 && (
+                          {activeTags.length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                              +{service.tags.filter(tag => !tag.excluded).length - 3}
+                              +{activeTags.length - 3}
                             </Badge>
                           )}
                         </div>

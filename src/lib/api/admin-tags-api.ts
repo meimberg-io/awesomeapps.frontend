@@ -1,5 +1,5 @@
 import { STRAPI_BASEURL } from '@/lib/constants'
-import { Tag } from '@/types/tag'
+import { Tag, TagStatus } from '@/types/tag'
 
 interface StrapiResponse<T> {
   data: T[]
@@ -87,12 +87,22 @@ export async function createTag(
   }
 
   try {
+    const payload = {
+      name: tagData.name,
+      description: tagData.description,
+      icon: tagData.icon,
+      tagStatus: (tagData.tagStatus as TagStatus | undefined) ?? 'active',
+    }
+    const sanitizedPayload = Object.fromEntries(
+      Object.entries(payload).filter(([, value]) => value !== undefined && value !== null)
+    )
+
     const response = await fetch(
       `${STRAPI_BASEURL}/api/tags`,
       {
         method: 'POST',
         headers,
-        body: JSON.stringify({ data: tagData }),
+        body: JSON.stringify({ data: sanitizedPayload }),
       }
     )
 
@@ -120,12 +130,22 @@ export async function updateTag(
   }
 
   try {
+    const payload = {
+      name: tagData.name,
+      description: tagData.description,
+      icon: tagData.icon,
+      tagStatus: tagData.tagStatus as TagStatus | undefined,
+    }
+    const sanitizedPayload = Object.fromEntries(
+      Object.entries(payload).filter(([, value]) => value !== undefined && value !== null)
+    )
+
     const response = await fetch(
       `${STRAPI_BASEURL}/api/tags/${id}`,
       {
         method: 'PUT',
         headers,
-        body: JSON.stringify({ data: tagData }),
+        body: JSON.stringify({ data: sanitizedPayload }),
       }
     )
 

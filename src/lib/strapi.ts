@@ -11,6 +11,7 @@ import {GET_PAGES, GET_PAGES_BY_SLUG} from "@/lib/graphql/page";
 import {GET_SERVICE_REVIEWS} from "@/lib/graphql/review";
 import {GET_NEW_SERVICE_BY_SLUG} from "@/lib/graphql/newService";
 import {Locale} from "@/types/locale";
+import { isTagActive } from "./tag-utils";
 
 const client = new ApolloClient({
     uri: STRAPI_BASEURL + "/graphql",
@@ -73,7 +74,7 @@ export const fetchTags = async (tags?: Tag[], locale: Locale = 'en'): Promise<Ta
         fetchPolicy: "no-cache"
     });
     const tagsResult: Tag[] = data.tags;
-    return tagsResult.filter(tag => tag.count > 0 && !tag.excluded);
+    return tagsResult.filter(tag => (tag.count ?? 0) > 0 && isTagActive(tag));
 };
 
 export const fetchServiceDetail = async (id: string, locale: Locale = 'en'): Promise<App> => {

@@ -25,6 +25,7 @@ import { getBrandfetchLogoUrl } from "@/lib/utils";
 import { STRAPI_BASEURL } from "@/lib/constants";
 import { useTranslations } from "next-intl";
 import { RegenerateMenu } from '@/components/RegenerateMenu'
+import { isTagActive } from "@/lib/tag-utils";
 
 interface ServiceDetailProps {
   service: App;
@@ -45,6 +46,7 @@ export const AppDetail = ({ service, initialReviews }: ServiceDetailProps) => {
   const iconurl = service.logo?.url 
     ? `${STRAPI_BASEURL}${service.logo.url}` 
     : getBrandfetchLogoUrl(service.url);
+  const activeTags = service.tags.filter(isTagActive);
 
   const favorite = isFavorite(service.documentId);
   const isAdmin = session?.user?.email === 'oli@meimberg.io';
@@ -116,7 +118,7 @@ export const AppDetail = ({ service, initialReviews }: ServiceDetailProps) => {
             <div className="w-24 h-24 flex-shrink-0 border border-gray-300">
               <img
                 src={iconurl}
-                alt={`${service.name} Logo - ${service.tags.filter(tag => !tag.excluded)[0]?.name || 'SaaS'} Tool`}
+                alt={`${service.name} Logo - ${activeTags[0]?.name || 'SaaS'} Tool`}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -164,7 +166,7 @@ export const AppDetail = ({ service, initialReviews }: ServiceDetailProps) => {
               
               {/* Tags */}
               <div className="flex flex-wrap gap-2 pt-8">
-                {service.tags.filter(tag => !tag.excluded).map((tag) => (
+                {activeTags.map((tag) => (
                   <Link key={tag.documentId} href={`/t/${tag.name}`}>
                     <Badge variant="outline" className="text-sm font-normal bg-background border-border/50 text-foreground/70 hover:bg-primary/5 hover:border-primary/30 transition-colors cursor-pointer">
                       {tag.icon && renderIcon(tag.icon, 'inline-block mr-1', 14)}

@@ -9,6 +9,7 @@ import { Tag } from "@/types/tag";
 import { getBrandfetchLogoUrl } from "@/lib/utils";
 import { STRAPI_BASEURL } from "@/lib/constants";
 import { useTranslations } from 'next-intl';
+import { isTagActive } from "@/lib/tag-utils";
 
 interface AppCardProps {
   app: App;
@@ -22,6 +23,7 @@ export const AppCard = ({ app, onServiceClick, selectedTags = [] }: AppCardProps
   const iconurl = app.logo?.url
     ? `${STRAPI_BASEURL}${app.logo.url}`
     : getBrandfetchLogoUrl(app.url);
+  const activeTags = app.tags.filter(isTagActive);
   
   // Use cached review statistics from backend
   const reviewCount = app.reviewCount || 0;
@@ -65,7 +67,7 @@ export const AppCard = ({ app, onServiceClick, selectedTags = [] }: AppCardProps
         <div className="w-16 h-16 flex-shrink-0">
           <img
             src={iconurl}
-            alt={`${app.name} Logo - ${app.tags.filter(tag => !tag.excluded)[0]?.name || 'SaaS'} Tool`}
+            alt={`${app.name} Logo - ${activeTags[0]?.name || 'SaaS'} Tool`}
             className="w-full h-full object-contain"
           />
         </div>
@@ -95,7 +97,7 @@ export const AppCard = ({ app, onServiceClick, selectedTags = [] }: AppCardProps
       </p>
 
       <div className="flex flex-wrap gap-2">
-        {app.tags.filter(tag => !tag.excluded).map((tag) => {
+        {activeTags.map((tag) => {
           const isSelected = selectedTags.some(selectedTag => selectedTag.documentId === tag.documentId);
           return (
             <Badge 
