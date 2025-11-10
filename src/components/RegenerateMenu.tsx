@@ -124,14 +124,14 @@ export function RegenerateMenu({
         return { Icon: Clock, btnClass: statusColorClasses.pending, spin: false }
       case 'idle':
       default:
-        return { Icon: Wand2, btnClass: '', spin: loading }
+        return { Icon: Wand2, btnClass: 'button', spin: loading }
     }
   }
 
   const { Icon, btnClass, spin } = getVisuals()
 
   return (
-    <DropdownMenu>
+    <DropdownMenu >
       <DropdownMenuTrigger asChild>
         <Button
           variant={btnClass ? 'outline' : 'ghost'}
