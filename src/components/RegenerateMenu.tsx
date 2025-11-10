@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { RefreshCw, CheckCircle, Clock, AlertCircle } from 'lucide-react'
+import { Wand2, CheckCircle, Clock, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -109,7 +109,7 @@ export function RegenerateMenu({
 
   const getVisuals = () => {
     if (!statusSlug) {
-      return { Icon: RefreshCw, btnClass: '', spin: loading }
+      return { Icon: Wand2, btnClass: '', spin: loading }
     }
     switch (status) {
       case 'new':
@@ -124,7 +124,7 @@ export function RegenerateMenu({
         return { Icon: Clock, btnClass: statusColorClasses.pending, spin: false }
       case 'idle':
       default:
-        return { Icon: RefreshCw, btnClass: '', spin: loading }
+        return { Icon: Wand2, btnClass: '', spin: loading }
     }
   }
 

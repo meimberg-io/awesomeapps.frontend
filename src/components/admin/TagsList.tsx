@@ -34,7 +34,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Edit, Trash2, Search } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, RefreshCw } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { Input } from '@/components/ui/input'
 import { renderIcon } from '@/components/util/renderIcon'
@@ -171,6 +171,17 @@ export function TagsList({ locale, jwt }: TagsListProps) {
                 <SelectItem value="excluded">Excluded</SelectItem>
               </SelectContent>
             </Select>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="ml-auto"
+              onClick={fetchTags}
+              title="Refresh tags"
+              aria-label="Refresh tags"
+              disabled={loading}
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
 
           {loading ? (
@@ -188,8 +199,8 @@ export function TagsList({ locale, jwt }: TagsListProps) {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-[40px]"></TableHead>
                     <TableHead>Name</TableHead>
-                    <TableHead>Icon</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Connected Apps</TableHead>
@@ -203,16 +214,16 @@ export function TagsList({ locale, jwt }: TagsListProps) {
                       className="cursor-pointer hover:bg-accent/5"
                       onClick={() => router.push(`/${locale}/admin/tags/${tag.documentId}`)}
                     >
-                      <TableCell className="font-medium">{tag.name}</TableCell>
                       <TableCell>
                         {tag.icon ? (
-                          <div className="flex items-center">
+                          <span className="inline-flex items-center justify-center">
                             {renderIcon(tag.icon, 'h-5 w-5', 20)}
-                          </div>
+                          </span>
                         ) : (
                           <span className="text-muted-foreground">-</span>
                         )}
                       </TableCell>
+                      <TableCell className="font-medium">{tag.name}</TableCell>
                       <TableCell className="text-muted-foreground">
                         {tag.description ? (
                           <span className="line-clamp-2">{tag.description}</span>

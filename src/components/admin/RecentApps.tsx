@@ -12,6 +12,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { RegenerateMenu } from '@/components/RegenerateMenu'
+import { STRAPI_BASEURL } from '@/lib/constants'
+import { getBrandfetchLogoUrl } from '@/lib/utils'
 
 interface RecentAppsProps {
   apps: App[]
@@ -62,15 +65,26 @@ export function RecentApps({ apps, locale, isLoading = false }: RecentAppsProps)
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-[40px]"></TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Slug</TableHead>
               <TableHead>Created</TableHead>
               <TableHead>Updated</TableHead>
+              <TableHead className="w-[120px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {apps.map((app) => (
               <TableRow key={app.documentId}>
+                <TableCell>
+                  <div className="w-8 h-8 flex-shrink-0 border border-gray-200 dark:border-gray-700 rounded bg-background">
+                    <img
+                      src={app.logo?.url ? `${STRAPI_BASEURL}${app.logo.url}` : getBrandfetchLogoUrl(app.url)}
+                      alt={`${app.name} logo`}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </TableCell>
                 <TableCell className="font-medium">
                   <Link
                     href={`/${locale}/admin/apps/${app.documentId}`}
@@ -93,6 +107,9 @@ export function RecentApps({ apps, locale, isLoading = false }: RecentAppsProps)
                     day: 'numeric',
                     year: 'numeric',
                   })}
+                </TableCell>
+                <TableCell className="text-right">
+                  <RegenerateMenu serviceName={app.name} align="end" size="sm" />
                 </TableCell>
               </TableRow>
             ))}

@@ -33,7 +33,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
-import { Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Edit, Trash2, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import Link from 'next/link'
 import {
@@ -189,36 +189,49 @@ export function QueueList({
 
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-4 flex-wrap">
-            <Select
-              value={status === undefined ? 'all' : status}
-              onValueChange={handleStatusChange}
+          <div className="flex w-full flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <Select
+                value={status === undefined ? 'all' : status}
+                onValueChange={handleStatusChange}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="new">New</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="finished">Finished</SelectItem>
+                  <SelectItem value="error">Error</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select
+                value={pageSize.toString()}
+                onValueChange={(value: string) => handlePageSize(parseInt(value))}
+              >
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10">10 per page</SelectItem>
+                  <SelectItem value="25">25 per page</SelectItem>
+                  <SelectItem value="50">50 per page</SelectItem>
+                  <SelectItem value="100">100 per page</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="ml-auto"
+              onClick={fetchQueue}
+              title="Refresh queue"
+              aria-label="Refresh queue"
+              disabled={loading}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="new">New</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="finished">Finished</SelectItem>
-                <SelectItem value="error">Error</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={pageSize.toString()}
-              onValueChange={(value: string) => handlePageSize(parseInt(value))}
-            >
-              <SelectTrigger className="w-[120px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10">10 per page</SelectItem>
-                <SelectItem value="25">25 per page</SelectItem>
-                <SelectItem value="50">50 per page</SelectItem>
-                <SelectItem value="100">100 per page</SelectItem>
-              </SelectContent>
-            </Select>
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
