@@ -37,9 +37,11 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
-import { Search, Plus, Edit, Trash2, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Plus, Edit, Trash2, ArrowUpDown, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
+import { STRAPI_BASEURL } from '@/lib/constants'
+import { getBrandfetchLogoUrl } from '@/lib/utils'
 
 interface AppsListProps {
   locale: Locale
@@ -209,7 +211,7 @@ export function AppsList({
 
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex w-full items-center gap-4 flex-wrap">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -251,6 +253,17 @@ export function AppsList({
                 <SelectItem value="500">500 per page</SelectItem>
               </SelectContent>
             </Select>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="ml-auto"
+              onClick={fetchApps}
+              title="Refresh apps"
+              aria-label="Refresh apps"
+              disabled={loading}
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -271,6 +284,7 @@ export function AppsList({
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[50px]"></TableHead>
+                      <TableHead className="w-[40px]"></TableHead>
                       <TableHead className="w-[200px]">
                         <button
                           onClick={() => handleSortClick('name')}
@@ -310,6 +324,15 @@ export function AppsList({
                       >
                         <TableCell className="text-muted-foreground text-sm">
                           {((page - 1) * pageSize) + index + 1}
+                        </TableCell>
+                        <TableCell>
+                          <div className="w-8 h-8 flex-shrink-0 border border-gray-200 dark:border-gray-700 rounded bg-background">
+                            <img
+                              src={app.logo?.url ? `${STRAPI_BASEURL}${app.logo.url}` : getBrandfetchLogoUrl(app.url)}
+                              alt={`${app.name} logo`}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
                         </TableCell>
                         <TableCell className="font-medium">{app.name}</TableCell>
                         <TableCell className="text-muted-foreground">{app.slug}</TableCell>

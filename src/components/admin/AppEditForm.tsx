@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { ArrowLeft, Save, X, XCircle } from 'lucide-react'
+import { ArrowLeft, Save, X, XCircle, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import { Checkbox } from '@/components/ui/checkbox'
 import { MarkdownEditor } from '@/components/admin/MarkdownEditor'
@@ -492,6 +492,12 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
                   tags.map((tag) => {
                     const status = resolveTagStatus(tag)
                     const isSelected = selectedTagIds.includes(tag.documentId)
+                    const textColorClass =
+                      status === 'active'
+                        ? 'text-blue-600'
+                        : status === 'proposed'
+                        ? 'text-emerald-600'
+                        : 'text-red-600'
                     return (
                     <div
                       key={tag.documentId}
@@ -505,12 +511,10 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
                       />
                       <Label
                         htmlFor={`tag-${tag.documentId}`}
-                        className={`cursor-pointer text-sm flex items-center gap-2 ${status === 'excluded' ? 'text-muted-foreground' : ''}`}
+                        className={`cursor-pointer text-sm flex items-center gap-2 ${textColorClass}`}
                       >
+                        <CheckCircle className={`h-3.5 w-3.5 ${textColorClass}`} />
                         {tag.name}
-                        <Badge variant="outline" className={`text-xs ${statusStyles[status]}`}>
-                          {statusLabels[status]}
-                        </Badge>
                       </Label>
                     </div>
                   )
@@ -518,8 +522,8 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
                 )}
               </div>
               {selectedTagIds.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <span className="text-sm text-muted-foreground">Selected:</span>
+                <div className="flex flex-wrap gap-2 pt-4 items-center">
+
                   {tags
                     .filter(tag => selectedTagIds.includes(tag.documentId))
                     .map((tag) => {
@@ -528,12 +532,9 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
                         <Badge
                           key={tag.documentId}
                           variant="outline"
-                          className={`${statusStyles[status]} flex items-center gap-2`}
+                          className={`${statusStyles[status]} flex items-center gap-2 text-sm px-3 py-1.5 rounded-md`}
                         >
                           <span>{tag.name}</span>
-                          <span className="rounded bg-background/70 px-1.5 py-0.5 text-xs font-medium">
-                            {statusLabels[status]}
-                          </span>
                           <button
                             type="button"
                             onClick={() => toggleTag(tag, true)}

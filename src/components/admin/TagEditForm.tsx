@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Locale } from '@/types/locale'
 import { Tag, TagStatus } from '@/types/tag'
+import { App } from '@/types/app'
 import { resolveTagStatus } from '@/lib/tag-utils'
 import { createTag, updateTag, checkTagNameUniqueness } from '@/lib/api/admin-tags-api'
+import { getAppsList } from '@/lib/api/admin-apps-api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,6 +24,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { STRAPI_BASEURL } from '@/lib/constants'
+import { getBrandfetchLogoUrl } from '@/lib/utils'
 
 interface TagEditFormProps {
   locale: Locale
@@ -68,6 +80,28 @@ export function TagEditForm({ locale, jwt, tag }: TagEditFormProps) {
   }
 
   const isNew = !tag
+  const [connectedAppsLoading, setConnectedAppsLoading] = useState(false)
+  const [connectedApps, setConnectedApps] = useState<App[]>([])
+
+  useEffect(() => {
+    const fetchConnected = async () => {
+      if (!tag) return
+      setConnectedAppsLoading(true)
+      try {
+        const res = await getAppsList(jwt, {
+          page: 1,
+          pageSize: 100,
+          filters: { tags: [tag.documentId] },
+          locale,
+          sort: 'updatedAt:desc',
+        })
+        setConnectedApps(res.data)
+      } finally {
+        setConnectedAppsLoading(false)
+      }
+    }
+    fetchConnected()
+  }, [jwt, tag?.documentId, locale])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -227,6 +261,62 @@ export function TagEditForm({ locale, jwt, tag }: TagEditFormProps) {
         </div>
       </form>
 
+      {!isNew && (
+        <Card className="mt-8">
+          <CardHeader className="bg-muted/50">
+            <CardTitle>Connected Apps</CardTitle>
+            <CardDescription>Only current locale</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {connectedAppsLoading ? (
+              <div className="space-y-2">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-10 w-full animate-pulse rounded bg-muted" />
+                ))}
+              </div>
+            ) : connectedApps.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No connected apps.</p>
+            ) : (
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[40px]"></TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Slug</TableHead>
+                      <TableHead>Updated</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {connectedApps.map((app) => (
+                      <TableRow key={app.documentId}>
+                        <TableCell>
+                          <div className="w-8 h-8 flex-shrink-0 border border-gray-200 dark:border-gray-700 rounded bg-background">
+                            <img
+                              src={app.logo?.url ? `${STRAPI_BASEURL}${app.logo.url}` : getBrandfetchLogoUrl(app.url)}
+                              alt={`${app.name} logo`}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          <Link href={`/${locale}/admin/apps/${app.documentId}`} className="hover:underline">
+                            {app.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">{app.slug}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {new Date(app.updatedAt).toLocaleDateString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

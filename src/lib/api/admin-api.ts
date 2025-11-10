@@ -68,10 +68,14 @@ export async function getRecentApps(jwt: string, limit: number = 10): Promise<Ap
   }
 
   try {
-    const response = await fetch(
-      `${STRAPI_BASEURL}/api/services?sort=createdAt:desc&pagination[pageSize]=${limit}&populate=*`,
-      { headers }
-    )
+    const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+    const url =
+      `${STRAPI_BASEURL}/api/services` +
+      `?filters[createdAt][$gte]=${encodeURIComponent(twoWeeksAgo)}` +
+      `&sort=createdAt:desc` +
+      `&pagination[pageSize]=${limit}` +
+      `&populate=*`
+    const response = await fetch(url, { headers })
 
     if (!response.ok) {
       throw new Error('Failed to fetch recent apps')
