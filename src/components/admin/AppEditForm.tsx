@@ -162,11 +162,18 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
     excluded: 'bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-200',
   }
 
-  const statusLabels: Record<TagStatus, string> = {
-    active: 'Active',
-    proposed: 'Proposed',
-    excluded: 'Excluded',
+  // Helper: get Strapi file relation reference (id preferred, fallback to documentId)
+  const getFileRef = (img: unknown): string | number | null => {
+    if (img && typeof img === 'object') {
+      const o = img as Record<string, unknown>
+      const id = o['id']
+      const documentId = o['documentId']
+      if (typeof id === 'string' || typeof id === 'number') return id
+      if (typeof documentId === 'string') return documentId
+    }
+    return null
   }
+  const isNonNull = <T,>(v: T | null | undefined): v is T => v !== null && v !== undefined
 
   const toggleTag = (tag: Tag, force = false) => {
     const status = resolveTagStatus(tag)
@@ -207,12 +214,10 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
         publishdate: formData.publishdate || null,
         tags: selectedTagIds.length > 0 ? selectedTagIds : undefined,
         // Strapi media relations: use documentId or id
-        logo: logo ? ((logo as any).id ?? (logo as any).documentId ?? null) : null,
+        logo: logo ? getFileRef(logo) : null,
         screenshots:
           screenshots.length > 0
-            ? screenshots
-                .map(img => (img as any).id ?? (img as any).documentId)
-                .filter(Boolean)
+            ? screenshots.map(img => getFileRef(img)).filter(isNonNull)
             : undefined,
       }
 
