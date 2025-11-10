@@ -207,8 +207,13 @@ export function AppEditForm({ locale, jwt, appEn, appDe }: AppEditFormProps) {
         publishdate: formData.publishdate || null,
         tags: selectedTagIds.length > 0 ? selectedTagIds : undefined,
         // Strapi media relations: use documentId or id
-        logo: logo ? logo.documentId : null,
-        screenshots: screenshots.length > 0 ? screenshots.map(img => img.documentId).filter(Boolean) : undefined,
+        logo: logo ? ((logo as any).id ?? (logo as any).documentId ?? null) : null,
+        screenshots:
+          screenshots.length > 0
+            ? screenshots
+                .map(img => (img as any).id ?? (img as any).documentId)
+                .filter(Boolean)
+            : undefined,
       }
 
       // English data
