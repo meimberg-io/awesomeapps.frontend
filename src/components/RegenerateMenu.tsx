@@ -100,19 +100,28 @@ export function RegenerateMenu({
     }
   }
 
+  const statusColorClasses: Record<NewServiceStatus, string> = {
+    new: 'bg-blue-500 hover:bg-blue-600 border-blue-500 text-white',
+    pending: 'bg-yellow-500 hover:bg-yellow-600 border-yellow-500 text-white',
+    finished: 'bg-green-500 hover:bg-green-600 border-green-500 text-white',
+    error: 'bg-red-500 hover:bg-red-600 border-red-500 text-white',
+  }
+
   const getVisuals = () => {
     if (!statusSlug) {
       return { Icon: RefreshCw, btnClass: '', spin: loading }
     }
     switch (status) {
       case 'new':
-        return { Icon: CheckCircle, btnClass: 'bg-green-600 hover:bg-green-700 border-green-600 text-white', spin: false }
+        return { Icon: CheckCircle, btnClass: statusColorClasses.new, spin: false }
       case 'pending':
-        return { Icon: Clock, btnClass: 'bg-yellow-600 hover:bg-yellow-700 border-yellow-600 text-white', spin: false }
+        return { Icon: Clock, btnClass: statusColorClasses.pending, spin: false }
       case 'error':
-        return { Icon: AlertCircle, btnClass: 'bg-red-600 hover:bg-red-700 border-red-600 text-white', spin: false }
+        return { Icon: AlertCircle, btnClass: statusColorClasses.error, spin: false }
       case 'finished':
+        return { Icon: CheckCircle, btnClass: statusColorClasses.finished, spin: false }
       case 'requested':
+        return { Icon: Clock, btnClass: statusColorClasses.pending, spin: false }
       case 'idle':
       default:
         return { Icon: RefreshCw, btnClass: '', spin: loading }
