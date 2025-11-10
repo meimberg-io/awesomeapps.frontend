@@ -126,9 +126,7 @@ export const AppDetail = ({ service, initialReviews }: ServiceDetailProps) => {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
                 <h1 className="text-4xl font-bold">{service.name}</h1>
-                {isAdmin && (
-                  <RegenerateMenu serviceName={service.name} statusSlug={service.slug} align="start" size="icon" />
-                )}
+
                 <Button
                   variant="outline"
                   size="icon"
@@ -139,6 +137,9 @@ export const AppDetail = ({ service, initialReviews }: ServiceDetailProps) => {
                 >
                   <Heart className={`h-5 w-5 ${favorite ? 'fill-current' : ''}`} />
                 </Button>
+                {isAdmin && (
+                  <RegenerateMenu serviceName={service.name} statusSlug={service.slug} align="start" size="icon"  />
+                )}
               </div>
               <div className="flex items-center gap-4 flex-wrap mb-4">
                 <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
