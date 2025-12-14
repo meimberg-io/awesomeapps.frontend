@@ -371,17 +371,47 @@ export async function deleteApp(
   }
 
   try {
+    // Fetch the document with populated localizations to get ALL related documentIds
+    // This works regardless of which locale's documentId you start with
     const response = await fetch(
-      `${STRAPI_BASEURL}/api/services/${id}`,
-      {
-        method: 'DELETE',
-        headers,
-      }
+      `${STRAPI_BASEURL}/api/services/${id}?populate=localizations`,
+      { headers }
     )
 
     if (!response.ok) {
-      throw new Error('Failed to delete app')
+      throw new Error('Failed to load app before deletion')
     }
+
+    const data = await response.json() as { 
+      data?: { 
+        documentId: string
+        locale?: string
+        localizations?: Array<{ documentId: string; locale?: string }>
+      } 
+    }
+
+    const documentId = data.data?.documentId || id
+
+    // Delete both en and de locales explicitly
+    // Strapi requires deleting each locale separately
+    const deletePromises = ['en', 'de'].map(async (locale) => {
+      const deleteResponse = await fetch(
+        `${STRAPI_BASEURL}/api/services/${documentId}?locale=${locale}`,
+        {
+          method: 'DELETE',
+          headers,
+        }
+      )
+      // Ignore 404s (locale might not exist or already be deleted)
+      if (!deleteResponse.ok && deleteResponse.status !== 404) {
+        const errorText = await deleteResponse.text().catch(() => 'Unknown error')
+        throw new Error(`Failed to delete app (id: ${documentId}, locale: ${locale}): ${errorText}`)
+      }
+    })
+
+    await Promise.all(deletePromises)
+
+    await Promise.all(deletePromises)
 
     return true
   } catch (error) {
