@@ -46,12 +46,13 @@ export const metadata: Metadata = {
 
 type Props = {
     children: ReactNode;
-    params: Promise<{locale: Locale}>;
+    params: Promise<{locale?: string}>;
 };
 
 export default async function RootLayout({children, params}: Props) {
-    const {locale} = await params;
-    const htmlLang = locale || defaultLocale;
+    const {locale: localeParam} = await params;
+    const locale = (localeParam as Locale) || defaultLocale;
+    const htmlLang = locale;
     const organizationSchema = {
         "@context": "https://schema.org",
         "@type": "Organization",

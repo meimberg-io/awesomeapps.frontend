@@ -6,7 +6,7 @@ import {Locale, locales} from '@/types/locale';
 
 type Props = {
   children: ReactNode;
-  params: Promise<{locale: Locale}>;
+  params: Promise<{locale: string}>;
 };
 
 export function generateStaticParams() {
@@ -14,7 +14,8 @@ export function generateStaticParams() {
 }
 
 export default async function LocaleLayout({children, params}: Props) {
-  const {locale} = await params;
+  const {locale: localeParam} = await params;
+  const locale = localeParam as Locale;
 
   if (!locales.includes(locale)) {
     notFound();
