@@ -4,15 +4,20 @@ import { auth } from '@/lib/auth'
 import { isAdminEmail } from '@/lib/config/admin'
 import { AdminNav } from '@/components/admin/AdminNav'
 import Header from '@/components/Header'
-import { Locale } from '@/types/locale'
+import { Locale, isValidLocale } from '@/types/locale'
 
 interface AdminLayoutProps {
   children: ReactNode
-  params: Promise<{ locale: Locale }>
+  params: Promise<{ locale: string }>
 }
 
 export default async function AdminLayout({ children, params }: AdminLayoutProps) {
-  const { locale } = await params
+  const { locale: localeParam } = await params
+  const locale = localeParam as Locale
+  
+  if (!isValidLocale(locale)) {
+    redirect('/en/admin')
+  }
   const session = await auth()
   
   // Check if user is authenticated
