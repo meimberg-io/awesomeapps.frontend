@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import {fetchServicesNews} from "@/lib/strapi";
 import {APP_BASEURL, STRAPI_BASEURL} from "@/lib/constants";
 import {App} from "@/types/app";
+import {getBrandfetchLogoUrl} from "@/lib/utils";
 
 const escapeXml = (text: string | null): string => {
     if (!text) return '';
@@ -23,12 +24,10 @@ const generateRssFeed = (services: App[], locale: 'en' | 'de') => {
 
     const items = services.map(service => {
         const link = `${baseUrl}/${locale}/s/${service.slug}`;
-        const pubDate = new Date(service.publishdate || service.updatedAt).toUTCString();
-        const imageUrl = service.thumbnail?.url 
-            ? (service.thumbnail.url.startsWith('http') 
-                ? service.thumbnail.url 
-                : `${STRAPI_BASEURL}${service.thumbnail.url}`)
-            : '';
+        const pubDate = new Date(service.publishdate || service.createdAt).toUTCString();
+        const logoUrl = service.logo?.url
+            ? (service.logo.url.startsWith('http') ? service.logo.url : `${STRAPI_BASEURL}${service.logo.url}`)
+            : getBrandfetchLogoUrl(service.url, '');
 
         return `
         <item>
@@ -37,13 +36,14 @@ const generateRssFeed = (services: App[], locale: 'en' | 'de') => {
             <guid isPermaLink="true">${escapeXml(link)}</guid>
             <pubDate>${pubDate}</pubDate>
             <description>${escapeXml(service.abstract)}</description>
-            ${imageUrl ? `<enclosure url="${escapeXml(imageUrl)}" type="image/jpeg" />` : ''}
+            ${logoUrl ? `<enclosure url="${escapeXml(logoUrl)}" type="image/png" />` : ''}
+            ${logoUrl ? `<media:thumbnail url="${escapeXml(logoUrl)}" />` : ''}
             ${service.tags?.map(tag => `<category>${escapeXml(tag.name)}</category>`).join('') || ''}
         </item>`;
     }).join('');
 
     return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
     <channel>
         <title>${escapeXml(title)}</title>
         <link>${baseUrl}/${locale}</link>
